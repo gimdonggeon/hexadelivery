@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api/stores/{storeId}/menus")
+@RestController("/api/stores")
 public class MenuController {
 
     MenuService menuService;
@@ -31,13 +31,13 @@ public class MenuController {
      * @return ResponseEntity<MenuResponseDto>  저장된 메뉴 정보 전달
      *
      */
-    @PostMapping
-    public ResponseEntity<MenuResponseDto> createMenu(@RequestParam Long storeId,
+    @PostMapping("/{storeId}/menus")
+    public ResponseEntity<MenuResponseDto> createMenu(@PathVariable Long storeId,
                                                       @RequestBody @Valid MenuRequestDto menuRequestDto,
                                                       HttpServletRequest httpServletRequest) {
 
         // 권한 체크
-        validMenuAccess(httpServletRequest);
+        validMenuAccess(httpServletRequest, storeId);
 
         //메뉴 생성
         MenuResponseDto menuResponseDto = menuService.createMenu(
@@ -55,8 +55,8 @@ public class MenuController {
      * @return ResponseEntity<List<MenuResponseDto>>  저장된 메뉴 정보 전달
      *
      */
-    @GetMapping
-    public ResponseEntity<List<MenuResponseDto>> getMenus(@RequestParam Long storeId) {
+    @GetMapping("/{storeId}/menus")
+    public ResponseEntity<List<MenuResponseDto>> getMenus(@PathVariable Long storeId) {
 
         return ResponseEntity.status(HttpStatus.OK).body(menuService.getMenus(storeId));
     }
@@ -71,12 +71,13 @@ public class MenuController {
      * @return ResponseEntity<MenuResponseDto>  수정된 메뉴 정보 전달
      *
      */
-    @PatchMapping("{menuId}")
-    public ResponseEntity<MenuResponseDto> updateMenu(@PathVariable Long menuId,
+    @PatchMapping("/{storeId}/menus/{menuId}")
+    public ResponseEntity<MenuResponseDto> updateMenu(@PathVariable Long storeId,
+                                                      @PathVariable Long menuId,
                                                       @RequestBody @Valid updateMenuRequestDto updateMenuRequestDto,
                                                       HttpServletRequest httpServletRequest) {
         // 권한 체크
-        validMenuAccess(httpServletRequest);
+        validMenuAccess(httpServletRequest, storeId);
 
         // 메뉴 수정
         MenuResponseDto menuResponseDto = menuService.updateMenu(
@@ -98,10 +99,12 @@ public class MenuController {
      * @return ResponseEntity<String>  삭제 문구 전달
      *
      */
-    @DeleteMapping("{menuId}")
-    public ResponseEntity<String> deleteMenu(@PathVariable Long menuId, HttpServletRequest httpServletRequest) {
+    @DeleteMapping("/{storeId}/menus/{menuId}")
+    public ResponseEntity<String> deleteMenu(@PathVariable Long storeId,
+                                             @PathVariable Long menuId,
+                                             HttpServletRequest httpServletRequest) {
         // 권한 체크
-        validMenuAccess(httpServletRequest);
+        validMenuAccess(httpServletRequest, storeId);
 
         // 메뉴 삭제
         menuService.deleteMenu(menuId);
@@ -116,18 +119,18 @@ public class MenuController {
      * @param httpServletRequest  request 객체
      *
      */
-    private void validMenuAccess(HttpServletRequest httpServletRequest){
+    private void validMenuAccess(HttpServletRequest httpServletRequest, Long storeId) {
         HttpSession session = httpServletRequest.getSession(false);
         User LoginUser = (User) session.getAttribute("loginUser");
 
-        // 사장님이 아니면 에러 발생
+        // 사장님이 아니면 예외 발생
         if(LoginUser.getRole() != Role.MERCHANT){
             throw new RuntimeException("사장님이 아닙니다.");
         }
+        // 사징님의 본인 가게가 아니면 예외 발생
+        LoginUser.getStoreList().stream()
+                .filter(store -> store.getStoreId().equals(storeId)).findAny()
+                .orElseThrow(()-> new RuntimeException("본인의 가게가 아닙니다."));
 
-        // 사징님의 본인 가게가 아니면
-        if(storeId.equals(LoginUser.getStore().getStoreId())){
-            throw new RuntimeException("본인의 가게가 아닙니다.");
-        }
     }
 }

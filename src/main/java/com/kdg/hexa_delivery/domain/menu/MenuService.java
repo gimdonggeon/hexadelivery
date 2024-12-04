@@ -72,6 +72,9 @@ public class MenuService {
         // 메뉴 정보 수정
         menu.updateMenu(menuName, price);
 
+        // 메뉴 저장 - 명시
+        menuRepository.save(menu);
+
         return MenuResponseDto.toDto(menu);
     }
 
@@ -89,5 +92,8 @@ public class MenuService {
 
         // 메뉴 논리적인 삭제
         menu.updateStatus2Delete();
+
+        // 메뉴 저장 - 명시
+        menuRepository.save(menu);
     }
 }
