@@ -1,4 +1,4 @@
-package com.kdg.hexa_delivery.domain.menu;
+package com.kdg.hexa_delivery.domain.menu.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.Status;

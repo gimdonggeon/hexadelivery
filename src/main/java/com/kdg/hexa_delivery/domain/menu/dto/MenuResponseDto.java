@@ -1,6 +1,7 @@
-package com.kdg.hexa_delivery.domain.menu;
+package com.kdg.hexa_delivery.domain.menu.dto;
 
 import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
