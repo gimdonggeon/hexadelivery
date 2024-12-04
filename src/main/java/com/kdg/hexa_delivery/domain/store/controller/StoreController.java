@@ -43,7 +43,7 @@ public class StoreController {
     /*
      *   내 가게 전체 조회
      */
-    @GetMapping("/business")
+    @GetMapping("/me")
     public ResponseEntity<List<StoreResponseDto>> getMyStores(HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 및 로그인세션 받기
         User loginUser = validStoreAccess(httpServletRequest);
