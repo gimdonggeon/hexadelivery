@@ -1,5 +1,5 @@
 package com.kdg.hexa_delivery.domain.base.enums;
 
-public enum Closure {
+public enum State {
     OPEN, CLOSURE;
 }

@@ -1,4 +1,4 @@
-package com.kdg.hexa_delivery.domain.store.entity;
+package com.kdg.hexa_delivery.domain.store.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

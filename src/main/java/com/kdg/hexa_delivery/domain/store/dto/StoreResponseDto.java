@@ -1,6 +1,7 @@
-package com.kdg.hexa_delivery.domain.store.entity;
+package com.kdg.hexa_delivery.domain.store.dto;
 
-import com.kdg.hexa_delivery.domain.base.enums.Closure;
+import com.kdg.hexa_delivery.domain.base.enums.State;
+import com.kdg.hexa_delivery.domain.store.entity.Store;
 import lombok.Getter;
 import java.time.LocalDateTime;
 
@@ -21,7 +22,7 @@ public class StoreResponseDto {
 
     private final String storeDetail;
 
-    private final Closure closure;
+    private final State state;
 
     private final LocalDateTime createdAt;
 
@@ -30,7 +31,7 @@ public class StoreResponseDto {
     public StoreResponseDto(Long storeId,Long userId,
                             String storeName, String category,
                             String phone, String address,
-                            String storeDetail, Closure closure,
+                            String storeDetail, State state,
                             LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.storeId = storeId;
         this.userId = userId;
@@ -39,7 +40,7 @@ public class StoreResponseDto {
         this.phone = phone;
         this.address = address;
         this.storeDetail = storeDetail;
-        this.closure = closure;
+        this.state = state;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
@@ -53,7 +54,7 @@ public class StoreResponseDto {
                 store.getPhone(),
                 store.getAddress(),
                 store.getStoreDetail(),
-                store.getClosure(),
+                store.getState(),
                 store.getCreatedAt(),
                 store.getModifiedAt()
         );

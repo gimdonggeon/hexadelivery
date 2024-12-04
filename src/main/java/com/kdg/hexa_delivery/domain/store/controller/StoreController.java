@@ -1,8 +1,8 @@
 package com.kdg.hexa_delivery.domain.store.controller;
-import com.kdg.hexa_delivery.domain.store.entity.StoreRequestDto;
-import com.kdg.hexa_delivery.domain.store.entity.StoreResponseDto;
+import com.kdg.hexa_delivery.domain.store.dto.StoreRequestDto;
+import com.kdg.hexa_delivery.domain.store.dto.StoreResponseDto;
 import com.kdg.hexa_delivery.domain.store.service.StoreService;
-import com.kdg.hexa_delivery.domain.store.entity.UpdateStoreRequestDto;
+import com.kdg.hexa_delivery.domain.store.dto.UpdateStoreRequestDto;
 import com.kdg.hexa_delivery.domain.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

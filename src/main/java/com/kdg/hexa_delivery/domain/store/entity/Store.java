@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.store.entity;
 
-import com.kdg.hexa_delivery.domain.base.enums.Closure;
+import com.kdg.hexa_delivery.domain.base.enums.State;
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.user.User;
 import jakarta.persistence.*;
@@ -36,16 +36,16 @@ public class Store extends BaseEntity {
 
     @Column(nullable=false)
     @Enumerated(EnumType.STRING)
-    private Closure closure;
+    private State state;
 
-    public Store(User user, String storeName, String category, String phone, String address, String storeDetail, Closure closure) {
+    public Store(User user, String storeName, String category, String phone, String address, String storeDetail, State state) {
         this.user = user;
         this.storeName = storeName;
         this.category = category;
         this.phone = phone;
         this.address = address;
         this.storeDetail = storeDetail;
-        this.closure = closure;
+        this.state = state;
 
     }
 
@@ -57,15 +57,23 @@ public class Store extends BaseEntity {
     public void updateStore(String storeName, String category,
                             String phone, String address,
                             String storeDetail) {
-        this.storeName = storeName;
-        this.category = category;
-        this.phone = phone;
-        this.address = address;
-        this.storeDetail = storeDetail;
-
+        if(storeName != null && !storeName.isEmpty()) {
+            this.storeName = storeName;
+        }
+        if(category != null && !category.isEmpty()) {
+            this.category = category;
+        }if(phone != null && !phone.isEmpty()) {
+            this.phone = phone;
+        }
+        if(address != null && !address.isEmpty()) {
+            this.address = address;
+        }
+        if(storeDetail != null && !storeDetail.isEmpty()) {
+            this.storeDetail = storeDetail;
+        }
     }
 
     public void updateStoreStatus(){
-        this.closure = Closure.CLOSURE;
+        this.state = State.CLOSURE;
     }
 }

@@ -1,10 +1,10 @@
 package com.kdg.hexa_delivery.domain.store.service;
 
-import com.kdg.hexa_delivery.domain.base.enums.Closure;
+import com.kdg.hexa_delivery.domain.base.enums.State;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
-import com.kdg.hexa_delivery.domain.store.entity.StoreRequestDto;
-import com.kdg.hexa_delivery.domain.store.entity.StoreResponseDto;
+import com.kdg.hexa_delivery.domain.store.dto.StoreRequestDto;
+import com.kdg.hexa_delivery.domain.store.dto.StoreResponseDto;
 import com.kdg.hexa_delivery.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class StoreService {
         Store store = new Store(user, storeRequestDto.getStoreName(),
                 storeRequestDto.getCategory(),storeRequestDto.getPhone(),
                 storeRequestDto.getAddress(),storeRequestDto.getStoreDetail(),
-                Closure.OPEN);
+                State.OPEN);
 
         Store savedStore = storeRepository.save(store);
 
