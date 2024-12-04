@@ -6,7 +6,11 @@ import com.kdg.hexa_delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
+@Getter
+@Entity
+@Table(name = "menu")
 public class Menu extends BaseEntity {
 
     @Id
@@ -25,4 +29,28 @@ public class Menu extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
+
+    public Menu(String name, Integer price, Status status, Store store) {
+        this.name = name;
+        this.price = price;
+        this.status = status;
+        this.store = store;
+    }
+
+    public Menu() {
+
+    }
+
+    public void updateMenu(String name, Integer price){
+        if(name != null && !name.isEmpty()){
+            this.name = name;
+        }
+        if (price != null && price > 0){
+            this.price = price;
+        }
+    }
+
+    public void updateStatus2Delete() {
+        this.status = Status.DELETE;
+    }
 }
