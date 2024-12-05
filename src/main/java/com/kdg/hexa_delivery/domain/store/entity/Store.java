@@ -47,7 +47,7 @@ public class Store extends BaseEntity {
     private State state;
 
     public Store(User user, String storeName, String category, String phone, String address, String storeDetail, String openingHours, String closingHours, Integer minimumOrderValue, State state) {
-        this.user = user;
+        updateUser(user);
         this.storeName = storeName;
         this.category = category;
         this.phone = phone;
@@ -62,6 +62,11 @@ public class Store extends BaseEntity {
 
     public Store() {
 
+    }
+
+    public void updateUser(User user){
+        this.user = user;
+        user.getStoreList().add(this);
     }
 
 

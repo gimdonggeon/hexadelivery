@@ -60,7 +60,7 @@ public class OwnerMenuController {
      * @return ResponseEntity<MenuResponseDto>  수정된 메뉴 정보 전달
      *
      */
-    @PatchMapping("/{storeId}/menus/{menuId}")
+    @PutMapping("/{storeId}/menus/{menuId}")
     public ResponseEntity<MenuResponseDto> updateMenu(@PathVariable Long storeId,
                                                       @PathVariable Long menuId,
                                                       @RequestBody @Valid updateMenuRequestDto updateMenuRequestDto,
@@ -90,7 +90,7 @@ public class OwnerMenuController {
      * @return ResponseEntity<String>  삭제 문구 전달
      *
      */
-    @DeleteMapping("/{storeId}/menus/{menuId}")
+    @PatchMapping("/{storeId}/menus/{menuId}")
     public ResponseEntity<String> deleteMenu(@PathVariable Long storeId,
                                              @PathVariable Long menuId,
                                              HttpServletRequest httpServletRequest) {

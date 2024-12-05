@@ -63,7 +63,7 @@ public class OwnerStoreController {
     /*
      *   가게 수정
      */
-    @PatchMapping("/{storeId}")
+    @PutMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId,
                                                         @RequestBody @Valid UpdateStoreRequestDto updateStoreRequestDto,
                                                         HttpServletRequest httpServletRequest) {
@@ -71,7 +71,6 @@ public class OwnerStoreController {
         User loginUser = Validation.validStoreAccess(httpServletRequest);
         //본인가게 확인 메서드
         Validation.validMyStoreAccess(storeId, loginUser);
-
         StoreResponseDto storeResponseDto = storeService.updateStore(
                 storeId,
                 updateStoreRequestDto.getStoreName(),
@@ -90,7 +89,7 @@ public class OwnerStoreController {
     /*
      *   가게 폐업
      */
-    @DeleteMapping("/{storeId}")
+    @PatchMapping("/{storeId}")
     public ResponseEntity<String> deleteStore(@PathVariable Long storeId,
                                               HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 메서드
