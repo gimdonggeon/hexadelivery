@@ -27,6 +27,7 @@ public class StoreService {
      */
     public StoreResponseDto createStore(User user, StoreRequestDto storeRequestDto) {
 
+        // 가게 생성가능 확인
         if(isValidStoreCount(user.getId())){
             throw new RuntimeException("영업중인 가게가 3개 이상입니다. 더 이상 생성 할 수 없습니다.");
         }

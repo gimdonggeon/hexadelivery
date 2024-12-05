@@ -1,20 +1,21 @@
 package com.kdg.hexa_delivery.domain.store.controller;
-import com.kdg.hexa_delivery.domain.base.enums.Role;
+
+import com.kdg.hexa_delivery.domain.base.validation.Validation;
 import com.kdg.hexa_delivery.domain.store.dto.StoreRequestDto;
 import com.kdg.hexa_delivery.domain.store.dto.StoreResponseDto;
 import com.kdg.hexa_delivery.domain.store.service.StoreService;
 import com.kdg.hexa_delivery.domain.store.dto.UpdateStoreRequestDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-@RestController("api/stores")
+@RestController("/api/stores")
 public class StoreController {
 
     StoreService storeService;
@@ -32,11 +33,9 @@ public class StoreController {
                                                         HttpServletRequest httpServletRequest) {
 
         // 가게 접근권한 확인 메서드
-        User loginUser = validStoreAccess(httpServletRequest);
-        // 가게 생성 가능 확인 메서드
-        validStoreCreate(loginUser.getUserId());
+        User loginUser = Validation.validStoreAccess(httpServletRequest);
 
-        StoreResponseDto storeResponseDto = storeService.createStore(loginUser,storeRequestDto);
+        StoreResponseDto storeResponseDto = storeService.createStore(loginUser, storeRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(storeResponseDto);
     }
@@ -47,9 +46,9 @@ public class StoreController {
     @GetMapping("/me")
     public ResponseEntity<List<StoreResponseDto>> getMyStores(HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 및 로그인세션 받기
-        User loginUser = validStoreAccess(httpServletRequest);
+        User loginUser = Validation.validStoreAccess(httpServletRequest);
 
-        return ResponseEntity.status(HttpStatus.OK).body(storeService.getMyStores(loginUser.getUserId()));
+        return ResponseEntity.status(HttpStatus.OK).body(storeService.getMyStores(loginUser.getId()));
     }
 
     /*
@@ -76,9 +75,9 @@ public class StoreController {
                                                         @RequestBody @Valid UpdateStoreRequestDto updateStoreRequestDto,
                                                         HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 메서드
-        User loginUser = validStoreAccess(httpServletRequest);
+        User loginUser = Validation.validStoreAccess(httpServletRequest);
         //본인가게 확인 메서드
-        validStoreAccessV2(storeId, loginUser);
+        Validation.validMyStoreAccess(storeId, loginUser);
 
         StoreResponseDto storeResponseDto = storeService.updateStore(
                 storeId,
@@ -99,9 +98,9 @@ public class StoreController {
     public ResponseEntity<String> deleteStore(@PathVariable Long storeId,
                                               HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 메서드
-        User loginUser = validStoreAccess(httpServletRequest);
+        User loginUser = Validation.validStoreAccess(httpServletRequest);
         //본인가게 확인 메서드
-        validStoreAccessV2(storeId, loginUser);
+        Validation.validMyStoreAccess(storeId, loginUser);
 
         storeService.deleteStore(storeId);
 
