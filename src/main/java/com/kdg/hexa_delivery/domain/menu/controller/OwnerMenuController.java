@@ -13,13 +13,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/owners/stores")
 public class OwnerMenuController {
-    MenuService menuService;
+
+    private final MenuService menuService;
 
     @Autowired
-    OwnerMenuController(MenuService menuService) {
+    public OwnerMenuController(MenuService menuService) {
         this.menuService = menuService;
     }
 
@@ -79,6 +82,19 @@ public class OwnerMenuController {
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(menuResponseDto);
+    }
+
+    /**
+     *  메뉴 전체 조회 API
+     *
+     * @param storeId  조회할 메뉴들의 가게 id
+     * @return ResponseEntity<List<MenuResponseDto>>  저장된 메뉴 정보 전달
+     *
+     */
+    @GetMapping("/{storeId}/menus")
+    public ResponseEntity<List<MenuResponseDto>> getMenus(@PathVariable Long storeId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(menuService.getMenus(storeId));
     }
 
     /**
