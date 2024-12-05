@@ -62,18 +62,6 @@ public class OrderService {
         return OrderResponseDto.toDto(order);
     }
 
-    // 주문 수량 수정
-    @Transactional
-    public OrderResponseDto updateOrderQuantity(Long orderId, Integer quantity) {
-        Order order = orderRepository.findByIdOrElseThrow(orderId);
-
-        order.updateQuantity(quantity);
-        order.updateTotalPrice();
-        orderRepository.save(order);
-
-        return OrderResponseDto.toDto(order);
-    }
-
     // 주문 삭제
     @Transactional
     public void deleteOrder(Long orderId) {

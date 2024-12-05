@@ -44,10 +44,6 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
-
     public void updateStatus(OrderStatus newStatus) {
         this.orderStatus = newStatus;
     }
@@ -55,7 +51,6 @@ public class Order extends BaseEntity {
     public void updateTotalPrice() {
         this.totalPrice = this.menu.getPrice() * this.quantity;
     }
-
 
     public Order() {
     }
@@ -67,10 +62,5 @@ public class Order extends BaseEntity {
         this.quantity = quantity;
         updateTotalPrice();
         this.orderStatus = OrderStatus.ORDER_COMPLETE;
-    }
-
-    public void updateQuantity(Integer quantity) {
-        this.quantity = quantity;
-        updateTotalPrice();
     }
 }

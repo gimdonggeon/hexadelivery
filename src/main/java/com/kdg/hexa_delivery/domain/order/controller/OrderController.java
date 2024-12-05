@@ -48,15 +48,6 @@ public class OrderController {
         return ResponseEntity.ok(orderResponseDto);
     }
 
-    // 주문 수량 수정
-    @PatchMapping("/{orderId}/quantity")
-    public ResponseEntity<OrderResponseDto> updateOrderQuantity(@PathVariable Long orderId,
-                                                                @RequestBody Integer quantity) {
-
-        OrderResponseDto orderResponseDto = orderService.updateOrderQuantity(orderId, quantity);
-
-        return ResponseEntity.status(HttpStatus.OK).body(orderResponseDto);
-    }
 
     // 주문 삭제
     @DeleteMapping("/{orderId}")
