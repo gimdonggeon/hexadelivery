@@ -16,7 +16,7 @@ public class SignupRequestDto {
     private final String loginId;
 
     @NotNull
-    @Email
+    @Pattern(regexp = "^[a-zA-Z0-9_+&*-] + (?:\\\\.[a-zA-Z0-9_+&*-] + )*@(?:[a-zA-Z0-9-]+\\\\.) + [a-zA-Z]{2,7}")
     private final String email;
 
     @NotNull
