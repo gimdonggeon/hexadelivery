@@ -56,18 +56,24 @@ public class ShoppingBasketService {
         Map<Long, Integer> confirmedMenuList = new HashMap<>();
 
         // 기존에 있던 장바구니 담기
-        if(shoppingBasket != null) {
+        if(shoppingBasket != null && !shoppingBasket.getMenuList().containsKey(menuId)) {
             confirmedMenuList = new HashMap<>(shoppingBasket.getMenuList());
         }
 
-        // 실제 가게의 메뉴 정보 리스트 가져오기
-        List<Menu> menus = menuRepository.findAllByStoreIdAndStatus(storeId, Status.NORMAL);
+        // 기존에 있으면 개수만 추가하기
+        if(confirmedMenuList.containsKey(menuId)) {
+            confirmedMenuList.put(menuId, confirmedMenuList.get(menuId) + quantity);
+        }
+        else{
+            // 실제 가게의 메뉴 정보 리스트 가져오기
+            List<Menu> menus = menuRepository.findAllByStoreIdAndStatus(storeId, Status.NORMAL);
 
-        // 실제 메뉴에 있는 음식인지 확인
-        for (Menu menu : menus) {
-            if(menu.getId().equals(menuId)){
-                confirmedMenuList.put(menuId, quantity);
-                break;
+            // 실제 메뉴에 있는 음식인지 확인
+            for (Menu menu : menus) {
+                if(menu.getId().equals(menuId)){
+                    confirmedMenuList.put(menuId, quantity);
+                    break;
+                }
             }
         }
 
@@ -120,13 +126,21 @@ public class ShoppingBasketService {
         // 기존 장바구니 정보 담기
         Map<Long, Integer> confirmedMenuList = new HashMap<>(shoppingBasket.getMenuList());
 
-        // 장바구니 정보 수정
-        if(confirmedMenuList.containsKey(menuId) && quantity > 0){
-            confirmedMenuList.put(menuId, quantity);
+        // 기존에 없으면 추가
+        if(!confirmedMenuList.containsKey(menuId)) {
+            addShoppingBasket(cookies, loginUserId, storeId, menuId, quantity);
         }
 
-        // 장바구니 정보 삭제
-        if(confirmedMenuList.containsKey(menuId) && quantity == 0){
+        // 장바구니 메뉴 수정
+        if(quantity > 0) {
+            confirmedMenuList.put(menuId, quantity);
+        }
+        // 장바구니 메뉴 개수 빼기
+        else if(quantity < 0) {
+            confirmedMenuList.put(menuId, confirmedMenuList.get(menuId) + quantity);
+        }
+        // 장바구니 메뉴 삭제
+        else {
             confirmedMenuList.remove(menuId);
         }
 
@@ -166,7 +180,7 @@ public class ShoppingBasketService {
             throw new RuntimeException("장바구니가 비어있습니다!");
         }
 
-        if(!shoppingBasket.getStoreId().equals(loginUser.getId())){
+        if(!shoppingBasket.getUserId().equals(loginUser.getId())){
             throw new RuntimeException("다른 유저의 장바구니에 접근하고 있습니다.");
         }
     }

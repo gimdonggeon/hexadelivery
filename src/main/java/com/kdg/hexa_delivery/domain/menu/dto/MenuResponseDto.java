@@ -40,8 +40,8 @@ public class MenuResponseDto {
     public static MenuResponseDto toDto(Menu menu) {
 
         return new MenuResponseDto(
-                menu.getId(),
                 menu.getStore().getStoreId(),
+                menu.getId(),
                 menu.getName(),
                 menu.getPrice(),
                 menu.getCreatedAt(),

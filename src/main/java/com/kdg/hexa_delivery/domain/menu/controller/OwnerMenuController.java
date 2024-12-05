@@ -65,6 +65,8 @@ public class OwnerMenuController {
                                                       @PathVariable Long menuId,
                                                       @RequestBody @Valid updateMenuRequestDto updateMenuRequestDto,
                                                       HttpServletRequest httpServletRequest) {
+
+
         // 권한 체크
         User user = Validation.validStoreAccess(httpServletRequest);
         Validation.validMyStoreAccess(storeId, user);

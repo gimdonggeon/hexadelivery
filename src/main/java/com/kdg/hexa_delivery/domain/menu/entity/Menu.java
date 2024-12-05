@@ -19,6 +19,7 @@ public class Menu extends BaseEntity {
 
     private Integer price;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne
