@@ -56,7 +56,10 @@ public class User extends BaseEntity {
         this.status = status;
     }
 
+    public User() {
+    }
+
     public void updateStatus2Delete(){
-        this.status = Status.DELETE;
+        this.status = Status.DELETED;
     }
 }
