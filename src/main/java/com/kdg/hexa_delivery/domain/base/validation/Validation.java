@@ -21,7 +21,7 @@ public class Validation {
         User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
 
         // 사장님이 아니면 에러 발생
-        if(loginUser.getRole() != Role.MERCHANT){
+        if(loginUser.getRole() != Role.OWNER){
             throw new RuntimeException("사장님이 아닙니다.");
         }
         return loginUser;
