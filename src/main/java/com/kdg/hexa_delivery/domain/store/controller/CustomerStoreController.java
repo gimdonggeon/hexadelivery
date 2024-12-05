@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController("/api/customers")
+@RestController("/api/customers/stores")
 public class CustomerStoreController {
 
     StoreService storeService;
@@ -33,7 +33,7 @@ public class CustomerStoreController {
      *   가게 단건 조회
      */
     @GetMapping("/{storeId}")
-    public ResponseEntity<StoreResponseDto> getStore(@PathVariable Long storeId) {
+    public ResponseEntity<StoreResponseDto> getCostumersStore(@PathVariable Long storeId) {
         return ResponseEntity.status(HttpStatus.OK).body(storeService.getStore(storeId));
     }
 }
