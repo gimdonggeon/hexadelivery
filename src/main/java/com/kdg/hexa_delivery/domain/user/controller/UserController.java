@@ -34,7 +34,7 @@ public class UserController {
      *
      * @return ResponseEntity<SignupResponseDto> 저장된 회원 정보 전달
      */
-    @PostMapping
+    @PostMapping("/signup")
     public ResponseEntity<SignupResponseDto> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
 
         if (!signupRequestDto.getPassword().equals(signupRequestDto.getPasswordConfirm())){
