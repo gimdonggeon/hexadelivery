@@ -3,6 +3,7 @@ package com.kdg.hexa_delivery.domain.user.controller;
 import com.kdg.hexa_delivery.domain.user.dto.LoginRequestDto;
 import com.kdg.hexa_delivery.domain.user.dto.SignupRequestDto;
 import com.kdg.hexa_delivery.domain.user.dto.SignupResponseDto;
+import com.kdg.hexa_delivery.domain.user.dto.UserDeleteRequestDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.service.UserService;
 import com.kdg.hexa_delivery.global.constant.Const;
@@ -105,25 +106,24 @@ public class UserController {
     /**
      * 회원탈퇴 API
      *
-     * @param user 세션 사용자
-     * @param password 회원 비밀번호
-     * @param servletRequest
+     * @param userDeleteRequestDto 회원 비밀번호
+     * @param servletRequest 세션
      *
      * @return 회원탈퇴 성공 문구 전달
      */
-    @DeleteMapping
+    @PatchMapping
     public ResponseEntity<String> deleteUser(
-            @RequestBody String password,
+            @RequestBody UserDeleteRequestDto userDeleteRequestDto,
             HttpServletRequest servletRequest
     ){
         //세션 가져오기
         HttpSession session = servletRequest.getSession(false);
 
         //세션 유저 정보
-        User user = (User) session.getAttribute("LOGIN_USER");
+        User user = (User) session.getAttribute(Const.LOGIN_USER);
 
         //회원정보 삭제
-        userService.deleteUser(user, password);
+        userService.deleteUser(user, userDeleteRequestDto.getPassword());
 
         //세션 삭제
         servletRequest.getSession(false).invalidate();
