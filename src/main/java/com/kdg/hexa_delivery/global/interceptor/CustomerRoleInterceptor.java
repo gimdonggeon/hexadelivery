@@ -2,6 +2,7 @@ package com.kdg.hexa_delivery.global.interceptor;
 
 import com.kdg.hexa_delivery.domain.base.enums.Role;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.constant.Const;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -22,7 +23,7 @@ public class CustomerRoleInterceptor implements HandlerInterceptor {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "세션이 끊어졌습니다.");
         }
 
-        User loginUser = (User) session.getAttribute("LOGIN_USER");
+        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
         if(loginUser.getRole() != Role.CUSTOMER) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "CUSTOMER 권한이 필요합니다.");
         }
