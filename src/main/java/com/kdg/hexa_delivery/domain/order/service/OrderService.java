@@ -13,9 +13,8 @@ import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.List;
 
@@ -44,7 +43,6 @@ public class OrderService {
 
         Menu menu = menuRepository.findByIdOrElseThrow(orderRequestDto.getMenuId());
 
-
         Order order = new Order(user, store, menu, orderRequestDto.getQuantity());
 
         Order savedOrder = orderRepository.save(order);
@@ -72,9 +70,15 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    // 모든 주문 조회
-    public List<OrderResponseDto> getAllOrders() {
-        List<Order> orders = orderRepository.findAll();
-        return orders.stream().map(OrderResponseDto::toDto).toList();
+    // 소비자가 자신의 주문을 조회 (주문 ID와 사용자 ID로 조회)
+    public OrderResponseDto getOrderByUserAndId(Long orderId, Long userId) {
+        Order order = orderRepository.findByIdAndUserIdOrElseThrow(orderId, userId);
+        return OrderResponseDto.toDto(order);
+    }
+
+    // 가게 사장이 자신의 가게 주문 조회 (주문 ID와 가게 ID로 조회)
+    public OrderResponseDto getOrderByStoreAndId(Long orderId, Long userId) {
+        Order order = orderRepository.findByIdAndUserIdOrElseThrow(orderId, userId);
+        return OrderResponseDto.toDto(order);
     }
 }
