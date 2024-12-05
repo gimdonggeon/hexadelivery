@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/consumer/orders")
-public class ConsumerOrderController {
+@RequestMapping("/api/customers/orders")
+public class CustomerOrderController {
 
     private final OrderService orderService;
 
     @Autowired
-    public ConsumerOrderController(OrderService orderService) {
+    public CustomerOrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
@@ -32,7 +32,7 @@ public class ConsumerOrderController {
     }
 
     // 소비자가 자신의 주문을 조회
-    @GetMapping("/orders/{orderId}")
+    @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponseDto> getOrder(@PathVariable Long orderId, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
 

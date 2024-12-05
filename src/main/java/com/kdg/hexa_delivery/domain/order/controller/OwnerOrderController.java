@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/owner/orders")
+@RequestMapping("/api/owners/orders")
 public class OwnerOrderController {
 
     private final OrderService orderService;
