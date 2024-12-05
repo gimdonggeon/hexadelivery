@@ -35,6 +35,8 @@ public class StoreService {
         Store store = new Store(user, storeRequestDto.getStoreName(),
                 storeRequestDto.getCategory(),storeRequestDto.getPhone(),
                 storeRequestDto.getAddress(),storeRequestDto.getStoreDetail(),
+                storeRequestDto.getOpeningHours(),storeRequestDto.getClosingHours(),
+                storeRequestDto.getMinimumOrderValue(),
                 State.OPEN);
 
         Store savedStore = storeRepository.save(store);
@@ -70,10 +72,10 @@ public class StoreService {
      *  가게 수정 메서드
      */
     @Transactional
-    public StoreResponseDto updateStore(Long storeId, String storeName, String category, String phone, String address, String storeDetail ) {
+    public StoreResponseDto updateStore(Long storeId, String storeName, String category, String phone, String address, String storeDetail, String openingHours, String closingHours, Integer minimumOrderValue ) {
         Store store = storeRepository.findByIdOrElseThrow(storeId);
 
-        store.updateStore(storeName, category,phone,address,storeDetail);
+        store.updateStore(storeName, category,phone,address,storeDetail,openingHours,closingHours,minimumOrderValue);
 
         storeRepository.save(store);
 

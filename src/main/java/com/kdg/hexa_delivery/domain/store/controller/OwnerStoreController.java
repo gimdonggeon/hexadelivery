@@ -78,7 +78,10 @@ public class OwnerStoreController {
                 updateStoreRequestDto.getCategory(),
                 updateStoreRequestDto.getPhone(),
                 updateStoreRequestDto.getAddress(),
-                updateStoreRequestDto.getStoreDetail()
+                updateStoreRequestDto.getStoreDetail(),
+                updateStoreRequestDto.getOpeningHours(),
+                updateStoreRequestDto.getClosingHours(),
+                updateStoreRequestDto.getMinimumOrderValue()
         );
         return ResponseEntity.status(HttpStatus.OK).body(storeResponseDto);
     }
