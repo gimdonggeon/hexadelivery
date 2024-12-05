@@ -9,6 +9,7 @@ import com.kdg.hexa_delivery.global.config.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -57,13 +58,13 @@ public class UserService {
     /**
      * 로그인을 위해 아이디와 비밀번호를 확인 메서드
      *
-     * @param userId 로그인 아이디
+     * @param loginId 로그인 아이디
      * @param password 로그인 비밀번호
      */
-    public User login(String userId, String password) {
+    public User login(String loginId, String password) {
 
         //회원 정보 불러오기
-        User loginUser = userRepository.findByUserIdOrElseThrow(userId);
+        User loginUser = userRepository.findByLoginIdOrElseThrow(loginId);
 
         //비밀번호 비교
         if (!passwordEncoder.matches(password, loginUser.getPassword())) {
@@ -79,6 +80,7 @@ public class UserService {
      * @param user 세션 사용자
      * @param password 회원 비밀번호
      */
+    @Transactional
     public void deleteUser(User user, String password) {
 
         //비밀번호 확인 후 삭제

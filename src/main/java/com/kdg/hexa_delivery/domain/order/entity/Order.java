@@ -3,12 +3,15 @@ package com.kdg.hexa_delivery.domain.order.entity;
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.OrderStatus;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
+import com.kdg.hexa_delivery.domain.review.entity.Review;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -41,28 +44,18 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime orderTime;
 
-    @Column(nullable = true)
-    private LocalDateTime orderModifiedTime;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
     public void updateStatus(OrderStatus newStatus) {
         this.orderStatus = newStatus;
-        setOrderMoifiedTime();
     }
 
     public void updateTotalPrice() {
         this.totalPrice = this.menu.getPrice() * this.quantity;
     }
 
-    public void setOrderTime() {
-        this.orderTime = LocalDateTime.now();
-    }
-
-    public void setOrderMoifiedTime() {
-        this.orderModifiedTime = LocalDateTime.now();
-    }
 
     public Order() {
     }
@@ -74,7 +67,6 @@ public class Order extends BaseEntity {
         this.quantity = quantity;
         updateTotalPrice();
         this.orderStatus = OrderStatus.ORDER_COMPLETE;
-        setOrderTime();
     }
 
     public void updateQuantity(Integer quantity) {
