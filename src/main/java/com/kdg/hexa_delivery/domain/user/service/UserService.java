@@ -88,6 +88,8 @@ public class UserService {
 
             //회원 상태 저장 명시
             userRepository.save(user);
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 맞지 않습니다.");
         }
     }
 
