@@ -55,8 +55,8 @@ public class OwnerStoreController {
     /*
      *   가게 단건 조회
      */
-    @GetMapping("/{storeId}")
-    public ResponseEntity<StoreResponseDto> getStore(@PathVariable Long storeId) {
+    @GetMapping("/{storeId}/me")
+    public ResponseEntity<StoreResponseDto> getOwnersStore(@PathVariable Long storeId) {
         return ResponseEntity.status(HttpStatus.OK).body(storeService.getStore(storeId));
     }
 

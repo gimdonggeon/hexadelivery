@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/api/owner/stores")
+@RestController("/api/owners/stores-menus")
 public class OwnerMenuController {
     MenuService menuService;
 
