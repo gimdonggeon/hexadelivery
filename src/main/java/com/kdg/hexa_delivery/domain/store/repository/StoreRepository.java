@@ -18,6 +18,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     };
 
     // 사업자에게 등록된 사업장중 영업중인 사업장 갯수
-    @Query("SELECT COUNT(s) FROM Store s WHERE s.user.user_id = :userId AND s.closure = 'OPEN'")
+    @Query("SELECT COUNT(s) FROM Store s WHERE s.user.id = :userId AND s.state = 'OPEN'")
     int findAllByUser_UserIdAndClosureOpen(@Param("userId") Long userId);
 }
