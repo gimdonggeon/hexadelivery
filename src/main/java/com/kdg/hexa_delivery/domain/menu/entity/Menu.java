@@ -1,11 +1,9 @@
-package com.kdg.hexa_delivery.domain.menu;
+package com.kdg.hexa_delivery.domain.menu.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.Status;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
@@ -17,13 +15,10 @@ public class Menu extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String name;
 
-    @NotNull
     private Integer price;
 
-    @NotBlank
     private Status status;
 
     @ManyToOne
