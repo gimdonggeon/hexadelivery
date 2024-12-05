@@ -20,15 +20,27 @@ public class StoreRequestDto {
     @NotBlank
     private final String storeDetail;
 
+    @NotBlank
+    private String openingHours;
+
+    @NotBlank
+    private String closingHours;
+
+    private Integer minimumOrderValue;
+
     public StoreRequestDto(String storeName,
                            String category, String phone,
-                           String address, String storeDetail) {
-
+                           String address, String storeDetail,
+                           String openingHours, String closingHours,
+                           Integer minimumOrderValue) {
         this.storeName = storeName;
         this.category = category;
         this.phone = phone;
         this.address = address;
         this.storeDetail = storeDetail;
+        this.openingHours = openingHours;
+        this.closingHours = closingHours;
+        this.minimumOrderValue = minimumOrderValue;
     }
 
 }

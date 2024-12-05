@@ -35,16 +35,27 @@ public class Store extends BaseEntity {
     private String storeDetail;
 
     @Column(nullable=false)
+    private String openingHours;
+
+    @Column(nullable = false)
+    private String closingHours;
+
+    private Integer minimumOrderValue;
+
+    @Column(nullable=false)
     @Enumerated(EnumType.STRING)
     private State state;
 
-    public Store(User user, String storeName, String category, String phone, String address, String storeDetail, State state) {
+    public Store(User user, String storeName, String category, String phone, String address, String storeDetail, String openingHours, String closingHours, Integer minimumOrderValue, State state) {
         this.user = user;
         this.storeName = storeName;
         this.category = category;
         this.phone = phone;
         this.address = address;
         this.storeDetail = storeDetail;
+        this.openingHours = openingHours;
+        this.closingHours = closingHours;
+        this.minimumOrderValue = minimumOrderValue;
         this.state = state;
 
     }
@@ -56,7 +67,8 @@ public class Store extends BaseEntity {
 
     public void updateStore(String storeName, String category,
                             String phone, String address,
-                            String storeDetail) {
+                            String storeDetail, String openingHours,
+                            String closingHours, Integer minimumOrderValue) {
         if(storeName != null && !storeName.isEmpty()) {
             this.storeName = storeName;
         }
@@ -71,6 +83,13 @@ public class Store extends BaseEntity {
         if(storeDetail != null && !storeDetail.isEmpty()) {
             this.storeDetail = storeDetail;
         }
+        if(openingHours != null && !openingHours.isEmpty()) {
+            this.openingHours = openingHours;
+        }
+        if(closingHours != null && !closingHours.isEmpty()) {
+            this.closingHours = closingHours;
+        }
+        this.minimumOrderValue = minimumOrderValue;
     }
 
     public void updateStoreStatus(){
