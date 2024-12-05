@@ -2,6 +2,7 @@ package com.kdg.hexa_delivery.domain.base.validation;
 
 import com.kdg.hexa_delivery.domain.base.enums.Role;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.constant.Const;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -17,7 +18,7 @@ public class Validation {
      */
     public static User validStoreAccess(HttpServletRequest httpServletRequest) {
         HttpSession session = httpServletRequest.getSession(false);
-        User loginUser = (User) session.getAttribute("loginUser");
+        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
 
         // 사장님이 아니면 에러 발생
         if(loginUser.getRole() != Role.MERCHANT){
