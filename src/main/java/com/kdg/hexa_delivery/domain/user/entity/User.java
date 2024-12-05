@@ -4,7 +4,7 @@ import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.Role;
 import com.kdg.hexa_delivery.domain.base.enums.Status;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
-import com.kdg.hexa_delivery.domain.review.entity.Review;
+import com.kdg.hexa_delivery.domain.review.Review;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -43,8 +43,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orderList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviewList = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Review> reviewList = new ArrayList<>();
 
     public User(Role role, String loginId, String email, String password, String name, String phone, Status status) {
         this.role = role;
