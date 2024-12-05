@@ -1,9 +1,10 @@
 package com.kdg.hexa_delivery.domain.store.controller;
+import com.kdg.hexa_delivery.domain.base.enums.Role;
 import com.kdg.hexa_delivery.domain.store.dto.StoreRequestDto;
 import com.kdg.hexa_delivery.domain.store.dto.StoreResponseDto;
 import com.kdg.hexa_delivery.domain.store.service.StoreService;
 import com.kdg.hexa_delivery.domain.store.dto.UpdateStoreRequestDto;
-import com.kdg.hexa_delivery.domain.user.User;
+import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -107,36 +108,5 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body("가게가 폐업처리 되었습니다.");
     }
 
-
-
-
-
-    // 가게 접근권한 확인 메서드
-    private User validStoreAccess(HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession(false);
-        User LoginUser = (User) session.getAttribute("loginUser");
-
-        // 사장님이 아니면 에러 발생
-        if(LoginUser.getRole() != Role.MERCHANT){
-            throw new RuntimeException("사장님이 아닙니다.");
-        }
-        return LoginUser;
-    }
-
-    // 본인가게 접근권한 확인 메서드
-    private void validStoreAccessV2(Long storeId,User loginUser){
-        // 사징님의 본인 가게가 아니면
-        if(storeId.equals(loginUser.getStore().getStoreId())){
-            throw new RuntimeException("본인의 가게가 아닙니다.");
-        }
-    }
-
-
-    // 폐업중이 아닌 가게가 3개 이상일 경우 가게등록 검증
-    private void validStoreCreate(Long userId) {
-        if(storeService.isValidStoreCount(userId)){
-            throw new RuntimeException("영업중인 가게가 3개 이상입니다. 더 이상 생성 할 수 없습니다.");
-        }
-    }
 
 }

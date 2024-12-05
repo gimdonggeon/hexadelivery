@@ -5,7 +5,7 @@ import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.dto.StoreRequestDto;
 import com.kdg.hexa_delivery.domain.store.dto.StoreResponseDto;
-import com.kdg.hexa_delivery.domain.user.User;
+import com.kdg.hexa_delivery.domain.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +26,10 @@ public class StoreService {
      * 가게 등록 메서드
      */
     public StoreResponseDto createStore(User user, StoreRequestDto storeRequestDto) {
+
+        if(isValidStoreCount(user.getId())){
+            throw new RuntimeException("영업중인 가게가 3개 이상입니다. 더 이상 생성 할 수 없습니다.");
+        }
 
         Store store = new Store(user, storeRequestDto.getStoreName(),
                 storeRequestDto.getCategory(),storeRequestDto.getPhone(),
