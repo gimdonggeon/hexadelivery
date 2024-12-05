@@ -12,29 +12,19 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
 
-    private static final String[] WHITE_LIST = {"/api/users", "api/users/login"};
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws ResponseStatusException {
 
         HttpSession session = request.getSession(false);
         String requestURI = request.getRequestURI();
-        if (!isWhiteList(requestURI)){
-            if (session == null) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
-            }
+        if (session == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
 
-            if (session.getAttribute("LOGIN_USER") == null) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
-            }
+        if (session.getAttribute("LOGIN_USER") == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
 
         return true;
-    }
-
-    //WHITE_LIST 에 포함되었는지 확인
-    private boolean isWhiteList(String requestURI) {
-
-        return PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);
     }
 }
