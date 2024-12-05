@@ -15,20 +15,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api/stores")
-public class StoreController {
+@RestController("/api/owners/stores")
+public class OwnerStoreController {
 
     StoreService storeService;
 
     @Autowired
-    StoreController(StoreService storeService) {
+    OwnerStoreController(StoreService storeService) {
         this.storeService = storeService;
     }
 
     /*
      * 가게 등록 API
      */
-    @PostMapping("/merchants")
+    @PostMapping
     public ResponseEntity<StoreResponseDto> createStore(@RequestBody @Valid StoreRequestDto storeRequestDto,
                                                         HttpServletRequest httpServletRequest) {
 
@@ -43,7 +43,7 @@ public class StoreController {
     /*
      *   내 가게 전체 조회
      */
-    @GetMapping("/me/merchants")
+    @GetMapping("/me")
     public ResponseEntity<List<StoreResponseDto>> getMyStores(HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 및 로그인세션 받기
         User loginUser = Validation.validStoreAccess(httpServletRequest);
@@ -51,13 +51,6 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(storeService.getMyStores(loginUser.getId()));
     }
 
-    /*
-     *   가게 전체 조회
-     */
-    @GetMapping
-    public ResponseEntity<List<StoreResponseDto>> getStores() {
-        return ResponseEntity.status(HttpStatus.OK).body(storeService.getStores());
-    }
 
     /*
      *   가게 단건 조회
@@ -70,7 +63,7 @@ public class StoreController {
     /*
      *   가게 수정
      */
-    @PatchMapping("/{storeId}/merchants")
+    @PatchMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId,
                                                         @RequestBody @Valid UpdateStoreRequestDto updateStoreRequestDto,
                                                         HttpServletRequest httpServletRequest) {
@@ -94,7 +87,7 @@ public class StoreController {
     /*
      *   가게 폐업
      */
-    @DeleteMapping("/{storeId}/merchants")
+    @DeleteMapping("/{storeId}")
     public ResponseEntity<String> deleteStore(@PathVariable Long storeId,
                                               HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 메서드
