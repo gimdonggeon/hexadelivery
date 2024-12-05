@@ -48,7 +48,7 @@ public class StoreResponseDto {
     public static StoreResponseDto toDto(Store store) {
         return new StoreResponseDto(
                 store.getStoreId(),
-                store.getUser().getUserId(),
+                store.getUser().getId(),
                 store.getStoreName(),
                 store.getCategory(),
                 store.getPhone(),
