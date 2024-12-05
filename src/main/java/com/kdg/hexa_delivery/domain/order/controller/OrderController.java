@@ -34,7 +34,7 @@ public class OrderController {
     }
 
     // 주문 상태 변경
-    @PatchMapping("/{orderId}/status")
+    @PatchMapping("/{orderId}")
     public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long orderId,
                                                               @RequestBody OrderStatus status,
                                                               HttpSession session) {
