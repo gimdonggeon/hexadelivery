@@ -7,7 +7,6 @@ import com.kdg.hexa_delivery.domain.user.dto.UserDeleteRequestDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.service.UserService;
 import com.kdg.hexa_delivery.global.constant.Const;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -64,6 +63,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest servletRequest) {
+        servletRequest.getSession().invalidate();
 
         //현재의 세션 유무 확인
         if (servletRequest.getSession(false) != null) {
