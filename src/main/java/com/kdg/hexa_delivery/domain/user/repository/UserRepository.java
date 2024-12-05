@@ -16,7 +16,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByLoginId(String logInId);
 
     //예외처리가 포함된 로그인 아이디로 유저 찾기
-    default User findByUserIdOrElseThrow(String loginId){
+    default User findByLoginIdOrElseThrow(String loginId){
         return findByLoginId(loginId).orElseThrow(()-> new RuntimeException("회원이 존재하지 않습니다."));
     };
+
+    default User findByIdOrElseThrow(Long userId){
+        return findById(userId).orElseThrow(()-> new RuntimeException("회원이 존재하지 않습니다."));
+    }
 }
