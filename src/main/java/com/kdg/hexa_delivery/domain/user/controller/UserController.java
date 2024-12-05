@@ -111,7 +111,7 @@ public class UserController {
      *
      * @return 회원탈퇴 성공 문구 전달
      */
-    @DeleteMapping
+    @PatchMapping
     public ResponseEntity<String> deleteUser(
             @SessionAttribute(name = Const.LOGIN_USER) User user,
             @RequestBody String password,
