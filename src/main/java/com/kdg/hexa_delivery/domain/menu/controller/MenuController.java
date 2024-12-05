@@ -125,14 +125,14 @@ public class MenuController {
      */
     private void validMenuAccess(HttpServletRequest httpServletRequest, Long storeId) {
         HttpSession session = httpServletRequest.getSession(false);
-        User LoginUser = (User) session.getAttribute("loginUser");
+        User loginUser = (User) session.getAttribute("loginUser");
 
         // 사장님이 아니면 예외 발생
-        if(LoginUser.getRole() != Role.MERCHANT){
+        if(loginUser.getRole() != Role.MERCHANT){
             throw new RuntimeException("사장님이 아닙니다.");
         }
         // 사징님의 본인 가게가 아니면 예외 발생
-        if(LoginUser.getStoreList().stream().filter(store -> store.getStoreId().equals(storeId)).findAny().isEmpty()){
+        if(loginUser.getStoreList().stream().filter(store -> store.getStoreId().equals(storeId)).findAny().isEmpty()){
             throw new RuntimeException("본인의 가게가 아닙니다.");
         }
 
