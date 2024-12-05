@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
 //        return filterRegistrationBean;
 //    }
     private static final String[] LOGIN_REQUIRED_PATH_PATTERNS = {"/**"};
-    private static final String[] LOGIN_EXCLUDE_PATH_PATTERNS = {"/api/users\", \"api/users/login"};
+    private static final String[] LOGIN_EXCLUDE_PATH_PATTERNS = {"/api/users", "api/users/login"};
     private static final String[] CUSTOMER_ROLE_REQUIRED_PATH_PATTERNS = {"/api/orders", "/api/orders/{orderId}/review"};
     private static final String[] OWNER_ROLE_REQUIRED_PATH_PATTERNS = {"/api/stores/business", "/api/stores/{storeId}", "/api/stores", "/api/orders/{orderId}", "/api/stores/{storeId}/menus/*"};
 
