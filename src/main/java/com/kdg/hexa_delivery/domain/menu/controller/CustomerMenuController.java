@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api/customers/stores")
+@RestController("/api/customers/stores-menus")
 public class CustomerMenuController {
 
     MenuService menuService;
