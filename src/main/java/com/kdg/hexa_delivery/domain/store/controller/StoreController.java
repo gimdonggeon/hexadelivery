@@ -28,7 +28,7 @@ public class StoreController {
     /*
      * 가게 등록 API
      */
-    @PostMapping
+    @PostMapping("/merchants")
     public ResponseEntity<StoreResponseDto> createStore(@RequestBody @Valid StoreRequestDto storeRequestDto,
                                                         HttpServletRequest httpServletRequest) {
 
@@ -43,7 +43,7 @@ public class StoreController {
     /*
      *   내 가게 전체 조회
      */
-    @GetMapping("/me")
+    @GetMapping("/me/merchants")
     public ResponseEntity<List<StoreResponseDto>> getMyStores(HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 및 로그인세션 받기
         User loginUser = Validation.validStoreAccess(httpServletRequest);
@@ -70,7 +70,7 @@ public class StoreController {
     /*
      *   가게 수정
      */
-    @PatchMapping("/{storeId}")
+    @PatchMapping("/{storeId}/merchants")
     public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId,
                                                         @RequestBody @Valid UpdateStoreRequestDto updateStoreRequestDto,
                                                         HttpServletRequest httpServletRequest) {
@@ -94,7 +94,7 @@ public class StoreController {
     /*
      *   가게 폐업
      */
-    @DeleteMapping("/{storeId}")
+    @DeleteMapping("/{storeId}/merchants")
     public ResponseEntity<String> deleteStore(@PathVariable Long storeId,
                                               HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 메서드
