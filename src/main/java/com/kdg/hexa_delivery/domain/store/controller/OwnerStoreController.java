@@ -71,9 +71,7 @@ public class OwnerStoreController {
         // 가게 접근권한 확인 메서드
         User loginUser = Validation.validStoreAccess(httpServletRequest);
         //본인가게 확인 메서드
-        if(loginUser.getStoreList().stream().filter(store -> store.getStoreId().equals(storeId)).findAny().isEmpty()) {
-            throw new RuntimeException("본인의 가게가 아닙니다.");
-        }
+        Validation.validMyStoreAccess(storeId, loginUser);
         StoreResponseDto storeResponseDto = storeService.updateStore(
                 storeId,
                 updateStoreRequestDto.getStoreName(),

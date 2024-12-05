@@ -56,7 +56,7 @@ public class StoreService {
      * 가게 전체조회 메서드
      */
     public List<StoreResponseDto> getStores() {
-        return storeRepository.findAll().stream().map(StoreResponseDto::toDto).toList();
+        return storeRepository.findAllByStateOpen().stream().map(StoreResponseDto::toDto).toList();
     }
 
     /*
@@ -98,7 +98,7 @@ public class StoreService {
      * 영업중인 가게가 3개 이상일경우
      */
     public boolean isValidStoreCount(Long userId) {
-        int count = storeRepository.findAllByUser_UserIdAndClosureOpen(userId);
+        int count = storeRepository.findAllByUser_UserIdAndStateOpen(userId);
 
         return count >= 3;
     }
