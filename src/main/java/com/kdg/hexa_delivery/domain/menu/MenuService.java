@@ -1,7 +1,8 @@
 package com.kdg.hexa_delivery.domain.menu;
 
 import com.kdg.hexa_delivery.domain.base.enums.Status;
-import com.kdg.hexa_delivery.domain.store.Store;
+import com.kdg.hexa_delivery.domain.store.entity.Store;
+import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

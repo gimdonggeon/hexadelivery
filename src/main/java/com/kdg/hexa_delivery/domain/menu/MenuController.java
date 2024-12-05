@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.menu;
 
 import com.kdg.hexa_delivery.domain.base.enums.Role;
-import com.kdg.hexa_delivery.domain.user.User;
+import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
