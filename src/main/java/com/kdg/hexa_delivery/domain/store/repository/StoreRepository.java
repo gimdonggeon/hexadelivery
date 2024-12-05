@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
     // 가게 전체조회
-    List<Store> findAllByUser_UserId(Long userId);
+    List<Store> findAllByUser_Id(Long userId);
     
     // 가게 단건조회
     default Store findByIdOrElseThrow(Long storeId){

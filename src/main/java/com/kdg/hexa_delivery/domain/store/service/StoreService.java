@@ -47,7 +47,7 @@ public class StoreService {
      */
 
     public List<StoreResponseDto> getMyStores(Long userId) {
-        return storeRepository.findAllByUser_UserId(userId).stream().map(StoreResponseDto::toDto).toList();
+        return storeRepository.findAllByUser_Id(userId).stream().map(StoreResponseDto::toDto).toList();
     }
 
     /*
