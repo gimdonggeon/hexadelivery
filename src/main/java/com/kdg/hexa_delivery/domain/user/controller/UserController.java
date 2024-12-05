@@ -113,10 +113,15 @@ public class UserController {
      */
     @DeleteMapping
     public ResponseEntity<String> deleteUser(
-            @SessionAttribute(name = Const.LOGIN_USER) User user,
             @RequestBody String password,
             HttpServletRequest servletRequest
     ){
+        //세션 가져오기
+        HttpSession session = servletRequest.getSession(false);
+
+        //세션 유저 정보
+        User user = (User) session.getAttribute("LOGIN_USER");
+
         //회원정보 삭제
         userService.deleteUser(user, password);
 
