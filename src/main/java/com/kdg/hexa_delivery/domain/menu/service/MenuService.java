@@ -56,7 +56,7 @@ public class MenuService {
      */
     public List<MenuResponseDto> getMenus(Long storeId) {
         // 해당 가게에 있는 메뉴 모두 가져오기
-        return menuRepository.findAllByStoreIdAndStatusNormal(storeId).stream().map(MenuResponseDto::toDto).toList();
+        return menuRepository.findAllByStoreIdAndStatus(storeId, Status.NORMAL).stream().map(MenuResponseDto::toDto).toList();
     }
 
     /**
