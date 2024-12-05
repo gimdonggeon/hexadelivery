@@ -64,15 +64,16 @@ public class OwnerStoreController {
     /*
      *   가게 수정
      */
-    @PatchMapping("/{storeId}")
+    @PutMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId,
                                                         @RequestBody @Valid UpdateStoreRequestDto updateStoreRequestDto,
                                                         HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 메서드
         User loginUser = Validation.validStoreAccess(httpServletRequest);
         //본인가게 확인 메서드
-        Validation.validMyStoreAccess(storeId, loginUser);
-
+        if(loginUser.getStoreList().stream().filter(store -> store.getStoreId().equals(storeId)).findAny().isEmpty()) {
+            throw new RuntimeException("본인의 가게가 아닙니다.");
+        }
         StoreResponseDto storeResponseDto = storeService.updateStore(
                 storeId,
                 updateStoreRequestDto.getStoreName(),
@@ -91,7 +92,7 @@ public class OwnerStoreController {
     /*
      *   가게 폐업
      */
-    @DeleteMapping("/{storeId}")
+    @PatchMapping("/{storeId}")
     public ResponseEntity<String> deleteStore(@PathVariable Long storeId,
                                               HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 메서드
