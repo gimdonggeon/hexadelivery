@@ -24,6 +24,12 @@ public class StoreResponseDto {
 
     private final State state;
 
+    private final String openingHour;
+
+    private final String closingHour;
+
+    private final Integer minimumOrderValue;
+
     private final LocalDateTime createdAt;
 
     private final LocalDateTime modifiedAt;
@@ -32,7 +38,8 @@ public class StoreResponseDto {
                             String storeName, String category,
                             String phone, String address,
                             String storeDetail, State state,
-                            LocalDateTime createdAt, LocalDateTime modifiedAt) {
+                            String openingHour, String closingHour,
+                            Integer minimumOrderValue, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.storeId = storeId;
         this.userId = userId;
         this.storeName = storeName;
@@ -41,6 +48,9 @@ public class StoreResponseDto {
         this.address = address;
         this.storeDetail = storeDetail;
         this.state = state;
+        this.openingHour = openingHour;
+        this.closingHour = closingHour;
+        this.minimumOrderValue = minimumOrderValue;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
@@ -55,6 +65,9 @@ public class StoreResponseDto {
                 store.getAddress(),
                 store.getStoreDetail(),
                 store.getState(),
+                store.getOpeningHours(),
+                store.getClosingHours(),
+                store.getMinimumOrderValue(),
                 store.getCreatedAt(),
                 store.getModifiedAt()
         );

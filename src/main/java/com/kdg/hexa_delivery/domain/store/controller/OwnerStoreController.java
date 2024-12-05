@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api/owners/stores")
+@RestController
+@RequestMapping("/api/owners/stores")
 public class OwnerStoreController {
 
     StoreService storeService;
@@ -55,7 +56,7 @@ public class OwnerStoreController {
     /*
      *   가게 단건 조회
      */
-    @GetMapping("/{storeId}/me")
+    @GetMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> getOwnersStore(@PathVariable Long storeId) {
         return ResponseEntity.status(HttpStatus.OK).body(storeService.getStore(storeId));
     }
@@ -78,7 +79,10 @@ public class OwnerStoreController {
                 updateStoreRequestDto.getCategory(),
                 updateStoreRequestDto.getPhone(),
                 updateStoreRequestDto.getAddress(),
-                updateStoreRequestDto.getStoreDetail()
+                updateStoreRequestDto.getStoreDetail(),
+                updateStoreRequestDto.getOpeningHours(),
+                updateStoreRequestDto.getClosingHours(),
+                updateStoreRequestDto.getMinimumOrderValue()
         );
         return ResponseEntity.status(HttpStatus.OK).body(storeResponseDto);
     }
