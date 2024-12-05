@@ -132,9 +132,9 @@ public class MenuController {
             throw new RuntimeException("사장님이 아닙니다.");
         }
         // 사징님의 본인 가게가 아니면 예외 발생
-        LoginUser.getStoreList().stream()
-                .filter(store -> store.getStoreId().equals(storeId)).findAny()
-                .orElseThrow(()-> new RuntimeException("본인의 가게가 아닙니다."));
+        if(LoginUser.getStoreList().stream().filter(store -> store.getStoreId().equals(storeId)).findAny().isEmpty()){
+            throw new RuntimeException("본인의 가게가 아닙니다.");
+        }
 
     }
 }
