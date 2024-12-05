@@ -1,6 +1,9 @@
-package com.kdg.hexa_delivery.domain.menu;
+package com.kdg.hexa_delivery.domain.menu.service;
 
 import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.menu.dto.MenuResponseDto;
+import com.kdg.hexa_delivery.domain.menu.entity.Menu;
+import com.kdg.hexa_delivery.domain.menu.repository.MenuRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +76,9 @@ public class MenuService {
         // 메뉴 정보 수정
         menu.updateMenu(menuName, price);
 
+        // 메뉴 저장 - 명시
+        menuRepository.save(menu);
+
         return MenuResponseDto.toDto(menu);
     }
 
@@ -90,5 +96,8 @@ public class MenuService {
 
         // 메뉴 논리적인 삭제
         menu.updateStatus2Delete();
+
+        // 메뉴 저장 - 명시
+        menuRepository.save(menu);
     }
 }
