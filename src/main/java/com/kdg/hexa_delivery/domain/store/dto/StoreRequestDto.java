@@ -1,34 +1,29 @@
 package com.kdg.hexa_delivery.domain.store.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 public class StoreRequestDto {
-
-    @NotNull
-    private Long userId;
+    @NotBlank
+    private final String storeName;
 
     @NotBlank
-    private String storeName;
+    private final String category;
 
     @NotBlank
-    private String category;
+    private final String phone;
 
     @NotBlank
-    private String phone;
+    private final String address;
 
     @NotBlank
-    private String address;
+    private final String storeDetail;
 
-    @NotBlank
-    private String storeDetail;
-
-    public StoreRequestDto(Long userId, String storeName,
+    public StoreRequestDto(String storeName,
                            String category, String phone,
                            String address, String storeDetail) {
-        this.userId = userId;
+
         this.storeName = storeName;
         this.category = category;
         this.phone = phone;

@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-@RestController("/api/shopping")
+@RestController
+@RequestMapping("/api/shopping-baskets")
 public class ShoppingBasketController {
 
     private final ShoppingBasketService shoppingBasketService;
@@ -35,7 +36,7 @@ public class ShoppingBasketController {
      * @return ResponseEntity<String>  저장 메세지 전달 및 쿠키 전달
      *
      */
-    @PostMapping("/baskets")
+    @PostMapping
     public ResponseEntity<String> shoppingBasket(@RequestBody ShoppingBasketRequestDto requestDto,
                                                        HttpServletRequest httpServletRequest,
                                                        HttpServletResponse httpServletResponse) throws IOException {
@@ -65,7 +66,7 @@ public class ShoppingBasketController {
      * @return ResponseEntity<ShoppingBasketResponseDto>  장바구니 정보 전달
      *
      */
-    @GetMapping("/baskets")
+    @GetMapping
     public ResponseEntity<ShoppingBasketResponseDto> getShoppingBasket(HttpServletRequest httpServletRequest) throws IOException {
         HttpSession session = httpServletRequest.getSession(false);
         User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
@@ -90,7 +91,7 @@ public class ShoppingBasketController {
      * @return ResponseEntity<String>  저장 메세지 전달 및 쿠키 전달
      *
      */
-    @PatchMapping("/baskets")
+    @PatchMapping
     public ResponseEntity<String> updateShoppingBasket(@RequestBody ShoppingBasketRequestDto requestDto,
                                                  HttpServletRequest httpServletRequest,
                                                  HttpServletResponse httpServletResponse) throws IOException {
@@ -124,7 +125,7 @@ public class ShoppingBasketController {
      * @return ResponseEntity<String>  삭제 메세지 전달
      *
      */
-    @DeleteMapping("/baskets")
+    @DeleteMapping
     public ResponseEntity<String> deleteShoppingBasket(HttpServletRequest httpServletRequest,
                                                        HttpServletResponse httpServletResponse) throws IOException {
         HttpSession session = httpServletRequest.getSession(false);

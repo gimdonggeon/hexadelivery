@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api/customers/stores-menus")
+@RestController
+@RequestMapping("/api/customers/stores")
 public class CustomerMenuController {
 
     MenuService menuService;
