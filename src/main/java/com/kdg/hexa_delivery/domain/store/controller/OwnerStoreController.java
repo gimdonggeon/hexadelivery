@@ -52,7 +52,6 @@ public class OwnerStoreController {
         return ResponseEntity.status(HttpStatus.OK).body(storeService.getMyStores(loginUser.getId()));
     }
 
-
     /*
      *   가게 단건 조회
      */

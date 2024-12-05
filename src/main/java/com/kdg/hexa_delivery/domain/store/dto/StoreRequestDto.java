@@ -3,6 +3,8 @@ package com.kdg.hexa_delivery.domain.store.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
+import java.time.LocalTime;
+
 @Getter
 public class StoreRequestDto {
     @NotBlank

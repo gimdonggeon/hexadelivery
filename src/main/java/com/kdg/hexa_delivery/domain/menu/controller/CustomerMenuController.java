@@ -34,5 +34,4 @@ public class CustomerMenuController {
         return ResponseEntity.status(HttpStatus.OK).body(menuService.getMenus(storeId));
     }
 
-
 }
