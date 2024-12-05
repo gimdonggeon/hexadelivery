@@ -1,10 +1,10 @@
 package com.kdg.hexa_delivery.domain.menu.controller;
 
 import com.kdg.hexa_delivery.domain.base.validation.Validation;
-import com.kdg.hexa_delivery.domain.menu.service.MenuService;
 import com.kdg.hexa_delivery.domain.menu.dto.MenuRequestDto;
 import com.kdg.hexa_delivery.domain.menu.dto.MenuResponseDto;
 import com.kdg.hexa_delivery.domain.menu.dto.updateMenuRequestDto;
+import com.kdg.hexa_delivery.domain.menu.service.MenuService;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -13,15 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController("/api/stores")
-public class MenuController {
-
+@RestController("/api/owner/stores")
+public class OwnerMenuController {
     MenuService menuService;
 
     @Autowired
-    MenuController(MenuService menuService) {
+    OwnerMenuController(MenuService menuService) {
         this.menuService = menuService;
     }
 
@@ -50,19 +47,6 @@ public class MenuController {
                 storeId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(menuResponseDto);
-    }
-
-    /**
-     *  메뉴 전체 조회 API
-     *
-     * @param storeId  조회할 메뉴들의 가게 id
-     * @return ResponseEntity<List<MenuResponseDto>>  저장된 메뉴 정보 전달
-     *
-     */
-    @GetMapping("/{storeId}/menus")
-    public ResponseEntity<List<MenuResponseDto>> getMenus(@PathVariable Long storeId) {
-
-        return ResponseEntity.status(HttpStatus.OK).body(menuService.getMenus(storeId));
     }
 
     /**
@@ -116,5 +100,4 @@ public class MenuController {
 
         return ResponseEntity.status(HttpStatus.OK).body("메뉴가 삭제되었습니다.");
     }
-
 }
