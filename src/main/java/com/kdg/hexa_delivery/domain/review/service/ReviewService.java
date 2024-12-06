@@ -76,11 +76,14 @@ public class ReviewService {
     }
 
     /**
-     * 가게의 전체 리뷰 조회 메서드 - 사용자 본인의 리뷰 제외
+     * 세션 사용자를 제외한 가게 리뷰 조회 메서드
      *
+     * @param userId 세션 사용자의 id
      * @param storeId 가게의 id
+     * @param minRate 조회할 리뷰의 최소 별점
+     * @param maxRate 조회할 리뷰의 최대 별점
      *
-     * @return 리뷰 정보 dto list
+     * @return 세션 사용자를 제외한 가게 리뷰 리스트 반환
      */
     public List<ReviewResponseDto> getAllReviewsNotMine(Long userId, Long storeId, int minRate, int maxRate) {
 
@@ -100,7 +103,16 @@ public class ReviewService {
         return reviews.stream().map(ReviewResponseDto::toDto).toList();
     }
 
-    public List<ReviewResponseDto> getAllReviews(Long storeId) {
+    /**
+     * 가게 전체 조회 메서드 - owner 조회
+     *
+     * @param minRate 조회할 리뷰의 최소 별점
+     * @param maxRate 조회할 리뷰의 최대 별점
+     * @param storeId 가게 정보
+     *
+     * @return 가게 전체 리뷰 조회
+     */
+    public List<ReviewResponseDto> getAllReviews(int minRate, int maxRate, Long storeId) {
 
         // 가게 유무 확인
         if (!storeRepository.existsById(storeId)){
@@ -108,7 +120,7 @@ public class ReviewService {
         }
 
         // 리뷰 찾기
-        List<Review> reviews = reviewRepository.findAllByStoreId(storeId);
+        List<Review> reviews = reviewRepository.findAllByStoreId(minRate, maxRate, storeId);
 
         // 리뷰 유무 확인
         if (reviews.isEmpty()) {
@@ -118,6 +130,14 @@ public class ReviewService {
         return reviews.stream().map(ReviewResponseDto::toDto).toList();
     }
 
+
+    /**
+     * 세션 사용자의 전체 리뷰 조회 메서드
+     *
+     * @param user 세션 사용자
+     *
+     * @return 세션 사용자의 전체 리뷰 리스트 반환
+     */
     public List<ReviewResponseDto> getMyReviews(User user) {
 
         List<Review> reviews = reviewRepository.findAllByUserId(user.getId());

@@ -52,9 +52,12 @@ public class CustomerReviewController {
     /**
      * 가게 전체 리뷰 조회 API
      *
-     * @param storeId 가게 id
+     * @param storeId 가게 정보
+     * @param minRate 조회할 리뷰의 최소 별점
+     * @param maxRate 조회할 리뷰의 최대 별점
+     * @param httpServletRequest 세션 정보
      *
-     * @return 리뷰 리스트 전달
+     * @return 세션이용자가 작성한 리뷰를 제외한 가게의 전체 리뷰 리스트
      */
     @GetMapping("/{storeId}/reviews")
     public ResponseEntity<List<ReviewResponseDto>> getAllReviews(@PathVariable Long storeId,
@@ -62,24 +65,29 @@ public class CustomerReviewController {
                                                                  @RequestParam(required = false, defaultValue = "5") int maxRate,
                                                                  HttpServletRequest httpServletRequest) {
 
+        // 세션 이용자의 정보
         User user = (User) httpServletRequest.getSession(false).getAttribute(Const.LOGIN_USER);
 
+        // 세션 사용자의 리뷰를 제외한 전체 리뷰 조회
         List<ReviewResponseDto> allReviews = reviewService.getAllReviewsNotMine(user.getId(), storeId, minRate, maxRate);
 
         return ResponseEntity.status(HttpStatus.OK).body(allReviews);
     }
 
     /**
-     * 나의 리뷰 전체 조회
+     * 나의 리뷰 전체 조회 API
      *
-     * @param httpServletRequest
-     * @return
+     * @param httpServletRequest 세션 정보
+     *
+     * @return 세션이용자가 작성한 모든 리뷰 전체 조회
      */
     @GetMapping("/reviews/me")
     public ResponseEntity<List<ReviewResponseDto>> getMyReviews(HttpServletRequest httpServletRequest) {
 
+        //세션 이용자의 정보
         User user = (User) httpServletRequest.getSession().getAttribute(Const.LOGIN_USER);
 
+        //세션 이용자의 리뷰 전체 조회
         List<ReviewResponseDto> myReviews = reviewService.getMyReviews(user);
 
         return ResponseEntity.status(HttpStatus.OK).body(myReviews);
