@@ -62,6 +62,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest servletRequest) {
+        servletRequest.getSession().invalidate();
 
         //(테스트용) 잔류 세션 제거
         servletRequest.getSession().invalidate();

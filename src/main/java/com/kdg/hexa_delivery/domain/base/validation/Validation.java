@@ -8,24 +8,24 @@ import jakarta.servlet.http.HttpSession;
 
 public class Validation {
 
-    /**
-     *  가게 접근권한 확인 메서드
-     *
-     * @param httpServletRequest  request 객체
-     *
-     * @return loginUser 로그인된 유저 정보
-     *
-     */
-    public static User validStoreAccess(HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession(false);
-        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
-
-        // 사장님이 아니면 에러 발생
-        if(loginUser.getRole() != Role.OWNER){
-            throw new RuntimeException("사장님이 아닙니다.");
-        }
-        return loginUser;
-    }
+//    /**
+//     *  가게 접근권한 확인 메서드
+//     *
+//     * @param httpServletRequest  request 객체
+//     *
+//     * @return loginUser 로그인된 유저 정보
+//     *
+//     */
+//    public static User validStoreAccess(HttpServletRequest httpServletRequest) {
+//        HttpSession session = httpServletRequest.getSession(false);
+//        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
+//
+//        // 사장님이 아니면 에러 발생
+//        if(loginUser.getRole() != Role.OWNER){
+//            throw new RuntimeException("사장님이 아닙니다.");
+//        }
+//        return loginUser;
+//    }
 
     /**
      *  본인가게 접근권한 확인 메서드

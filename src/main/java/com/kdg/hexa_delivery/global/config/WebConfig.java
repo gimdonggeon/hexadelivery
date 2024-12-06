@@ -5,7 +5,6 @@ import com.kdg.hexa_delivery.global.interceptor.LoginInterceptor;
 import com.kdg.hexa_delivery.global.interceptor.OwnerRoleInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 

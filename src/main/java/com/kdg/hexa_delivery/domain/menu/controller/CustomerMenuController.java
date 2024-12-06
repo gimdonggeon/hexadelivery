@@ -13,10 +13,10 @@ import java.util.List;
 @RequestMapping("/api/customers/stores")
 public class CustomerMenuController {
 
-    MenuService menuService;
+    private final MenuService menuService;
 
     @Autowired
-    CustomerMenuController(MenuService menuService) {
+    public CustomerMenuController(MenuService menuService) {
         this.menuService = menuService;
     }
 
