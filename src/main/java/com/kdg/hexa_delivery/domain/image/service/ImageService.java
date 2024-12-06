@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 public class ImageService {
@@ -39,6 +40,11 @@ public class ImageService {
      * @param owner    저장하는 클래스 타입 enum
      */
     public Image uploadImage(MultipartFile image, Long ownerId, ImageOwner owner) throws IOException {
+        // 지원되지 않는 형식 예외처리
+        if(Stream.of("jpeg", "jpg", "png").filter(type -> type.equals(image.getContentType())).findAny().isEmpty()){
+            throw new RuntimeException("지원되지 않는 이미지 파일 형식입니다.");
+        }
+
         String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
 
         // S3에 파일 업로드 요청 생성
@@ -84,6 +90,11 @@ public class ImageService {
      */
     @Transactional
     public Image modifyImage(MultipartFile image, String imageName) throws IOException {
+        // 지원되지 않는 형식 예외처리
+        if(Stream.of("jpeg", "jpg", "png").filter(type -> type.equals(image.getContentType())).findAny().isEmpty()){
+            throw new RuntimeException("지원되지 않는 이미지 파일 형식입니다.");
+        }
+
         Image imageEntity = imageRepository.findByImageName(imageName);
 
         if (imageEntity == null) {
