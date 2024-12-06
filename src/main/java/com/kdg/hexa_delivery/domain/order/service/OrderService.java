@@ -42,7 +42,7 @@ public class OrderService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 가게가 없습니다."));
 
-        Menu menu = menuRepository.findByNameOrElseThrow(orderRequestDto.getMenuName());
+        Menu menu = menuRepository.findByIdOrElseThrow(orderRequestDto.getMenuId());
 
         int quantity = orderRequestDto.getQuantity();
 
