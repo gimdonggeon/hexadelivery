@@ -7,7 +7,6 @@ import com.kdg.hexa_delivery.domain.user.dto.UserDeleteRequestDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.service.UserService;
 import com.kdg.hexa_delivery.global.constant.Const;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -44,7 +43,6 @@ public class UserController {
 
         SignupResponseDto signupResponseDto = userService.saveUser(
                 signupRequestDto.getRole(),
-                signupRequestDto.getLoginId(),
                 signupRequestDto.getEmail(),
                 signupRequestDto.getPassword(),
                 signupRequestDto.getName(),
@@ -65,13 +63,16 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest servletRequest) {
 
+        //(테스트용) 잔류 세션 제거
+        servletRequest.getSession().invalidate();
+
         //현재의 세션 유무 확인
         if (servletRequest.getSession(false) != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         //아이디, 비밀번호 확인 후 유저 반환
-        User loginedUser = userService.login(loginRequestDto.getLoginId(), loginRequestDto.getPassword());
+        User loginedUser = userService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 
         //세션 생성
         HttpSession session = servletRequest.getSession();
@@ -94,6 +95,8 @@ public class UserController {
 
         //현재 세션 조회
         HttpSession session = servletRequest.getSession(false);
+
+
 
         //세션 삭제
         if (session != null) {

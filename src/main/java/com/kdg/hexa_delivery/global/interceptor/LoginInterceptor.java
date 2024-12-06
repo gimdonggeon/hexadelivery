@@ -17,12 +17,13 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         HttpSession session = request.getSession(false);
         String requestURI = request.getRequestURI();
+
         if (session == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
 
         if (session.getAttribute(Const.LOGIN_USER) == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "11로그인이 필요합니다.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
 
         return true;

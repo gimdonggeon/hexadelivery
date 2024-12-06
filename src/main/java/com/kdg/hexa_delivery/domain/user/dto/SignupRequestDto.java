@@ -12,9 +12,6 @@ public class SignupRequestDto {
     private final Role role;
 
     @NotNull
-    private final String loginId;
-
-    @NotNull
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$")
     private final String email;
 
@@ -31,9 +28,8 @@ public class SignupRequestDto {
     @NotNull
     private final String phone;
 
-    public SignupRequestDto(Role role, String loginId, String email, String password, String passwordConfirm, String name, String phone) {
+    public SignupRequestDto(Role role, String email, String password, String passwordConfirm, String name, String phone) {
         this.role = role;
-        this.loginId = loginId;
         this.email = email;
         this.password = password;
         this.passwordConfirm = passwordConfirm;
