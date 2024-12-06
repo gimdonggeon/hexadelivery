@@ -7,10 +7,13 @@ import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
 import com.kdg.hexa_delivery.global.config.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.core.RepositoryCreationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -38,8 +41,18 @@ public class UserService {
     public SignupResponseDto saveUser(Role role, String email, String password, String name, String phone) {
 
         //중복 아이디인지 확인
-        if (userRepository.existsByEmail(email)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하는 이메일입니다.");
+//        if (userRepository.existsByEmail(email)) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하는 이메일입니다.");
+//        }
+
+        Optional<User> userByEmail = userRepository.findByEmail(email);
+
+        if (userByEmail.isPresent()) {
+            if (userByEmail.get().getStatus() == Status.NORMAL) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하는 이메일입니다.");
+            } else if (userByEmail.get().getStatus() == Status.DELETED) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "탈퇴한 이용자입니다.");
+            }
         }
 
         //비밀번호 암호화
