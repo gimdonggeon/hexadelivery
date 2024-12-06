@@ -10,14 +10,14 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     //로그인 아이디로 회원 존재여부 확인
-    boolean existsByLoginId(String loginId);
+    boolean existsByEmail(String email);
 
     //로그인 아이디로 유저 찾기
-    Optional<User> findByLoginId(String logInId);
+    Optional<User> findByEmail(String email);
 
     //예외처리가 포함된 로그인 아이디로 유저 찾기
-    default User findByLoginIdOrElseThrow(String loginId){
-        return findByLoginId(loginId).orElseThrow(()-> new RuntimeException("회원이 존재하지 않습니다."));
+    default User findByEmailOrElseThrow(String email){
+        return findByEmail(email).orElseThrow(()-> new RuntimeException("회원이 존재하지 않습니다."));
     };
 
     default User findByIdOrElseThrow(Long userId){

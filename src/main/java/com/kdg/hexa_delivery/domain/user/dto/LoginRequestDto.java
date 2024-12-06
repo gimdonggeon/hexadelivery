@@ -8,14 +8,14 @@ import lombok.Getter;
 public class LoginRequestDto {
 
     @NotNull
-    private final String loginId;
+    private final String email;
 
     @NotNull
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,15}$")
     private final String password;
 
-    public LoginRequestDto(String loginId, String password) {
-        this.loginId = loginId;
+    public LoginRequestDto(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 }

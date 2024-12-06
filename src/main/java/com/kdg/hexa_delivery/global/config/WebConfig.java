@@ -26,15 +26,15 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns(LOGIN_REQUIRED_PATH_PATTERNS)
                 .excludePathPatterns(LOGIN_EXCLUDE_PATH_PATTERNS)
-                .order(1);
+                .order(Ordered.HIGHEST_PRECEDENCE);
 
         registry.addInterceptor(customerRoleInterceptor)
                 .addPathPatterns(CUSTOMER_ROLE_REQUIRED_PATH_PATTERNS)
-                .order(2);
+                .order(Ordered.HIGHEST_PRECEDENCE + 1);
 
         registry.addInterceptor(ownerRoleInterceptor)
                 .addPathPatterns(OWNER_ROLE_REQUIRED_PATH_PATTERNS)
-                .order(3);
+                .order(Ordered.HIGHEST_PRECEDENCE + 2);
     }
 
     //    @Bean
