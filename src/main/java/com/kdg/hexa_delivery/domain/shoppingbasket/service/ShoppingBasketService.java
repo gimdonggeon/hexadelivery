@@ -1,7 +1,9 @@
 package com.kdg.hexa_delivery.domain.shoppingbasket.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
 import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.image.service.ImageService;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.menu.repository.MenuRepository;
 import com.kdg.hexa_delivery.domain.shoppingbasket.dto.ShoppingBasketResponseDto;
@@ -25,15 +27,17 @@ public class ShoppingBasketService {
     private final ObjectMapper objectMapper;
     private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
+    private final ImageService imageService;
 
     @Autowired
     public ShoppingBasketService(ObjectMapper objectMapper,
                                  StoreRepository storeRepository,
-                                 MenuRepository menuRepository) {
+                                 MenuRepository menuRepository, ImageService imageService) {
 
         this.objectMapper = objectMapper;
         this.storeRepository = storeRepository;
         this.menuRepository = menuRepository;
+        this.imageService = imageService;
     }
 
     /**
@@ -104,7 +108,8 @@ public class ShoppingBasketService {
         for(Menu menu : menus){
             if(shoppingBasket.getMenuList().containsKey(menu.getId())){
                 menuList.put(menu.getName(), shoppingBasket.getMenuList().get(menu.getId()));
-                imageUrls.add(menu.getImageList().get(0).getImageUrl());
+                // 대표 이미지 url 저장
+                imageUrls.add(imageService.findImages(menu.getId(), ImageOwner.MENU).get(0).getImageUrl());
             }
         }
 

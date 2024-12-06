@@ -43,19 +43,21 @@ public class MenuResponseDto {
         this.status = status;
     }
 
-    public static MenuResponseDto toDto(Menu menu) {
+    public static MenuResponseDto toDto(Menu menu, List<Image> images) {
         List<String> imageUrls = new ArrayList<>();
 
         // 업로드 이미지가 null 인 경우 디폴트 이미지로 반환
-        if(menu.getImageList() == null){
+        if(images == null){
             String imageUrl = "https://hexa-test.s3.ap-southeast-2.amazonaws.com/menuImage/default.jpg";
             imageUrls.add(imageUrl);
         }
-
-        // 이미지 url 가져오기
-        for (Image image : menu.getImageList()){
-            imageUrls.add(image.getImageUrl());
+        else {
+            // 이미지 url 가져오기
+            for (Image image : images){
+                imageUrls.add(image.getImageUrl());
+            }
         }
+
 
         return new MenuResponseDto(
                 menu.getStore().getStoreId(),

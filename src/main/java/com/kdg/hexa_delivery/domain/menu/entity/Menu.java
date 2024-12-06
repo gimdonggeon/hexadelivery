@@ -2,13 +2,10 @@ package com.kdg.hexa_delivery.domain.menu.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.Status;
-import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -27,9 +24,6 @@ public class Menu extends BaseEntity {
 
     @Column(nullable = false)
     private String description;
-
-    @OneToMany
-    private List<Image> imageList = new ArrayList<>();
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -57,11 +51,7 @@ public class Menu extends BaseEntity {
         store.addMenuList(this);
     }
 
-    public void updateImageUrls(List<Image> imageUrls) {
-        this.imageList = imageUrls;
-    }
-
-    public void updateMenu(String name, Integer price, String description, List<Image> imageUrls) {
+    public void updateMenu(String name, Integer price, String description) {
         if(name != null && !name.isEmpty()){
             this.name = name;
         }
@@ -70,9 +60,6 @@ public class Menu extends BaseEntity {
         }
         if(description != null && !description.isEmpty()){
             this.description = description;
-        }
-        if(imageUrls != null && !imageUrls.isEmpty()){
-            this.imageList = imageUrls;
         }
 
     }

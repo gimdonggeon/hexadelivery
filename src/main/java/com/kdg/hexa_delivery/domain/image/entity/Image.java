@@ -2,8 +2,6 @@ package com.kdg.hexa_delivery.domain.image.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
-import com.kdg.hexa_delivery.domain.menu.entity.Menu;
-import com.kdg.hexa_delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -26,14 +24,6 @@ public class Image extends BaseEntity {
     private ImageOwner owner;
 
     private Long ownerId;
-
-    @ManyToOne
-    @JoinColumn(name = "store_id")
-    private Store store;
-
-    @ManyToOne
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
 
     public Image() {
 

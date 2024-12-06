@@ -48,17 +48,12 @@ public class StoreService {
 
         Store savedStore = storeRepository.save(store);
 
-        // 업로드 이미지가 null 인 경우 디폴트 이미지로 반환
-        if(storeImages != null){
-            // 이미지 s3 서버에 업로드 후 url 받아오기
-            List<Image> imageUrls = imageService.takeImages(storeImages, savedStore.getStoreId(), ImageOwner.STORE);
 
-            // 이미지 경로 업데이트
-            savedStore.updateImageUrls(imageUrls);
+        // 이미지 s3 서버에 업로드 후 url 받아오기
+        List<Image> imageUrls = imageService.takeImages(storeImages, savedStore.getStoreId(), ImageOwner.STORE);
 
-        }
 
-        return StoreResponseDto.toDto(savedStore);
+        return StoreResponseDto.toDto(savedStore, imageUrls);
     }
 
     /*
@@ -66,14 +61,17 @@ public class StoreService {
      */
 
     public List<StoreResponseDto> getMyStores(Long userId) {
-        return storeRepository.findAllByUser_Id(userId).stream().map(StoreResponseDto::toDto).toList();
+        return storeRepository.findAllByUser_Id(userId).stream().map(
+                store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
     }
 
     /*
      * 가게 전체조회 메서드
      */
     public List<StoreResponseDto> getStores() {
-        return storeRepository.findAllByStatusNORMAL().stream().map(StoreResponseDto::toDto).toList();
+        return storeRepository.findAllByStatusNORMAL().stream().map(
+                store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))
+        ).toList();
     }
 
     /*
@@ -81,8 +79,7 @@ public class StoreService {
      */
     public StoreResponseDto getStore(Long storeId) {
         Store store = storeRepository.findByIdOrElseThrow(storeId);
-
-        return StoreResponseDto.toDto(store);
+        return StoreResponseDto.toDto(store, imageService.findImages(storeId, ImageOwner.STORE));
     }
 
     /*
@@ -104,11 +101,11 @@ public class StoreService {
         List<Image> imageUrls = imageService.takeImages(storeImages, store.getStoreId(), ImageOwner.STORE);
 
 
-        store.updateStore(storeName, category,phone,address,storeDetail,openingHours,closingHours,minimumOrderValue, imageUrls);
+        store.updateStore(storeName, category,phone,address,storeDetail,openingHours,closingHours,minimumOrderValue);
 
         storeRepository.save(store);
 
-        return StoreResponseDto.toDto(store);
+        return StoreResponseDto.toDto(store, imageUrls);
     }
 
     /*
