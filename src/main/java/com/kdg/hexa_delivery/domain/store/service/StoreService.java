@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.store.service;
 
-import com.kdg.hexa_delivery.domain.base.enums.State;
+import com.kdg.hexa_delivery.domain.base.enums.Status;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.dto.StoreRequestDto;
@@ -37,7 +37,7 @@ public class StoreService {
                 storeRequestDto.getAddress(),storeRequestDto.getStoreDetail(),
                 storeRequestDto.getOpeningHours(),storeRequestDto.getClosingHours(),
                 storeRequestDto.getMinimumOrderValue(),
-                State.OPEN);
+                Status.NORMAL);
 
         Store savedStore = storeRepository.save(store);
 
@@ -56,7 +56,7 @@ public class StoreService {
      * 가게 전체조회 메서드
      */
     public List<StoreResponseDto> getStores() {
-        return storeRepository.findAllByStateOpen().stream().map(StoreResponseDto::toDto).toList();
+        return storeRepository.findAllByStatusNormal().stream().map(StoreResponseDto::toDto).toList();
     }
 
     /*
@@ -98,7 +98,7 @@ public class StoreService {
      * 영업중인 가게가 3개 이상일경우
      */
     public boolean isValidStoreCount(Long userId) {
-        int count = storeRepository.findAllByUser_UserIdAndStateOpen(userId);
+        int count = storeRepository.findAllByUser_UserIdAndStatusNormal(userId);
 
         return count >= 3;
     }

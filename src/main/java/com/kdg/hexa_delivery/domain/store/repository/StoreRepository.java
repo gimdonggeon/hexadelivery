@@ -13,14 +13,14 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findAllByUser_Id(Long userId);
 
     // 폐점이 아닌 가게 전체 조회
-    @Query("SELECT s FROM Store s WHERE s.state = 'OPEN'")
-    List<Store> findAllByStateOpen();
+    @Query("SELECT s FROM Store s WHERE s.status = 'NORMAL'")
+    List<Store> findAllByStatusNormal();
     // 가게 단건조회
     default Store findByIdOrElseThrow(Long storeId){
         return findById(storeId).orElseThrow(() -> new RuntimeException("해당 id의 가게를 찾을 수 없습니다."));
     };
 
     // 사업자에게 등록된 사업장중 영업중인 사업장 갯수
-    @Query("SELECT COUNT(s) FROM Store s WHERE s.user.id = :userId AND s.state = 'OPEN'")
-    int findAllByUser_UserIdAndStateOpen(@Param("userId") Long userId);
+    @Query("SELECT COUNT(s) FROM Store s WHERE s.user.id = :userId AND s.status = 'NORMAL'")
+    int findAllByUser_UserIdAndStatusNormal(@Param("userId") Long userId);
 }
