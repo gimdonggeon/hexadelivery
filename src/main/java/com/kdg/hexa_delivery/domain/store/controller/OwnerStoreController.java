@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -32,13 +33,14 @@ public class OwnerStoreController {
      * 가게 등록 API
      */
     @PostMapping
-    public ResponseEntity<StoreResponseDto> createStore(@RequestBody @Valid StoreRequestDto storeRequestDto,
+    public ResponseEntity<StoreResponseDto> createStore(@ModelAttribute @Valid StoreRequestDto storeRequestDto,
+                                                        @RequestParam(required = false) List<MultipartFile> storeImages,
                                                         HttpServletRequest httpServletRequest) {
 
         HttpSession session = httpServletRequest.getSession(false);
         User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
 
-        StoreResponseDto storeResponseDto = storeService.createStore(loginUser, storeRequestDto);
+        StoreResponseDto storeResponseDto = storeService.createStore(loginUser, storeRequestDto, storeImages);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(storeResponseDto);
     }
@@ -67,7 +69,8 @@ public class OwnerStoreController {
      */
     @PutMapping("/{storeId}")
     public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long storeId,
-                                                        @RequestBody @Valid UpdateStoreRequestDto updateStoreRequestDto,
+                                                        @RequestParam(required = false) List<MultipartFile> storeImages,
+                                                        @ModelAttribute @Valid UpdateStoreRequestDto updateStoreRequestDto,
                                                         HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 메서드
         HttpSession session = httpServletRequest.getSession(false);
@@ -85,7 +88,8 @@ public class OwnerStoreController {
                 updateStoreRequestDto.getStoreDetail(),
                 updateStoreRequestDto.getOpeningHours(),
                 updateStoreRequestDto.getClosingHours(),
-                updateStoreRequestDto.getMinimumOrderValue()
+                updateStoreRequestDto.getMinimumOrderValue(),
+                storeImages
         );
         return ResponseEntity.status(HttpStatus.OK).body(storeResponseDto);
     }

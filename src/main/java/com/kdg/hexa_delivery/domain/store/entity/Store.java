@@ -1,10 +1,16 @@
 package com.kdg.hexa_delivery.domain.store.entity;
 
-import com.kdg.hexa_delivery.domain.base.enums.State;
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
+import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.image.entity.Image;
+import com.kdg.hexa_delivery.domain.menu.entity.Menu;
+import com.kdg.hexa_delivery.domain.order.entity.Order;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -44,9 +50,24 @@ public class Store extends BaseEntity {
 
     @Column(nullable=false)
     @Enumerated(EnumType.STRING)
-    private State state;
+    private Status status;
 
-    public Store(User user, String storeName, String category, String phone, String address, String storeDetail, String openingHours, String closingHours, Integer minimumOrderValue, State state) {
+    @OneToMany(mappedBy = "store", orphanRemoval = true)
+    private List<Image> imageList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store", orphanRemoval = true)
+    private List<Order> orderList = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "store", orphanRemoval = true)
+//    private List<Review> reviewList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Menu> menuList = new ArrayList<>();
+
+    public Store(User user, String storeName, String category, String phone, String address,
+                 String storeDetail, String openingHours, String closingHours,
+                 Integer minimumOrderValue, Status status) {
+
         updateUser(user);
         this.storeName = storeName;
         this.category = category;
@@ -56,7 +77,7 @@ public class Store extends BaseEntity {
         this.openingHours = openingHours;
         this.closingHours = closingHours;
         this.minimumOrderValue = minimumOrderValue;
-        this.state = state;
+        this.status = status;
 
     }
 
@@ -69,11 +90,19 @@ public class Store extends BaseEntity {
         user.getStoreList().add(this);
     }
 
+    public void addMenuList(Menu menu){
+        this.menuList.add(menu);
+    }
+
+    public void updateImageUrls(List<Image> imageUrls) {
+        this.imageList = imageUrls;
+    }
+
 
     public void updateStore(String storeName, String category,
                             String phone, String address,
                             String storeDetail, String openingHours,
-                            String closingHours, Integer minimumOrderValue) {
+                            String closingHours, Integer minimumOrderValue, List<Image> imageUrls) {
         if(storeName != null && !storeName.isEmpty()) {
             this.storeName = storeName;
         }
@@ -94,10 +123,14 @@ public class Store extends BaseEntity {
         if(closingHours != null && !closingHours.isEmpty()) {
             this.closingHours = closingHours;
         }
+        if(imageUrls != null && !imageUrls.isEmpty()){
+            this.imageList = imageUrls;
+        }
+
         this.minimumOrderValue = minimumOrderValue;
     }
 
     public void updateStoreStatus(){
-        this.state = State.CLOSURE;
+        this.status = Status.DELETED;
     }
 }

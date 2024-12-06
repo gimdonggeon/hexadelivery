@@ -1,9 +1,12 @@
 package com.kdg.hexa_delivery.domain.store.dto;
 
-import com.kdg.hexa_delivery.domain.base.enums.State;
+import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import lombok.Getter;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class StoreResponseDto {
@@ -22,7 +25,7 @@ public class StoreResponseDto {
 
     private final String storeDetail;
 
-    private final State state;
+    private final Status status;
 
     private final String openingHour;
 
@@ -30,16 +33,18 @@ public class StoreResponseDto {
 
     private final Integer minimumOrderValue;
 
+    private final List<String> imageUrls;
+
     private final LocalDateTime createdAt;
 
     private final LocalDateTime modifiedAt;
 
-    public StoreResponseDto(Long storeId,Long userId,
+    public StoreResponseDto(Long storeId, Long userId,
                             String storeName, String category,
                             String phone, String address,
-                            String storeDetail, State state,
+                            String storeDetail, Status status,
                             String openingHour, String closingHour,
-                            Integer minimumOrderValue, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+                            Integer minimumOrderValue, List<String> imageUrls, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.storeId = storeId;
         this.userId = userId;
         this.storeName = storeName;
@@ -47,15 +52,29 @@ public class StoreResponseDto {
         this.phone = phone;
         this.address = address;
         this.storeDetail = storeDetail;
-        this.state = state;
+        this.status = status;
         this.openingHour = openingHour;
         this.closingHour = closingHour;
         this.minimumOrderValue = minimumOrderValue;
+        this.imageUrls = imageUrls;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
 
     public static StoreResponseDto toDto(Store store) {
+        List<String> imageUrls = new ArrayList<>();
+
+        // 업로드 이미지가 null 인 경우 디폴트 이미지로 반환
+        if(store.getImageList() == null){
+            String imageUrl = "https://hexa-test.s3.ap-southeast-2.amazonaws.com/storeImage/default.jpg";
+            imageUrls.add(imageUrl);
+        }
+
+        // 이미지 url 가져오기
+        for (Image image : store.getImageList()){
+            imageUrls.add(image.getImageUrl());
+        }
+
         return new StoreResponseDto(
                 store.getStoreId(),
                 store.getUser().getId(),
@@ -64,13 +83,13 @@ public class StoreResponseDto {
                 store.getPhone(),
                 store.getAddress(),
                 store.getStoreDetail(),
-                store.getState(),
+                store.getStatus(),
                 store.getOpeningHours(),
                 store.getClosingHours(),
                 store.getMinimumOrderValue(),
+                imageUrls,
                 store.getCreatedAt(),
-                store.getModifiedAt()
-        );
+                store.getModifiedAt());
     }
 
 }
