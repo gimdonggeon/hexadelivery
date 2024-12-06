@@ -1,6 +1,7 @@
 package com.kdg.hexa_delivery.domain.advertise.controller;
 
 import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseDeclinedRequestDto;
+import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseDeclinedResponseDto;
 import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseResponseDto;
 import com.kdg.hexa_delivery.domain.advertise.service.AdvertiseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +44,10 @@ public class AdminAdvertiseController {
      */
 
     @PutMapping("/{advertiseId}/Decline")
-    public ResponseEntity<Map<String, Object>> DeclineAdvertise(@PathVariable("advertiseId") Long advertiseId,
-                                                                @RequestBody AdvertiseDeclinedRequestDto advertiseDeclinedRequestDto){
+    public ResponseEntity<AdvertiseDeclinedResponseDto> DeclineAdvertise(@PathVariable("advertiseId") Long advertiseId,
+                                                                         @RequestBody AdvertiseDeclinedRequestDto advertiseDeclinedRequestDto){
+        return ResponseEntity.status(HttpStatus.OK).body(advertiseService.advertiseDecline(advertiseId,advertiseDeclinedRequestDto));
 
-        Map<String, Object> declineAdvertise = advertiseService.advertiseDecline(advertiseId, advertiseDeclinedRequestDto);
-
-        return new ResponseEntity<>(declineAdvertise, HttpStatus.OK);
     }
 
 }
