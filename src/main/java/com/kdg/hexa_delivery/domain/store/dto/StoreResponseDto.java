@@ -61,20 +61,20 @@ public class StoreResponseDto {
         this.modifiedAt = modifiedAt;
     }
 
-    public static StoreResponseDto toDto(Store store) {
+    public static StoreResponseDto toDto(Store store, List<Image> images) {
         List<String> imageUrls = new ArrayList<>();
 
         // 업로드 이미지가 null 인 경우 디폴트 이미지로 반환
-        if(store.getImageList() == null){
+        if(images == null){
             String imageUrl = "https://hexa-test.s3.ap-southeast-2.amazonaws.com/storeImage/default.jpg";
             imageUrls.add(imageUrl);
         }
-
-        // 이미지 url 가져오기
-        for (Image image : store.getImageList()){
-            imageUrls.add(image.getImageUrl());
+        else {
+            // 이미지 url 가져오기
+            for (Image image : images) {
+                imageUrls.add(image.getImageUrl());
+            }
         }
-
         return new StoreResponseDto(
                 store.getStoreId(),
                 store.getUser().getId(),

@@ -24,6 +24,7 @@ public class MenuService {
     private final ImageService imageService;
 
 
+
     @Autowired
     public MenuService(MenuRepository menuRepository, StoreRepository storeRepository, ImageService imageService) {
         this.menuRepository = menuRepository;
@@ -52,17 +53,12 @@ public class MenuService {
         // 메뉴 저장
         Menu savedMenu = menuRepository.save(menu);
 
-        // 업로드 이미지가 null 인 경우 디폴트 이미지로 반환
-        if(menuImages != null){
-            // 이미지 s3 서버에 업로드 후 url 받아오기
-            List<Image> imageUrls = imageService.takeImages(menuImages, savedMenu.getId(), ImageOwner.MENU);
 
-            // 이미지 경로 업데이트
-            savedMenu.updateImageUrls(imageUrls);
+        // 이미지 s3 서버에 업로드 후 url 받아오기
+        List<Image> imageUrls = imageService.takeImages(menuImages, savedMenu.getId(), ImageOwner.MENU);
 
-        }
 
-        return MenuResponseDto.toDto(savedMenu);
+        return MenuResponseDto.toDto(savedMenu, imageUrls);
     }
 
     /**
@@ -80,7 +76,11 @@ public class MenuService {
             throw new RuntimeException("가게에 메뉴가 없습니다.");
         }
 
-        return menus.stream().map(MenuResponseDto::toDto).toList();
+        // 메뉴의 정보와 이미지를 ResponseDto 로 변환
+        return menus.stream()
+                .map(menu -> MenuResponseDto.toDto(menu, imageService.findImages(menu.getId(), ImageOwner.MENU))
+                )
+                .toList();
     }
 
     /**
@@ -106,12 +106,12 @@ public class MenuService {
         List<Image> imageUrls = imageService.takeImages(menuImages, menu.getId(), ImageOwner.MENU);
 
         // 메뉴 정보 수정
-        menu.updateMenu(menuName, price, description, imageUrls);
+        menu.updateMenu(menuName, price, description);
 
         // 메뉴 저장 - 명시
         menuRepository.save(menu);
 
-        return MenuResponseDto.toDto(menu);
+        return MenuResponseDto.toDto(menu, imageUrls);
     }
 
     /**

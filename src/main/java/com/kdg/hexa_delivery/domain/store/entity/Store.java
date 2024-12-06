@@ -2,7 +2,6 @@ package com.kdg.hexa_delivery.domain.store.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.Status;
-import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
 import com.kdg.hexa_delivery.domain.user.entity.User;
@@ -53,9 +52,6 @@ public class Store extends BaseEntity {
     private Status status;
 
     @OneToMany(mappedBy = "store", orphanRemoval = true)
-    private List<Image> imageList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "store", orphanRemoval = true)
     private List<Order> orderList = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "store", orphanRemoval = true)
@@ -94,15 +90,11 @@ public class Store extends BaseEntity {
         this.menuList.add(menu);
     }
 
-    public void updateImageUrls(List<Image> imageUrls) {
-        this.imageList = imageUrls;
-    }
-
 
     public void updateStore(String storeName, String category,
                             String phone, String address,
                             String storeDetail, String openingHours,
-                            String closingHours, Integer minimumOrderValue, List<Image> imageUrls) {
+                            String closingHours, Integer minimumOrderValue) {
         if(storeName != null && !storeName.isEmpty()) {
             this.storeName = storeName;
         }
@@ -122,9 +114,6 @@ public class Store extends BaseEntity {
         }
         if(closingHours != null && !closingHours.isEmpty()) {
             this.closingHours = closingHours;
-        }
-        if(imageUrls != null && !imageUrls.isEmpty()){
-            this.imageList = imageUrls;
         }
 
         this.minimumOrderValue = minimumOrderValue;
