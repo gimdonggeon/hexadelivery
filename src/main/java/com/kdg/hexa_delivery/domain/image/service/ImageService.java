@@ -3,6 +3,7 @@ package com.kdg.hexa_delivery.domain.image.service;
 import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.image.repository.ImageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class ImageService {
     private final S3Client s3Client;
     private final ImageRepository imageRepository;
 
+    @Autowired
     public ImageService(S3Client s3Client, ImageRepository imageRepository) {
         this.s3Client = s3Client;
         this.imageRepository = imageRepository;

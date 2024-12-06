@@ -5,7 +5,7 @@ import com.kdg.hexa_delivery.domain.image.dto.ImageRequestDto;
 import com.kdg.hexa_delivery.domain.image.dto.ImageResponseDto;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.image.service.ImageService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,10 +14,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/images")
-@RequiredArgsConstructor
 public class ImageController {
 
     private final ImageService imageService;
+
+    @Autowired
+    public ImageController(ImageService imageService) {
+        this.imageService = imageService;
+    }
 
     @PostMapping
     public ResponseEntity<String> uploadImage(@RequestParam("imageFile") MultipartFile imageFile,
