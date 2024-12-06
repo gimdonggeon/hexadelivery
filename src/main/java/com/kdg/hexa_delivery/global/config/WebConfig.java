@@ -4,9 +4,7 @@ import com.kdg.hexa_delivery.global.interceptor.CustomerRoleInterceptor;
 import com.kdg.hexa_delivery.global.interceptor.LoginInterceptor;
 import com.kdg.hexa_delivery.global.interceptor.OwnerRoleInterceptor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -15,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     private static final String[] LOGIN_REQUIRED_PATH_PATTERNS = {"/api/**"};
-    private static final String[] LOGIN_EXCLUDE_PATH_PATTERNS = {"/api/users/signup", "/api/users/login"};
+    private static final String[] LOGIN_EXCLUDE_PATH_PATTERNS = {"/api/users/signup", "/api/users/login", "/api/users/logout"};
     private static final String[] CUSTOMER_ROLE_REQUIRED_PATH_PATTERNS = {"/api/customers/**"};
     private static final String[] OWNER_ROLE_REQUIRED_PATH_PATTERNS = {"/api/owners/**"};
 
