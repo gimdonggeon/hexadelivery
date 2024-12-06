@@ -12,50 +12,58 @@ import java.time.LocalDateTime;
 public class OrderResponseDto {
 
     private Long id;
-    private Long menuId;
-    private Long userId;
     private Long storeId;
-    private OrderStatus orderStatus;
+    private Long menuId;
+    private String menuName;
     private Integer totalPrice;
     private Integer quantity;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
-    private final String menuName;
-    private final String menuStatus;
+    private OrderStatus orderStatus;
+    private String storeOpeningHours;
+    private String storeClosingHours;
+    private Integer storeMinimumOrderValue;
 
-    // 주문 엔티티를 받아 DTO를 생성하는 생성자
-    public OrderResponseDto(Long id, Long menuId,
-                            Long userId, Long storeId,
-                            OrderStatus orderStatus, Integer totalPrice,
-                            Integer quantity, LocalDateTime createdAt,
-                            LocalDateTime modifiedAt, String menuName, String menuStatus) {
-        this.id = id;
-        this.menuId = menuId;
-        this.userId = userId;
-        this.storeId = storeId;
-        this.orderStatus = orderStatus;
-        this.totalPrice = totalPrice;
-        this.quantity = quantity;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-        this.menuName = menuName;
-        this.menuStatus = menuStatus;
-    }
-
-    public static OrderResponseDto toDto(Order order){
-        Menu menu = order.getMenu();
+    public static OrderResponseDto toDto(Order order) {
         return new OrderResponseDto(
                 order.getId(),
-                order.getMenu().getId(),
-                order.getUser().getId(),
                 order.getStore().getStoreId(),
-                order.getOrderStatus(),
+                order.getMenu().getId(),
+                order.getMenu().getName(),
                 order.getTotalPrice(),
                 order.getQuantity(),
-                order.getCreatedAt(),
-                order.getModifiedAt(),
-                menu.getName(),
-                menu.getStatus().name()
+                order.getOrderStatus(),
+                order.getStore().getOpeningHours(),
+                order.getStore().getClosingHours(),
+                order.getStore().getMinimumOrderValue()
         );
+    }
+
+
+    public OrderResponseDto(Long id, Long storeId, Long menuId,
+                            String menuName, Integer totalPrice,Integer quantity,
+                            OrderStatus orderStatus,String storeOpeningHours,
+                            String storeClosingHours, Integer storeMinimumOrderValue) {
+        this.id = id;
+        this.storeId = storeId;
+        this.menuId = menuId;
+        this.menuName = menuName;
+        this.totalPrice = totalPrice;
+        this.quantity = quantity;
+        this.orderStatus = orderStatus;
+        this.storeOpeningHours = storeOpeningHours;
+        this.storeClosingHours = storeClosingHours;
+        this.storeMinimumOrderValue = storeMinimumOrderValue;
+    }
+
+    public OrderResponseDto(Order order) {
+        this.id = order.getId();
+        this.storeId = order.getStore().getStoreId();
+        this.menuId = order.getMenu().getId();
+        this.menuName = order.getMenu().getName();
+        this.totalPrice = order.getTotalPrice();
+        this.quantity = order.getQuantity();
+        this.orderStatus = order.getOrderStatus();
+        this.storeOpeningHours = order.getStore().getOpeningHours();
+        this.storeClosingHours = order.getStore().getClosingHours();
+        this.storeMinimumOrderValue = order.getStore().getMinimumOrderValue();
     }
 }
