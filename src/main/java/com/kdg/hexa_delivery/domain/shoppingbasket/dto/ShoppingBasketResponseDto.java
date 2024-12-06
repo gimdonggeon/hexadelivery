@@ -14,9 +14,12 @@ public class ShoppingBasketResponseDto {
 
     private final List<String> imageUrls;
 
-    public ShoppingBasketResponseDto(String storeName, Map<String, Integer> menuList, List<String> imageUrls) {
+    private final Integer price;
+
+    public ShoppingBasketResponseDto(String storeName, Map<String, Integer> menuList, List<String> imageUrls, Integer price) {
         this.storeName = storeName;
         this.menuList = menuList;
         this.imageUrls = imageUrls;
+        this.price = price;
     }
 }
