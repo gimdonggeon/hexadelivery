@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     private static final String[] LOGIN_REQUIRED_PATH_PATTERNS = {"/api/**"};
-    private static final String[] LOGIN_EXCLUDE_PATH_PATTERNS = {"/api/users/signup", "/api/users/login", "/api/users/logout"};
+    private static final String[] LOGIN_EXCLUDE_PATH_PATTERNS = {"/api/users/signup", "/api/users/login"};
     private static final String[] CUSTOMER_ROLE_REQUIRED_PATH_PATTERNS = {"/api/customers/**"};
     private static final String[] OWNER_ROLE_REQUIRED_PATH_PATTERNS = {"/api/owners/**"};
 
