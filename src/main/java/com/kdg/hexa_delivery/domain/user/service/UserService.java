@@ -39,7 +39,7 @@ public class UserService {
 
         //중복 아이디인지 확인
         if (userRepository.existsByEmail(email)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하는 아이디입니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하는 이메일입니다.");
         }
 
         //비밀번호 암호화
