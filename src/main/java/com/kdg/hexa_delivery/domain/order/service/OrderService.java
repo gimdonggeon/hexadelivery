@@ -10,76 +10,109 @@ import com.kdg.hexa_delivery.domain.order.repository.OrderRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
-import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, UserRepository userRepository, StoreRepository storeRepository, MenuRepository menuRepository) {
+    public OrderService(OrderRepository orderRepository, StoreRepository storeRepository, MenuRepository menuRepository) {
         this.orderRepository = orderRepository;
-        this.userRepository = userRepository;
         this.storeRepository = storeRepository;
         this.menuRepository = menuRepository;
     }
 
-    // 주문 생성
-    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto, Long userId) {
+    //고객 주문 생성
+    @Transactional
+    public OrderResponseDto createOrder(Long storeId, User user, OrderRequestDto orderRequestDto) {
 
-        User user = userRepository.findByIdOrElseThrow(userId);
+        // 가게 정보 조회
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 가게가 없습니다."));
 
-        Store store = storeRepository.findByIdOrElseThrow(orderRequestDto.getStoreId());
+        Menu menu = menuRepository.findByNameOrElseThrow(orderRequestDto.getMenuName());
 
-        Menu menu = menuRepository.findByIdOrElseThrow(orderRequestDto.getMenuId());
+        int quantity = orderRequestDto.getQuantity();
 
-        Order order = new Order(user, store, menu, orderRequestDto.getQuantity());
+        this.validateOrderTimeAndMinimumAmount(store, menu, quantity, user);
 
-        Order savedOrder = orderRepository.save(order);
-        return OrderResponseDto.toDto(savedOrder);
+        // 주문 생성
+        Order order = new Order(user, store, menu, quantity);
+
+        //주문 저장
+        orderRepository.save(order);
+
+        return OrderResponseDto.toDto(order);
     }
+
+    // 고객의 모든 주문 조회
+    public List<OrderResponseDto> getAllOrderByUser(User user) {
+        List<Order> orders = orderRepository.findByUser(user);
+        return orders.stream()
+                .map(OrderResponseDto::toDto)
+                .collect(Collectors.toList());
+    }
+
+    // 주문 시간과 최소 금액 체크
+    public void validateOrderTimeAndMinimumAmount(Store store, Menu menu, int quantity, User user) {
+
+        // 가게의 오픈시간과 클로즈 시간 체크
+        String openingHoursString = store.getOpeningHours();
+        String closingHoursString = store.getClosingHours();
+
+        LocalTime openingHours = LocalTime.parse(openingHoursString);
+        LocalTime closingHours = LocalTime.parse(closingHoursString);
+
+        LocalTime now = LocalTime.now();
+        if (now.isBefore(openingHours) || now.isAfter(closingHours)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가게 영업시간이 아닙니다.");
+        }
+
+        // 최소금액 체크
+        int totalPrice = menu.getPrice() * quantity;
+        if (totalPrice < store.getMinimumOrderValue()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "최소 주문 금액보다 높아야 합니다.");
+        }
+    }
+
 
     // 주문 상태 업데이트
     @Transactional
-    public OrderResponseDto updateOrderStatus(Long orderId, OrderStatus status) {
-        Order order = orderRepository.findByIdOrElseThrow(orderId);
+    public OrderResponseDto updateOrderStatus(Long orderId, OrderStatus newStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
 
-        order.updateStatus(status);
+        if (!order.getOrderStatus().canTransitionTo(newStatus)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이전 단계로 돌아갈 수 없습니다.");
+        }
+        order.updateStatus(newStatus);
         orderRepository.save(order);
 
         return OrderResponseDto.toDto(order);
     }
 
-    // 주문 삭제
-    @Transactional
-    public void deleteOrder(Long orderId) {
-        Order order = orderRepository.findByIdOrElseThrow(orderId);
 
-        orderRepository.delete(order);
-
-        orderRepository.save(order);
-    }
-
-    // 소비자가 자신의 주문을 조회 (주문 ID와 사용자 ID로 조회)
-    public OrderResponseDto getOrderByUserAndId(Long orderId, Long userId) {
-        Order order = orderRepository.findByIdAndUserIdOrElseThrow(orderId, userId);
+    // 주문 상세 조회
+    public OrderResponseDto getOrderDetails(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
         return OrderResponseDto.toDto(order);
     }
 
-    // 가게 사장이 자신의 가게 주문 조회 (주문 ID와 가게 ID로 조회)
-    public OrderResponseDto getOrderByStoreAndId(Long orderId, Long userId) {
-        Order order = orderRepository.findByIdAndUserIdOrElseThrow(orderId, userId);
-        return OrderResponseDto.toDto(order);
+    public Order findOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
     }
 }
