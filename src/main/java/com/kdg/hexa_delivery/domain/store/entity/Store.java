@@ -1,10 +1,14 @@
 package com.kdg.hexa_delivery.domain.store.entity;
 
-import com.kdg.hexa_delivery.domain.base.enums.State;
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
+import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.review.entity.Review;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -44,9 +48,12 @@ public class Store extends BaseEntity {
 
     @Column(nullable=false)
     @Enumerated(EnumType.STRING)
-    private State state;
+    private Status status;
 
-    public Store(User user, String storeName, String category, String phone, String address, String storeDetail, String openingHours, String closingHours, Integer minimumOrderValue, State state) {
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
+
+    public Store(User user, String storeName, String category, String phone, String address, String storeDetail, String openingHours, String closingHours, Integer minimumOrderValue, Status status) {
         updateUser(user);
         this.storeName = storeName;
         this.category = category;
@@ -56,7 +63,7 @@ public class Store extends BaseEntity {
         this.openingHours = openingHours;
         this.closingHours = closingHours;
         this.minimumOrderValue = minimumOrderValue;
-        this.state = state;
+        this.status = status;
 
     }
 
@@ -98,6 +105,6 @@ public class Store extends BaseEntity {
     }
 
     public void updateStoreStatus(){
-        this.state = State.CLOSURE;
+        this.status = Status.DELETED;
     }
 }
