@@ -48,20 +48,15 @@ public class Order extends BaseEntity {
     @OneToOne(mappedBy = "order")
     private Review review;
 
-    public void updateTotalPrice() {
-
-        this.totalPrice = this.menu.getPrice() * this.quantity;
-    }
-
     public Order() {
     }
 
-    public Order(User user, Store store, Menu menu, Integer quantity) {
+    public Order(User user, Store store, Menu menu, Integer totalPrice, Integer quantity) {
         this.user = user;
         this.store = store;
         this.menu = menu;
+        this.totalPrice = totalPrice;
         this.quantity = quantity;
-        updateTotalPrice();
         this.orderStatus = OrderStatus.ORDERED;
     }
 
