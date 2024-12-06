@@ -26,9 +26,4 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
         return findById(menuId).orElseThrow(()-> new RuntimeException("해당 id의 메뉴를 찾을 수 없습니다."));
     }
 
-    Optional<Menu> findByName(String menuName);
-
-    default Menu findByNameOrElseThrow(String menuName) {
-        return findByName(menuName).orElseThrow(()-> new RuntimeException("해당 id의 메뉴를 찾을 수 없습니다."));
-    }
 }

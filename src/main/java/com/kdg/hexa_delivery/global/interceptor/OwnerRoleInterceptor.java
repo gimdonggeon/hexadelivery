@@ -26,7 +26,7 @@ public class OwnerRoleInterceptor implements HandlerInterceptor {
         User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
 
         if (loginUser.getRole() != Role.OWNER) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "세션이 끊어졌습니다.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "OWNER의 권한이 없습니다.");
         }
 
         return true;
