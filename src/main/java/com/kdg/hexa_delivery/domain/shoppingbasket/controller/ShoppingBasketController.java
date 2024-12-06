@@ -1,8 +1,8 @@
-package com.kdg.hexa_delivery.domain.shopping_basket.controller;
+package com.kdg.hexa_delivery.domain.shoppingbasket.controller;
 
-import com.kdg.hexa_delivery.domain.shopping_basket.dto.ShoppingBasketRequestDto;
-import com.kdg.hexa_delivery.domain.shopping_basket.dto.ShoppingBasketResponseDto;
-import com.kdg.hexa_delivery.domain.shopping_basket.service.ShoppingBasketService;
+import com.kdg.hexa_delivery.domain.shoppingbasket.dto.ShoppingBasketRequestDto;
+import com.kdg.hexa_delivery.domain.shoppingbasket.dto.ShoppingBasketResponseDto;
+import com.kdg.hexa_delivery.domain.shoppingbasket.service.ShoppingBasketService;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.global.constant.Const;
 import jakarta.servlet.http.Cookie;

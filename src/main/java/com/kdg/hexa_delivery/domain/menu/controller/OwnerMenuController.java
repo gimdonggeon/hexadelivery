@@ -3,7 +3,7 @@ package com.kdg.hexa_delivery.domain.menu.controller;
 import com.kdg.hexa_delivery.domain.base.validation.Validation;
 import com.kdg.hexa_delivery.domain.menu.dto.MenuRequestDto;
 import com.kdg.hexa_delivery.domain.menu.dto.MenuResponseDto;
-import com.kdg.hexa_delivery.domain.menu.dto.updateMenuRequestDto;
+import com.kdg.hexa_delivery.domain.menu.dto.UpdateMenuRequestDto;
 import com.kdg.hexa_delivery.domain.menu.service.MenuService;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.global.constant.Const;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,8 +40,9 @@ public class OwnerMenuController {
      */
     @PostMapping("/{storeId}/menus")
     public ResponseEntity<MenuResponseDto> createMenu(@PathVariable Long storeId,
-                                                      @RequestBody @Valid MenuRequestDto menuRequestDto,
-                                                      HttpServletRequest httpServletRequest) {
+                                                      @RequestParam(required = false) List<MultipartFile> menuImages,
+                                                      @ModelAttribute @Valid MenuRequestDto menuRequestDto,
+                                                      HttpServletRequest httpServletRequest){
         HttpSession session = httpServletRequest.getSession(false);
         User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
 
@@ -51,9 +53,24 @@ public class OwnerMenuController {
         MenuResponseDto menuResponseDto = menuService.createMenu(
                 menuRequestDto.getMenuName(),
                 menuRequestDto.getPrice(),
+                menuRequestDto.getDescription(),
+                menuImages,
                 storeId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(menuResponseDto);
+    }
+
+    /**
+     *  메뉴 전체 조회 API
+     *
+     * @param storeId  조회할 메뉴들의 가게 id
+     * @return ResponseEntity<List<MenuResponseDto>>  저장된 메뉴 정보 전달
+     *
+     */
+    @GetMapping("/{storeId}/menus")
+    public ResponseEntity<List<MenuResponseDto>> getMenus(@PathVariable Long storeId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(menuService.getMenus(storeId));
     }
 
     /**
@@ -69,7 +86,8 @@ public class OwnerMenuController {
     @PutMapping("/{storeId}/menus/{menuId}")
     public ResponseEntity<MenuResponseDto> updateMenu(@PathVariable Long storeId,
                                                       @PathVariable Long menuId,
-                                                      @RequestBody @Valid updateMenuRequestDto updateMenuRequestDto,
+                                                      @RequestParam(required = false) List<MultipartFile> menuImages,
+                                                      @ModelAttribute @Valid UpdateMenuRequestDto updateMenuRequestDto,
                                                       HttpServletRequest httpServletRequest) {
         HttpSession session = httpServletRequest.getSession(false);
         User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
@@ -81,23 +99,12 @@ public class OwnerMenuController {
         MenuResponseDto menuResponseDto = menuService.updateMenu(
                 menuId,
                 updateMenuRequestDto.getMenuName(),
-                updateMenuRequestDto.getPrice()
+                updateMenuRequestDto.getPrice(),
+                updateMenuRequestDto.getDescription(),
+                menuImages
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(menuResponseDto);
-    }
-
-    /**
-     *  메뉴 전체 조회 API
-     *
-     * @param storeId  조회할 메뉴들의 가게 id
-     * @return ResponseEntity<List<MenuResponseDto>>  저장된 메뉴 정보 전달
-     *
-     */
-    @GetMapping("/{storeId}/menus")
-    public ResponseEntity<List<MenuResponseDto>> getMenus(@PathVariable Long storeId) {
-
-        return ResponseEntity.status(HttpStatus.OK).body(menuService.getMenus(storeId));
     }
 
     /**

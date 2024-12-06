@@ -1,4 +1,4 @@
-package com.kdg.hexa_delivery.domain.shopping_basket.dto;
+package com.kdg.hexa_delivery.domain.shoppingbasket.dto;
 
 import lombok.Getter;
 
