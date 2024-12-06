@@ -40,6 +40,10 @@ public class ImageService {
      * @param owner    저장하는 클래스 타입 enum
      */
     public Image uploadImage(MultipartFile image, Long ownerId, ImageOwner owner) throws IOException {
+        if(image == null || owner == null) {
+            throw new IllegalArgumentException("이미지가 없습니다.");
+        }
+
         // 지원되지 않는 형식 예외처리
         if(Stream.of("jpeg", "jpg", "png").filter(type -> type.equals(image.getContentType())).findAny().isEmpty()){
             throw new RuntimeException("지원되지 않는 이미지 파일 형식입니다.");
@@ -90,6 +94,10 @@ public class ImageService {
      */
     @Transactional
     public Image modifyImage(MultipartFile image, String imageName) throws IOException {
+        if(image == null) {
+            throw new IllegalArgumentException("이미지가 없습니다.");
+        }
+
         // 지원되지 않는 형식 예외처리
         if(Stream.of("jpeg", "jpg", "png").filter(type -> type.equals(image.getContentType())).findAny().isEmpty()){
             throw new RuntimeException("지원되지 않는 이미지 파일 형식입니다.");
