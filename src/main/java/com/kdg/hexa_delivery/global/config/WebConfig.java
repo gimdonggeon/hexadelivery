@@ -4,7 +4,6 @@ import com.kdg.hexa_delivery.global.interceptor.CustomerRoleInterceptor;
 import com.kdg.hexa_delivery.global.interceptor.LoginInterceptor;
 import com.kdg.hexa_delivery.global.interceptor.OwnerRoleInterceptor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -28,15 +27,15 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns(LOGIN_REQUIRED_PATH_PATTERNS)
                 .excludePathPatterns(LOGIN_EXCLUDE_PATH_PATTERNS)
-                .order(1);
+                .order(Ordered.HIGHEST_PRECEDENCE);
 
         registry.addInterceptor(customerRoleInterceptor)
                 .addPathPatterns(CUSTOMER_ROLE_REQUIRED_PATH_PATTERNS)
-                .order(2);
+                .order(Ordered.HIGHEST_PRECEDENCE + 1);
 
         registry.addInterceptor(ownerRoleInterceptor)
                 .addPathPatterns(OWNER_ROLE_REQUIRED_PATH_PATTERNS)
-                .order(3);
+                .order(Ordered.HIGHEST_PRECEDENCE + 2);
     }
 
     //    @Bean
