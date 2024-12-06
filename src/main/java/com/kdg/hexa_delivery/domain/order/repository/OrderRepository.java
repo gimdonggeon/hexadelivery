@@ -14,5 +14,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUser(User user);
 
     Optional<Order> findById(Long orderId);
+
+   default Order findByIdOrElseThrow(Long orderId){
+        return findById(orderId).orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
+    };
 }
 

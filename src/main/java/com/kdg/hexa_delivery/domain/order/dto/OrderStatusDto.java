@@ -13,14 +13,6 @@ public class OrderStatusDto {
     public OrderStatusDto() {
     }
 
-    public OrderStatusDto(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public OrderStatusDto(String orderStatus) {
-        this.orderStatus = OrderStatus.valueOf(orderStatus);
-    }
-
     public OrderStatus toOrderStatus() {
         return this.orderStatus;
     }

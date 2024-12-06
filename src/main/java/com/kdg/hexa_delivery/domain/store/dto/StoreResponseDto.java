@@ -89,7 +89,8 @@ public class StoreResponseDto {
                 store.getMinimumOrderValue(),
                 imageUrls,
                 store.getCreatedAt(),
-                store.getModifiedAt());
+                store.getModifiedAt()
+        );
     }
 
 }

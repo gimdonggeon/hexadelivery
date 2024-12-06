@@ -4,6 +4,7 @@ import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.OrderStatus;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 //import com.kdg.hexa_delivery.domain.review.entity.Review;
+import com.kdg.hexa_delivery.domain.review.entity.Review;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -43,6 +44,9 @@ public class Order extends BaseEntity {
 
     @Column(nullable = false)
     private Integer quantity;
+
+    @OneToOne(mappedBy = "order")
+    private Review review;
 
     public void updateTotalPrice() {
 

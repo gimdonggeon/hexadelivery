@@ -22,5 +22,5 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     // 사업자에게 등록된 사업장중 영업중인 사업장 갯수
     @Query("SELECT COUNT(s) FROM Store s WHERE s.user.id = :userId AND s.status = 'NORMAL'")
-    int findAllByUser_UserIdAndStatusOpen(@Param("userId") Long userId);
+    int findAllByUser_UserIdAndStatusNORMAL(@Param("userId") Long userId);
 }

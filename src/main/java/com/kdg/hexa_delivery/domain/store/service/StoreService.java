@@ -45,7 +45,6 @@ public class StoreService {
                 storeRequestDto.getMinimumOrderValue(),
                 Status.NORMAL);
 
-
         Store savedStore = storeRepository.save(store);
 
 
@@ -124,7 +123,7 @@ public class StoreService {
      * 영업중인 가게가 3개 이상일경우
      */
     public boolean isValidStoreCount(Long userId) {
-        int count = storeRepository.findAllByUser_UserIdAndStatusOpen(userId);
+        int count = storeRepository.findAllByUser_UserIdAndStatusNORMAL(userId);
 
         return count >= 3;
     }

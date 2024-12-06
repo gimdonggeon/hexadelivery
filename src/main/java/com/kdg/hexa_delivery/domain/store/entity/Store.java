@@ -4,6 +4,7 @@ import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.Status;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
+import com.kdg.hexa_delivery.domain.review.entity.Review;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -54,8 +55,8 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store", orphanRemoval = true)
     private List<Order> orderList = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "store", orphanRemoval = true)
-//    private List<Review> reviewList = new ArrayList<>();
+    @OneToMany(mappedBy = "store", orphanRemoval = true)
+    private List<Review> reviewList = new ArrayList<>();
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
