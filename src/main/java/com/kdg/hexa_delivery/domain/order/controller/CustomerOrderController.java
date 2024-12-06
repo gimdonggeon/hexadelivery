@@ -4,7 +4,9 @@ package com.kdg.hexa_delivery.domain.order.controller;
 import com.kdg.hexa_delivery.domain.order.dto.OrderRequestDto;
 import com.kdg.hexa_delivery.domain.order.dto.OrderResponseDto;
 import com.kdg.hexa_delivery.domain.order.service.OrderService;
+import com.kdg.hexa_delivery.domain.store.service.StoreService;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.global.constant.Const;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +29,15 @@ public class CustomerOrderController {
     }
 
     // 고객 주문 생성 API
-    @PostMapping
-    public ResponseEntity<OrderResponseDto> createOrder(@RequestBody OrderRequestDto orderRequestDto,
+    @PostMapping("/{storeId}")
+    public ResponseEntity<OrderResponseDto> createOrder(@PathVariable Long storeId,
+                                                        @RequestBody OrderRequestDto orderRequestDto,
                                                         HttpServletRequest httpServletRequest) {
 
         User loginUser = (User) httpServletRequest.getSession(false).getAttribute(Const.LOGIN_USER);
 
-        // 가게의 오픈시간과 클로즈 시간, 최소 금액 쳌크
-        orderService.validateOrderTimeAndMinimumAmount(orderRequestDto, loginUser);
-
         // 주문 생성
-        OrderResponseDto orderResponseDto = orderService.createOrder(loginUser, orderRequestDto);
+        OrderResponseDto orderResponseDto = orderService.createOrder(storeId, loginUser, orderRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderResponseDto);
     }

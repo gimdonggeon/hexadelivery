@@ -10,19 +10,15 @@ import lombok.Setter;
 @Getter
 public class OrderRequestDto {
 
-    @NotNull(message = "storeId는 필수입니다.")
-    private Long storeId;
-
-    @NotNull(message = "menuId는 필수입니다.")
-    private Long menuId;
+    @NotNull(message = "메뉴 이름은 필수입니다.")
+    private String menuName;
 
     @NotNull
     @Min(value = 1, message = "수량은 최소1개입니다.")
     private Integer quantity;
 
-    public OrderRequestDto(Long storeId, Long menuId, Integer quantity) {
-        this.storeId = storeId;
-        this.menuId = menuId;
+    public OrderRequestDto(String menuName, Integer quantity) {
+        this.menuName = menuName;
         this.quantity = quantity;
     }
 }

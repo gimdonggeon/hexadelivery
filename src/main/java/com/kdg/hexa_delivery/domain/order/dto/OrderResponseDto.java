@@ -53,17 +53,4 @@ public class OrderResponseDto {
         this.storeClosingHours = storeClosingHours;
         this.storeMinimumOrderValue = storeMinimumOrderValue;
     }
-
-    public OrderResponseDto(Order order) {
-        this.id = order.getId();
-        this.storeId = order.getStore().getStoreId();
-        this.menuId = order.getMenu().getId();
-        this.menuName = order.getMenu().getName();
-        this.totalPrice = order.getTotalPrice();
-        this.quantity = order.getQuantity();
-        this.orderStatus = order.getOrderStatus();
-        this.storeOpeningHours = order.getStore().getOpeningHours();
-        this.storeClosingHours = order.getStore().getClosingHours();
-        this.storeMinimumOrderValue = order.getStore().getMinimumOrderValue();
-    }
 }
