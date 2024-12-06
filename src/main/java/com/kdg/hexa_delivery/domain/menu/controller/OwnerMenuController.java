@@ -6,20 +6,25 @@ import com.kdg.hexa_delivery.domain.menu.dto.MenuResponseDto;
 import com.kdg.hexa_delivery.domain.menu.dto.updateMenuRequestDto;
 import com.kdg.hexa_delivery.domain.menu.service.MenuService;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.constant.Const;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/owners/stores")
 public class OwnerMenuController {
-    MenuService menuService;
+
+    private final MenuService menuService;
 
     @Autowired
-    OwnerMenuController(MenuService menuService) {
+    public OwnerMenuController(MenuService menuService) {
         this.menuService = menuService;
     }
 
@@ -36,10 +41,11 @@ public class OwnerMenuController {
     public ResponseEntity<MenuResponseDto> createMenu(@PathVariable Long storeId,
                                                       @RequestBody @Valid MenuRequestDto menuRequestDto,
                                                       HttpServletRequest httpServletRequest) {
+        HttpSession session = httpServletRequest.getSession(false);
+        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
 
         // 권한 체크
-        User user = Validation.validStoreAccess(httpServletRequest);
-        Validation.validMyStoreAccess(storeId, user);
+        Validation.validMyStoreAccess(storeId, loginUser);
 
         //메뉴 생성
         MenuResponseDto menuResponseDto = menuService.createMenu(
@@ -65,11 +71,11 @@ public class OwnerMenuController {
                                                       @PathVariable Long menuId,
                                                       @RequestBody @Valid updateMenuRequestDto updateMenuRequestDto,
                                                       HttpServletRequest httpServletRequest) {
-
+        HttpSession session = httpServletRequest.getSession(false);
+        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
 
         // 권한 체크
-        User user = Validation.validStoreAccess(httpServletRequest);
-        Validation.validMyStoreAccess(storeId, user);
+        Validation.validMyStoreAccess(storeId, loginUser);
 
         // 메뉴 수정
         MenuResponseDto menuResponseDto = menuService.updateMenu(
@@ -79,6 +85,19 @@ public class OwnerMenuController {
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(menuResponseDto);
+    }
+
+    /**
+     *  메뉴 전체 조회 API
+     *
+     * @param storeId  조회할 메뉴들의 가게 id
+     * @return ResponseEntity<List<MenuResponseDto>>  저장된 메뉴 정보 전달
+     *
+     */
+    @GetMapping("/{storeId}/menus")
+    public ResponseEntity<List<MenuResponseDto>> getMenus(@PathVariable Long storeId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(menuService.getMenus(storeId));
     }
 
     /**
@@ -94,9 +113,11 @@ public class OwnerMenuController {
     public ResponseEntity<String> deleteMenu(@PathVariable Long storeId,
                                              @PathVariable Long menuId,
                                              HttpServletRequest httpServletRequest) {
+        HttpSession session = httpServletRequest.getSession(false);
+        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
+
         // 권한 체크
-        User user = Validation.validStoreAccess(httpServletRequest);
-        Validation.validMyStoreAccess(storeId, user);
+        Validation.validMyStoreAccess(storeId, loginUser);
 
         // 메뉴 삭제
         menuService.deleteMenu(menuId);

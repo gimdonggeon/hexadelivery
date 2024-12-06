@@ -6,7 +6,9 @@ import com.kdg.hexa_delivery.domain.store.dto.StoreResponseDto;
 import com.kdg.hexa_delivery.domain.store.service.StoreService;
 import com.kdg.hexa_delivery.domain.store.dto.UpdateStoreRequestDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.constant.Const;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,8 +35,8 @@ public class OwnerStoreController {
     public ResponseEntity<StoreResponseDto> createStore(@RequestBody @Valid StoreRequestDto storeRequestDto,
                                                         HttpServletRequest httpServletRequest) {
 
-        // 가게 접근권한 확인 메서드
-        User loginUser = Validation.validStoreAccess(httpServletRequest);
+        HttpSession session = httpServletRequest.getSession(false);
+        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
 
         StoreResponseDto storeResponseDto = storeService.createStore(loginUser, storeRequestDto);
 
@@ -46,8 +48,8 @@ public class OwnerStoreController {
      */
     @GetMapping("/me")
     public ResponseEntity<List<StoreResponseDto>> getMyStores(HttpServletRequest httpServletRequest) {
-        // 가게 접근권한 확인 및 로그인세션 받기
-        User loginUser = Validation.validStoreAccess(httpServletRequest);
+        HttpSession session = httpServletRequest.getSession(false);
+        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
 
         return ResponseEntity.status(HttpStatus.OK).body(storeService.getMyStores(loginUser.getId()));
     }
@@ -68,9 +70,12 @@ public class OwnerStoreController {
                                                         @RequestBody @Valid UpdateStoreRequestDto updateStoreRequestDto,
                                                         HttpServletRequest httpServletRequest) {
         // 가게 접근권한 확인 메서드
-        User loginUser = Validation.validStoreAccess(httpServletRequest);
+        HttpSession session = httpServletRequest.getSession(false);
+        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
+
         //본인가게 확인 메서드
         Validation.validMyStoreAccess(storeId, loginUser);
+
         StoreResponseDto storeResponseDto = storeService.updateStore(
                 storeId,
                 updateStoreRequestDto.getStoreName(),
@@ -92,8 +97,9 @@ public class OwnerStoreController {
     @PatchMapping("/{storeId}")
     public ResponseEntity<String> deleteStore(@PathVariable Long storeId,
                                               HttpServletRequest httpServletRequest) {
-        // 가게 접근권한 확인 메서드
-        User loginUser = Validation.validStoreAccess(httpServletRequest);
+        HttpSession session = httpServletRequest.getSession(false);
+        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
+
         //본인가게 확인 메서드
         Validation.validMyStoreAccess(storeId, loginUser);
 
