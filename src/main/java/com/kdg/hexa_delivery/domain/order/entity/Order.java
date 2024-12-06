@@ -15,7 +15,7 @@ import java.util.List;
 
 @Getter
 @Entity
-@Table(name = "\\\"order\\\"")
+@Table(name = "\"order\"")
 public class Order extends BaseEntity {
 
     @Id
@@ -44,11 +44,8 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    public void updateStatus(OrderStatus newStatus) {
-        this.orderStatus = newStatus;
-    }
-
     public void updateTotalPrice() {
+
         this.totalPrice = this.menu.getPrice() * this.quantity;
     }
 
@@ -61,6 +58,13 @@ public class Order extends BaseEntity {
         this.menu = menu;
         this.quantity = quantity;
         updateTotalPrice();
-        this.orderStatus = OrderStatus.ORDER_COMPLETE;
+        this.orderStatus = OrderStatus.ORDERED;
+    }
+
+    public void updateStatus(OrderStatus newStatus) {
+        this.orderStatus = newStatus;
+    }
+    public boolean isTotalPriceAboveMinimum() {
+        return this.totalPrice >= this.store.getMinimumOrderValue();
     }
 }

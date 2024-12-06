@@ -1,13 +1,20 @@
 package com.kdg.hexa_delivery.domain.order.controller;
 
+
 import com.kdg.hexa_delivery.domain.order.dto.OrderRequestDto;
 import com.kdg.hexa_delivery.domain.order.dto.OrderResponseDto;
 import com.kdg.hexa_delivery.domain.order.service.OrderService;
-import jakarta.servlet.http.HttpSession;
+import com.kdg.hexa_delivery.domain.store.service.StoreService;
+import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.domain.store.entity.Store;
+import com.kdg.hexa_delivery.global.constant.Const;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -21,23 +28,28 @@ public class CustomerOrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping
-    public ResponseEntity<OrderResponseDto> createOrder(@RequestBody OrderRequestDto orderRequestDto,
-                                                        HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
+    // 고객 주문 생성 API
+    @PostMapping("/{storeId}")
+    public ResponseEntity<OrderResponseDto> createOrder(@PathVariable Long storeId,
+                                                        @RequestBody OrderRequestDto orderRequestDto,
+                                                        HttpServletRequest httpServletRequest) {
 
-        //주문 생성 처리
-        OrderResponseDto orderResponseDto = orderService.createOrder(orderRequestDto, userId);
+        User loginUser = (User) httpServletRequest.getSession(false).getAttribute(Const.LOGIN_USER);
+
+        // 주문 생성
+        OrderResponseDto orderResponseDto = orderService.createOrder(storeId, loginUser, orderRequestDto);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(orderResponseDto);
     }
 
-    // 소비자가 자신의 주문을 조회
-    @GetMapping("/{orderId}")
-    public ResponseEntity<OrderResponseDto> getOrder(@PathVariable Long orderId, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
+    // 고객 주문내역 조회 API
+    @GetMapping
+    public ResponseEntity<List<OrderResponseDto>> getAllOrder(HttpServletRequest httpServletRequest) {
 
-        //주문 조회 처리
-        OrderResponseDto orderResponseDto = orderService.getOrderByUserAndId(orderId, userId);
-        return ResponseEntity.status(HttpStatus.OK).body(orderResponseDto);
+        User loginUser = (User) httpServletRequest.getSession(false).getAttribute(Const.LOGIN_USER);
+
+        List<OrderResponseDto> orders = orderService.getAllOrderByUser(loginUser);
+
+        return ResponseEntity.status(HttpStatus.OK).body(orders);
     }
 }
