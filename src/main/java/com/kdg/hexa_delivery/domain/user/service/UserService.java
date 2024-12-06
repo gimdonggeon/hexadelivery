@@ -28,7 +28,6 @@ public class UserService {
      * 회원가입 메서드
      *
      * @param role 권한
-     * @param loginId 로그인 아이디
      * @param email 이메일
      * @param password 로그인 비밀번호
      * @param name 이름
@@ -36,10 +35,10 @@ public class UserService {
      *
      * @return SignupResponseDto 저장된 회원 정보 전달
      */
-    public SignupResponseDto saveUser(Role role, String loginId, String email, String password, String name, String phone) {
+    public SignupResponseDto saveUser(Role role, String email, String password, String name, String phone) {
 
         //중복 아이디인지 확인
-        if (userRepository.existsByLoginId(loginId)) {
+        if (userRepository.existsByEmail(email)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하는 아이디입니다.");
         }
 
@@ -47,7 +46,7 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(password);
 
         //유저 객체 생성
-        User user = new User(role, loginId, email, encodedPassword, name, phone, Status.NORMAL);
+        User user = new User(role, email, encodedPassword, name, phone, Status.NORMAL);
 
         //유저 저장
         User savedUser = userRepository.save(user);
@@ -58,13 +57,13 @@ public class UserService {
     /**
      * 로그인을 위해 아이디와 비밀번호를 확인 메서드
      *
-     * @param loginId 로그인 아이디
+     * @param email 이메일
      * @param password 로그인 비밀번호
      */
-    public User login(String loginId, String password) {
+    public User login(String email, String password) {
 
         //회원 정보 불러오기
-        User loginUser = userRepository.findByLoginIdOrElseThrow(loginId);
+        User loginUser = userRepository.findByEmailOrElseThrow(email);
 
         //비밀번호 비교
         if (!passwordEncoder.matches(password, loginUser.getPassword())) {

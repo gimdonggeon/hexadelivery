@@ -21,21 +21,23 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 20, unique = true)
-    private String loginId;
-
+    @Column(nullable = false)
     private Role role;
 
-    @Column(length = 320)
+    @Column(nullable = false, length = 320, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String phone;
 
-    private Status status;
+    @Column (nullable = false)
+    private Status status = Status.NORMAL;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Store> storeList = new ArrayList<>();
@@ -46,12 +48,12 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviewList = new ArrayList<>();
     */
-    public User(){
 
+    public User(){
     }
-    public User(Role role, String loginId, String email, String password, String name, String phone, Status status) {
+
+    public User(Role role, String email, String password, String name, String phone, Status status) {
         this.role = role;
-        this.loginId = loginId;
         this.email = email;
         this.password = password;
         this.name = name;
