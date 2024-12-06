@@ -6,6 +6,7 @@ import com.kdg.hexa_delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+
 @Getter
 @Entity
 @Table(name = "menu")
@@ -22,6 +23,9 @@ public class Menu extends BaseEntity {
     private Integer price;
 
     @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -29,24 +33,35 @@ public class Menu extends BaseEntity {
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    public Menu(String name, Integer price, Status status, Store store) {
+    public Menu(String name, Integer price, String description, Status status, Store store) {
         this.name = name;
         this.price = price;
+        this.description = description;
         this.status = status;
-        this.store = store;
+        updateStore(store);
     }
 
     public Menu() {
 
     }
 
-    public void updateMenu(String name, Integer price){
+
+    public void updateStore(Store store) {
+        this.store = store;
+        store.addMenuList(this);
+    }
+
+    public void updateMenu(String name, Integer price, String description) {
         if(name != null && !name.isEmpty()){
             this.name = name;
         }
         if (price != null && price > 0){
             this.price = price;
         }
+        if(description != null && !description.isEmpty()){
+            this.description = description;
+        }
+
     }
 
     public void updateStatus2Delete() {

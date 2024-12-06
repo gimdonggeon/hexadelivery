@@ -3,8 +3,6 @@ package com.kdg.hexa_delivery.domain.store.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
-import java.time.LocalTime;
-
 @Getter
 public class StoreRequestDto {
     @NotBlank
@@ -23,12 +21,12 @@ public class StoreRequestDto {
     private final String storeDetail;
 
     @NotBlank
-    private String openingHours;
+    private final String openingHours;
 
     @NotBlank
-    private String closingHours;
+    private final String closingHours;
 
-    private Integer minimumOrderValue;
+    private final Integer minimumOrderValue;
 
     public StoreRequestDto(String storeName,
                            String category, String phone,

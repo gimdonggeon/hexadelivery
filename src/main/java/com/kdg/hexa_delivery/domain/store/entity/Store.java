@@ -2,6 +2,8 @@ package com.kdg.hexa_delivery.domain.store.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.menu.entity.Menu;
+import com.kdg.hexa_delivery.domain.order.entity.Order;
 import com.kdg.hexa_delivery.domain.review.entity.Review;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -50,10 +52,19 @@ public class Store extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL)
-    private List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "store", orphanRemoval = true)
+    private List<Order> orderList = new ArrayList<>();
 
-    public Store(User user, String storeName, String category, String phone, String address, String storeDetail, String openingHours, String closingHours, Integer minimumOrderValue, Status status) {
+    @OneToMany(mappedBy = "store", orphanRemoval = true)
+    private List<Review> reviewList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Menu> menuList = new ArrayList<>();
+
+    public Store(User user, String storeName, String category, String phone, String address,
+                 String storeDetail, String openingHours, String closingHours,
+                 Integer minimumOrderValue, Status status) {
+
         updateUser(user);
         this.storeName = storeName;
         this.category = category;
@@ -74,6 +85,10 @@ public class Store extends BaseEntity {
     public void updateUser(User user){
         this.user = user;
         user.getStoreList().add(this);
+    }
+
+    public void addMenuList(Menu menu){
+        this.menuList.add(menu);
     }
 
 
@@ -101,6 +116,7 @@ public class Store extends BaseEntity {
         if(closingHours != null && !closingHours.isEmpty()) {
             this.closingHours = closingHours;
         }
+
         this.minimumOrderValue = minimumOrderValue;
     }
 

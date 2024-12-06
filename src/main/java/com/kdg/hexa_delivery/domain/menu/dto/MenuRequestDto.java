@@ -13,8 +13,12 @@ public class MenuRequestDto {
     @NotNull
     private final Integer price;
 
-    public MenuRequestDto(String menuName, Integer price) {
+    @NotNull
+    private final String description;
+
+    public MenuRequestDto(String menuName, Integer price, String description) {
         this.menuName = menuName;
         this.price = price;
+        this.description = description;
     }
 }

@@ -1,11 +1,13 @@
-package com.kdg.hexa_delivery.domain.shopping_basket.service;
+package com.kdg.hexa_delivery.domain.shoppingbasket.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
 import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.image.service.ImageService;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.menu.repository.MenuRepository;
-import com.kdg.hexa_delivery.domain.shopping_basket.dto.ShoppingBasketResponseDto;
-import com.kdg.hexa_delivery.domain.shopping_basket.entity.ShoppingBasket;
+import com.kdg.hexa_delivery.domain.shoppingbasket.dto.ShoppingBasketResponseDto;
+import com.kdg.hexa_delivery.domain.shoppingbasket.entity.ShoppingBasket;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
@@ -17,10 +19,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ShoppingBasketService {
@@ -28,15 +27,17 @@ public class ShoppingBasketService {
     private final ObjectMapper objectMapper;
     private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
+    private final ImageService imageService;
 
     @Autowired
     public ShoppingBasketService(ObjectMapper objectMapper,
                                  StoreRepository storeRepository,
-                                 MenuRepository menuRepository) {
+                                 MenuRepository menuRepository, ImageService imageService) {
 
         this.objectMapper = objectMapper;
         this.storeRepository = storeRepository;
         this.menuRepository = menuRepository;
+        this.imageService = imageService;
     }
 
     /**
@@ -96,19 +97,23 @@ public class ShoppingBasketService {
 
         // 가게 정보 가져오기
         Store store = storeRepository.findByIdOrElseThrow(shoppingBasket.getStoreId());
+        // 메뉴 정보 가져오기
         List<Menu> menus = menuRepository.findAllByStoreIdAndStatus(store.getStoreId(), Status.NORMAL);
 
         // 보여줄 메뉴 맵
         Map<String, Integer> menuList = new HashMap<>();
+        List<String> imageUrls = new ArrayList<>();
 
         // 실제 메뉴에 있는 음식인지 확인
         for(Menu menu : menus){
             if(shoppingBasket.getMenuList().containsKey(menu.getId())){
                 menuList.put(menu.getName(), shoppingBasket.getMenuList().get(menu.getId()));
+                // 대표 이미지 url 저장
+                imageUrls.add(imageService.findImages(menu.getId(), ImageOwner.MENU).get(0).getImageUrl());
             }
         }
 
-        return new ShoppingBasketResponseDto(store.getStoreName(), menuList);
+        return new ShoppingBasketResponseDto(store.getStoreName(), menuList, imageUrls);
     }
 
     /**
