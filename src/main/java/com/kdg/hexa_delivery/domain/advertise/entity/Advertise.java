@@ -28,6 +28,8 @@ public class Advertise extends BaseEntity {
 
     private AdvertiseStatus advertiseStatus;
 
+    private String declinedReason;
+
     public Advertise() {
     }
 
@@ -44,8 +46,9 @@ public class Advertise extends BaseEntity {
     }
 
     // 광고신청 거부
-    public void declineAdvertiseStatus() {
+    public void declineAdvertiseStatus(String declinedReason) {
         this.advertiseStatus = AdvertiseStatus.DECLINED;
+        this.declinedReason = declinedReason;
     }
 
 }

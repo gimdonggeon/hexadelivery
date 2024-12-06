@@ -5,8 +5,6 @@ import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseDeclinedResponseDto;
 import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseRequestDto;
 import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseResponseDto;
 import com.kdg.hexa_delivery.domain.advertise.entity.Advertise;
-import com.kdg.hexa_delivery.domain.advertise.entity.AdvertiseDeclined;
-import com.kdg.hexa_delivery.domain.advertise.repository.AdvertiseDeclinedRepository;
 import com.kdg.hexa_delivery.domain.advertise.repository.AdvertiseRepository;
 import com.kdg.hexa_delivery.domain.base.enums.AdvertiseStatus;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
@@ -15,21 +13,17 @@ import com.kdg.hexa_delivery.domain.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class AdvertiseService {
 
     private final AdvertiseRepository advertiseRepository;
-    private final AdvertiseDeclinedRepository advertiseDeclinedRepository;
     private final StoreRepository storeRepository;
 
     @Autowired
-    public AdvertiseService(AdvertiseRepository advertiseRepository, AdvertiseDeclinedRepository advertiseDeclinedRepository, StoreRepository storeRepository) {
+    public AdvertiseService(AdvertiseRepository advertiseRepository, StoreRepository storeRepository) {
         this.advertiseRepository = advertiseRepository;
-        this.advertiseDeclinedRepository = advertiseDeclinedRepository;
         this.storeRepository = storeRepository;
     }
 
@@ -69,10 +63,8 @@ public class AdvertiseService {
         if(advertise==null){
             throw new RuntimeException("해당 ID로 신청된 광고중 거절당한 광고가 없습니다.");
         }
-        // 가게 아이디로 가게 광고 거절 정보 받아오기
-        AdvertiseDeclined advertiseDeclined = advertiseDeclinedRepository.findByAdvertise_advertiseIdOrElseThrow(advertise.getAdvertiseId());
 
-        return AdvertiseDeclinedResponseDto.toDto(advertiseDeclined);
+        return AdvertiseDeclinedResponseDto.toDto(advertise);
     }
 
     // 므든 광고신청 조회 :: 관리자
@@ -92,16 +84,14 @@ public class AdvertiseService {
         if(advertise.getAdvertiseStatus() != AdvertiseStatus.REQUESTED ){
             throw new RuntimeException("이미 처리된 요청입니다.");
         }
-
+        // 광고 상태 수락으로 변경
         advertise.acceptAdvertiseStatus();
-
+        // 저장
         Advertise savedAdvertise = advertiseRepository.save(advertise);
-
         return AdvertiseResponseDto.toDto(savedAdvertise);
     }
     // 광고신청 거부  :: 관리자 :: Advertise 상태 DECLINE 으로 변경
-    public Map<String, Object> advertiseDecline(Long advertiseId, AdvertiseDeclinedRequestDto advertiseDeclinedRequestDto) {
-        Map<String, Object> declineAdvertise = new HashMap<>();
+    public AdvertiseDeclinedResponseDto advertiseDecline(Long advertiseId, AdvertiseDeclinedRequestDto advertiseDeclinedRequestDto) {
 
         Advertise advertise = advertiseRepository.findByAdvertiseId(advertiseId);
         if(advertise==null){
@@ -112,26 +102,10 @@ public class AdvertiseService {
             throw new RuntimeException("이미 처리된 요청입니다.");
         }
 
-        advertise.declineAdvertiseStatus();
-
+        advertise.declineAdvertiseStatus(advertiseDeclinedRequestDto.getDeclinedReason());
         Advertise savedAdvertise = advertiseRepository.save(advertise);
+        return AdvertiseDeclinedResponseDto.toDto(savedAdvertise);
 
-        AdvertiseResponseDto advertiseResponseDto = AdvertiseResponseDto.toDto(savedAdvertise);
-
-        // 거부 이유 생성 :: 광고신청 거부사유 등록
-
-        AdvertiseDeclined advertiseDeclined = new AdvertiseDeclined(advertise, advertiseDeclinedRequestDto.getDeclinedReason());
-
-        AdvertiseDeclined savedAdvertiseDeclined = advertiseDeclinedRepository.save(advertiseDeclined);
-
-        AdvertiseDeclinedResponseDto advertiseDeclinedResponseDto = AdvertiseDeclinedResponseDto.toDto(savedAdvertiseDeclined);
-
-        declineAdvertise.put("advertise", advertiseResponseDto);
-
-        declineAdvertise.put("declinedAdvertise", advertiseDeclinedResponseDto);
-
-
-        return declineAdvertise;
     }
 
 }

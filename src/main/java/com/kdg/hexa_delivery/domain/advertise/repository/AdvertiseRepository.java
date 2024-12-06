@@ -20,4 +20,5 @@ public interface AdvertiseRepository extends JpaRepository<Advertise, Long> {
     // 가게아이디로 광고신청 거절당한 가게 신청 조회
     @Query("SELECT a FROM Advertise a WHERE a.store.storeId = :storeId AND a.advertiseStatus = :status ")
     Advertise findByStore_StoreIdAndAdvertiseStatus_DECLINED(Long storeId, AdvertiseStatus status);
+
 }
