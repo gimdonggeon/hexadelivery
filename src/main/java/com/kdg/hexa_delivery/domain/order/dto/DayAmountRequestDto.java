@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 public class DayAmountRequestDto {
 
-    @NotNull(message = "날짜 선택은 필수입니다.")
     private String date;
 
     private String category;

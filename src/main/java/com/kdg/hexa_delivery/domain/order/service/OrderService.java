@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -149,22 +151,21 @@ public class OrderService {
 
 
     /*
-    *
-    *  관리자 대시보드 기능
-    *
-    * */
+     *
+     *  관리자 대시보드 기능
+     *
+     * */
 
     // 일간(Day) 주문수 조회 ( 기간 OR 가게 OR 카테고리 )
 
     public OrdersAmountResponseDto getDayOrders(DayAmountRequestDto dayAmountRequestDto) {
-        // 날짜 형변환
+
         String dateString = dayAmountRequestDto.getDate();
+        // 날짜 검증 및 형변환
+        LocalDateTime startDateTime = validDate(dateString);
+        LocalDateTime endDateTime = validDateV2(startDateTime);
 
-        LocalDateTime date = LocalDateTime.parse(dateString);
-        // 날짜 검증
-        validDate(date);
-
-        return orderRepository.getDayOrders(date, dayAmountRequestDto.getCategory(), dayAmountRequestDto.getStoreId());
+        return orderRepository.getDayOrders(startDateTime, endDateTime, dayAmountRequestDto.getCategory(), dayAmountRequestDto.getStoreId());
     }
 
     // 월간(Month) 주문수 조회 ( 기간 OR 가게 OR 카테고리 )
@@ -173,12 +174,11 @@ public class OrderService {
         String startDateString = monthAmountRequestDto.getStartDate();
         String endDateString = monthAmountRequestDto.getEndDate();
 
-        LocalDateTime startDate = LocalDateTime.parse(startDateString);
-        LocalDateTime endDate = LocalDateTime.parse(endDateString);
         // 월간 조회 날짜 검증
-        validMonth(startDate, endDate);
+        LocalDateTime startDateTime = validMonth(startDateString);
+        LocalDateTime endDateTime = validMonthV2(startDateTime, endDateString);
 
-        return orderRepository.getMonthOrders(startDate, endDate,
+        return orderRepository.getMonthOrders(startDateTime, endDateTime,
                 monthAmountRequestDto.getCategory(), monthAmountRequestDto.getStoreId());
     }
     // 일간(Day) 주문 총액 조회 ( 기간 OR 가게 OR 카테고리 )
@@ -186,11 +186,11 @@ public class OrderService {
         // 날짜 형변환
         String dateString = dayAmountRequestDto.getDate();
 
-        LocalDateTime date = LocalDateTime.parse(dateString);
-        // 날짜 검증
-        validDate(date);
+        // 날짜 검증 및 형변환
+        LocalDateTime startDateTime = validDate(dateString);
+        LocalDateTime endDateTime = validDateV2(startDateTime);
 
-        return orderRepository.getDayOrderPrices(date, dayAmountRequestDto.getCategory(), dayAmountRequestDto.getStoreId());
+        return orderRepository.getDayOrderPrices(startDateTime, endDateTime, dayAmountRequestDto.getCategory(), dayAmountRequestDto.getStoreId());
     }
     // 월간(Month) 주문 총액 조회 ( 기간 OR 가게 OR 카테고리 )
     public OrderAmountPricesResponseDto getMonthOrderPrices(MonthAmountRequestDto monthAmountRequestDto){
@@ -198,32 +198,46 @@ public class OrderService {
         String startDateString = monthAmountRequestDto.getStartDate();
         String endDateString = monthAmountRequestDto.getEndDate();
 
-        LocalDateTime startDate = LocalDateTime.parse(startDateString);
-        LocalDateTime endDate = LocalDateTime.parse(endDateString);
         // 월간 조회 날짜 검증
-        validMonth(startDate, endDate);
+        LocalDateTime startDateTime = validMonth(startDateString);
+        LocalDateTime endDateTime = validMonthV2(startDateTime, endDateString);
 
-        return orderRepository.getMonthOrderPrices(startDate, endDate,
+        return orderRepository.getMonthOrderPrices(startDateTime, endDateTime,
                 monthAmountRequestDto.getCategory(), monthAmountRequestDto.getStoreId());
     }
 
     // 일간 조회 입력 날짜 검증
-    public void validDate(LocalDateTime date){
-        if(date == null) {
-            throw new RuntimeException("날짜를 입력해 주세요.");
+    public LocalDateTime validDate(String dateString){
+        if(dateString == null) {
+            LocalDate date = LocalDate.now();
+            return date.atTime(00,00,00);
         }
+        LocalDate date = LocalDate.parse(dateString);
+        return date.atTime(00,00,00);
+    }
+    // 일간 조회 입력날짜 +1일
+    public LocalDateTime validDateV2(LocalDateTime startDateTime){
+        return startDateTime.plusDays(1).plusHours(23).plusMinutes(59).plusSeconds(59);
     }
 
     //월간 조회 입력 날짜 검증
-    public void validMonth(LocalDateTime startDate, LocalDateTime endDate){
-        if(startDate == null || endDate == null) {
-            throw new RuntimeException("날짜를 입력해 주세요.");
+    public LocalDateTime validMonth(String startDateString){
+        if(startDateString == null) {
+            LocalDate startDate = LocalDate.now();
+            return startDate.atTime(00,00,00);
         }
-        if(startDate == endDate) {
-            throw new RuntimeException("날짜가 같습니다.");
-        }
+        LocalDate startDate = LocalDate.parse(startDateString);
+        return startDate.atTime(00,00,00);
     }
 
+    // 비교날짜가 null 일 경우 시작날짜 + 1개월
+    public LocalDateTime validMonthV2(LocalDateTime startDateTime,String endDateString){
+        if(endDateString == null) {
+            return startDateTime.plusMonths(1).plusHours(23).plusMinutes(59).plusSeconds(59);
+        }
+        LocalDate endDate = LocalDate.parse(endDateString);
+        return endDate.atTime(23,59,59);
+    }
 
 
 
