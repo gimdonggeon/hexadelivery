@@ -16,6 +16,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -149,7 +150,9 @@ public class ImageService {
 
         try {
             for (MultipartFile menuImage : images) {
-                imageUrls.add(uploadImage(menuImage, ownerId, owner));
+                if(!Objects.requireNonNull(menuImage.getOriginalFilename()).isBlank()) {
+                    imageUrls.add(uploadImage(menuImage, ownerId, owner));
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException("이미지 업로드 중 오류 발생", e);
