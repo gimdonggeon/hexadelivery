@@ -3,16 +3,11 @@ package com.kdg.hexa_delivery.domain.order.entity;
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.OrderStatus;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
-//import com.kdg.hexa_delivery.domain.review.entity.Review;
 import com.kdg.hexa_delivery.domain.review.entity.Review;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -48,20 +43,15 @@ public class Order extends BaseEntity {
     @OneToOne(mappedBy = "order")
     private Review review;
 
-    public void updateTotalPrice() {
-
-        this.totalPrice = this.menu.getPrice() * this.quantity;
-    }
-
     public Order() {
     }
 
-    public Order(User user, Store store, Menu menu, Integer quantity) {
+    public Order(User user, Store store, Menu menu, Integer totalPrice, Integer quantity) {
         this.user = user;
         this.store = store;
         this.menu = menu;
+        this.totalPrice = totalPrice;
         this.quantity = quantity;
-        updateTotalPrice();
         this.orderStatus = OrderStatus.ORDERED;
     }
 

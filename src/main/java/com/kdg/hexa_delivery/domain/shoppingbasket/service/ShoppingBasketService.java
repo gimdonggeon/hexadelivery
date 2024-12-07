@@ -103,6 +103,7 @@ public class ShoppingBasketService {
         // 보여줄 메뉴 맵
         Map<String, Integer> menuList = new HashMap<>();
         List<String> imageUrls = new ArrayList<>();
+        Integer totalPrice = 0;
 
         // 실제 메뉴에 있는 음식인지 확인
         for(Menu menu : menus){
@@ -110,10 +111,11 @@ public class ShoppingBasketService {
                 menuList.put(menu.getName(), shoppingBasket.getMenuList().get(menu.getId()));
                 // 대표 이미지 url 저장
                 imageUrls.add(imageService.findImages(menu.getId(), ImageOwner.MENU).get(0).getImageUrl());
+                totalPrice += menu.getPrice();
             }
         }
 
-        return new ShoppingBasketResponseDto(store.getStoreName(), menuList, imageUrls);
+        return new ShoppingBasketResponseDto(store.getStoreName(), menuList, imageUrls, totalPrice);
     }
 
     /**

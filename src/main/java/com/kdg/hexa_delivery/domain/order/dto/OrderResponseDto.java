@@ -1,26 +1,22 @@
 package com.kdg.hexa_delivery.domain.order.dto;
 
 import com.kdg.hexa_delivery.domain.base.enums.OrderStatus;
-import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
 import lombok.Getter;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 public class OrderResponseDto {
 
-    private Long id;
-    private Long storeId;
-    private Long menuId;
-    private String menuName;
-    private Integer totalPrice;
-    private Integer quantity;
-    private OrderStatus orderStatus;
-    private String storeOpeningHours;
-    private String storeClosingHours;
-    private Integer storeMinimumOrderValue;
+    private final Long id;
+    private final Long storeId;
+    private final Long menuId;
+    private final String menuName;
+    private final Integer totalPrice;
+    private final Integer quantity;
+    private final OrderStatus orderStatus;
+    private final String storeOpeningHours;
+    private final String storeClosingHours;
+    private final Integer storeMinimumOrderValue;
 
     public static OrderResponseDto toDto(Order order) {
         return new OrderResponseDto(
