@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface UserCouponRepository extends JpaRepository<UserCoupon, Long> {
 
-    @Query("SELECT uc.coupon FROM UserCoupon uc WHERE uc.user.id = :userId ")
+    @Query("SELECT uc.coupon FROM UserCoupon uc WHERE uc.user.id = :userId AND uc.coupon.status = 'NORMAL' ")
     List<Coupon> findAllByUserId(@Param("userId") Long userId);
 
 }

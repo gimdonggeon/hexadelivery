@@ -1,5 +1,6 @@
 package com.kdg.hexa_delivery.domain.point.service;
 
+import com.kdg.hexa_delivery.domain.base.enums.Status;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
 import com.kdg.hexa_delivery.domain.point.entity.Point;
 import com.kdg.hexa_delivery.domain.point.repository.PointRepository;
@@ -38,19 +39,25 @@ public class PointService {
     /**
      * 포인트 사용 메서드
      *
-     * @param pointDiscount  차감하려는 포인트
+     * @param pointDiscount 차감하려는 포인트
+     * @param userId 유저 id
      */
     @Transactional
-    public Integer usePoint(Integer pointDiscount) {
-        List<Point> pointList = pointRepository.findAllOrderByExpirationTime(LocalDateTime.now());
+    public Integer usePoint(Integer pointDiscount, Long userId) {
+        List<Point> pointList = pointRepository.findAllByUserId(userId);
 
         if(pointList == null || pointList.isEmpty()) {
             return 0;
         }
 
-        Integer usedPoint = 0;
+        // 만료된 포인트 제거
+        changeStatus(pointList);
+        pointList = pointList.stream().filter(point -> point.getStatus().equals(Status.NORMAL)).toList();
+
         // 포인트 사용
         // 사용하려는 포인트보다 적은 포인트가 있으면 있는 포인트만 사용
+        Integer usedPoint = 0;
+
         for(Point point : pointList) {
             if(pointDiscount > point.getPointPresentAmount()){
                 // 현재 포인트 제거
@@ -89,5 +96,17 @@ public class PointService {
     public Integer getMyPoint(Long userId) {
         // 포인트 조회
         return pointRepository.findByUserIdToPointAmount(userId, LocalDateTime.now());
+    }
+
+
+    // 만료된 포인트 제거 메서드
+    private void changeStatus(List<Point> points){
+        // 포인트 만료기간 상태 변경
+        LocalDateTime now = LocalDateTime.now();
+        for (Point point : points) {
+            if(now.isAfter(point.getExpirationTime())){
+                point.updateStatus2Delete();
+            }
+        }
     }
 }

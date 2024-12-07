@@ -72,7 +72,7 @@ public class OrderService {
         // 포인트 사용 적용
         if(orderRequestDto.getPointDiscount() != null) {
             // 전체금액에서 사용한 포인트만큼 빼기
-            totalPrice -= pointService.usePoint(orderRequestDto.getPointDiscount());
+            totalPrice -= pointService.usePoint(orderRequestDto.getPointDiscount(), user.getId());
         }
 
         // 주문 생성
