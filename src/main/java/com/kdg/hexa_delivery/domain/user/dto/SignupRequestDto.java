@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.user.dto;
 
-import com.kdg.hexa_delivery.domain.base.enums.Role;
+import com.kdg.hexa_delivery.domain.user.enums.Role;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;

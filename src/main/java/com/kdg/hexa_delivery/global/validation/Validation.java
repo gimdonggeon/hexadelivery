@@ -1,10 +1,6 @@
-package com.kdg.hexa_delivery.domain.base.validation;
+package com.kdg.hexa_delivery.global.validation;
 
-import com.kdg.hexa_delivery.domain.base.enums.Role;
 import com.kdg.hexa_delivery.domain.user.entity.User;
-import com.kdg.hexa_delivery.global.constant.Const;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 public class Validation {
 

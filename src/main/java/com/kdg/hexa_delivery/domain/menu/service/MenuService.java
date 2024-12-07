@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.menu.service;
 
-import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.image.enums.ImageOwner;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.image.service.ImageService;
 import com.kdg.hexa_delivery.domain.menu.dto.MenuResponseDto;
@@ -9,6 +9,9 @@ import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.menu.repository.MenuRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.NotFoundException;
+import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,7 +76,7 @@ public class MenuService {
         List<Menu> menus =  menuRepository.findAllByStoreIdAndStatus(storeId, Status.NORMAL);
 
         if(menus.isEmpty()){
-            throw new RuntimeException("가게에 메뉴가 없습니다.");
+            throw new NotFoundException(ExceptionType.STORE_MENU_NOT_FOUND);
         }
 
         // 메뉴의 정보와 이미지를 ResponseDto 로 변환
@@ -99,7 +102,7 @@ public class MenuService {
 
         // 삭제 메뉴 수정 불가
         if(menu.getStatus() != Status.NORMAL) {
-            throw new RuntimeException("이미 삭제된 메뉴 입니다.");
+            throw new WrongAccessException(ExceptionType.DELETED_MENU);
         }
 
         // 이미지 s3 서버에 업로드 후 url 받아오기

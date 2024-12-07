@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.order.dto;
 
-import com.kdg.hexa_delivery.domain.base.enums.OrderStatus;
+import com.kdg.hexa_delivery.domain.order.enums.OrderStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 

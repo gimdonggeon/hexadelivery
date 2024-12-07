@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.store.controller;
 
-import com.kdg.hexa_delivery.domain.base.validation.Validation;
+import com.kdg.hexa_delivery.global.validation.Validation;
 import com.kdg.hexa_delivery.domain.store.dto.StoreRequestDto;
 import com.kdg.hexa_delivery.domain.store.dto.StoreResponseDto;
 import com.kdg.hexa_delivery.domain.store.service.StoreService;

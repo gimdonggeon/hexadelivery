@@ -7,6 +7,8 @@ import com.kdg.hexa_delivery.domain.user.dto.UserDeleteRequestDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.service.UserService;
 import com.kdg.hexa_delivery.global.constant.Const;
+import com.kdg.hexa_delivery.global.exception.BadValueException;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -38,7 +40,7 @@ public class UserController {
     public ResponseEntity<SignupResponseDto> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
 
         if (!signupRequestDto.getPassword().equals(signupRequestDto.getPasswordConfirm())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"비밀번호 확인이 비밀번호와 일치하지 않습니다.");
+            throw new BadValueException(ExceptionType.PASSWORD_NOT_CORRECT);
         }
 
         SignupResponseDto signupResponseDto = userService.saveUser(

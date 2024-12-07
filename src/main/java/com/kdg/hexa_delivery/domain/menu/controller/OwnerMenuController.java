@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.menu.controller;
 
-import com.kdg.hexa_delivery.domain.base.validation.Validation;
+import com.kdg.hexa_delivery.global.validation.Validation;
 import com.kdg.hexa_delivery.domain.menu.dto.MenuRequestDto;
 import com.kdg.hexa_delivery.domain.menu.dto.MenuResponseDto;
 import com.kdg.hexa_delivery.domain.menu.dto.UpdateMenuRequestDto;

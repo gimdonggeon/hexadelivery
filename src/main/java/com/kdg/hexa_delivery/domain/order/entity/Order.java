@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.order.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
-import com.kdg.hexa_delivery.domain.base.enums.OrderStatus;
+import com.kdg.hexa_delivery.domain.order.enums.OrderStatus;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.review.entity.Review;
 import com.kdg.hexa_delivery.domain.store.entity.Store;

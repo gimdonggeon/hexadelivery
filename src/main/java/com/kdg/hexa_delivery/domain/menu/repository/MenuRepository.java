@@ -1,7 +1,9 @@
 package com.kdg.hexa_delivery.domain.menu.repository;
 
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,6 +24,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     List<Menu> findAllByStoreId(@Param("storeId") Long storeId);
 
     default Menu findByIdOrElseThrow(Long menuId){
-        return findById(menuId).orElseThrow(()-> new RuntimeException("해당 id의 메뉴를 찾을 수 없습니다."));
+        return findById(menuId).orElseThrow(()-> new NotFoundException(ExceptionType.MENU_NOT_FOUND));
     }
 }

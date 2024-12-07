@@ -1,8 +1,11 @@
 package com.kdg.hexa_delivery.domain.image.service;
 
-import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
+import com.kdg.hexa_delivery.domain.image.enums.ImageOwner;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.image.repository.ImageRepository;
+import com.kdg.hexa_delivery.global.exception.BadValueException;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,7 +90,7 @@ public class ImageService {
         Image imageEntity = imageRepository.findByImageName(imageName);
 
         if (imageEntity == null) {
-            throw new RuntimeException("이미지 정보가 없습니다.");
+            throw new NotFoundException(ExceptionType.IMAGE_NOT_FOUND);
         }
 
         // 새 파일 업로드
@@ -120,7 +123,7 @@ public class ImageService {
      */
     public void deleteImage(String imageName) {
         if (!imageRepository.deleteByImageName(imageName)) {
-            throw new RuntimeException("이미지 정보가 삭제되지 못했습니다.");
+            log.warn("이미지가 삭제되지 못했습니다.");
         }
 
         deleteImageFromS3(imageName);
@@ -152,7 +155,8 @@ public class ImageService {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("이미지 업로드 중 오류 발생", e);
+            log.warn("이미지 업로드에 실패");
+            throw new BadValueException(ExceptionType.FAIL_IMAGE);
         }
 
         return imageUrls;

@@ -6,10 +6,13 @@ import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseRequestDto;
 import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseResponseDto;
 import com.kdg.hexa_delivery.domain.advertise.entity.Advertise;
 import com.kdg.hexa_delivery.domain.advertise.repository.AdvertiseRepository;
-import com.kdg.hexa_delivery.domain.base.enums.AdvertiseStatus;
+import com.kdg.hexa_delivery.domain.advertise.enums.AdvertiseStatus;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.NotFoundException;
+import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +52,7 @@ public class AdvertiseService {
         List<Advertise> advertises = advertiseRepository.findAllByUser_Id(userId);
 
         if(advertises.isEmpty()){
-            throw new RuntimeException("해당 ID로 신청된 광고가 없습니다.");
+            throw new NotFoundException(ExceptionType.ADVERTISE_NOT_FOUND);
         }
 
         return advertises.stream().map(AdvertiseResponseDto::toDto).toList();
@@ -61,7 +64,7 @@ public class AdvertiseService {
         Advertise advertise = advertiseRepository.findByStore_StoreIdAndAdvertiseStatus_DECLINED(storeId,AdvertiseStatus.DECLINED);
 
         if(advertise==null){
-            throw new RuntimeException("해당 ID로 신청된 광고중 거절당한 광고가 없습니다.");
+            throw new NotFoundException(ExceptionType.ADVERTISE_NOT_FOUND);
         }
 
         return AdvertiseDeclinedResponseDto.toDto(advertise);
@@ -78,11 +81,11 @@ public class AdvertiseService {
     public AdvertiseResponseDto advertiseAccept(Long advertiseId) {
         Advertise advertise = advertiseRepository.findByAdvertiseId(advertiseId);
         if(advertise==null){
-            throw new RuntimeException("해당 가게로 신청된 광고가 없습니다.");
+            throw new NotFoundException(ExceptionType.ADVERTISE_NOT_FOUND);
         }
 
         if(advertise.getAdvertiseStatus() != AdvertiseStatus.REQUESTED ){
-            throw new RuntimeException("이미 처리된 요청입니다.");
+            throw new WrongAccessException(ExceptionType.ALREADY_REQUEST_ADVERTISE);
         }
         // 광고 상태 수락으로 변경
         advertise.acceptAdvertiseStatus();
@@ -95,11 +98,11 @@ public class AdvertiseService {
 
         Advertise advertise = advertiseRepository.findByAdvertiseId(advertiseId);
         if(advertise==null){
-            throw new RuntimeException("해당 가게로 신청된 광고가 없습니다.");
+            throw new NotFoundException(ExceptionType.ADVERTISE_NOT_FOUND);
         }
 
         if(advertise.getAdvertiseStatus() != AdvertiseStatus.REQUESTED ){
-            throw new RuntimeException("이미 처리된 요청입니다.");
+            throw new WrongAccessException(ExceptionType.ALREADY_REQUEST_ADVERTISE);
         }
 
         advertise.declineAdvertiseStatus(advertiseDeclinedRequestDto.getDeclinedReason());

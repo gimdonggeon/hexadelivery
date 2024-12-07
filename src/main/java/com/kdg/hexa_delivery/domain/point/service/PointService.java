@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.point.service;
 
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
 import com.kdg.hexa_delivery.domain.point.entity.Point;
 import com.kdg.hexa_delivery.domain.point.repository.PointRepository;

@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.advertise.repository;
 
 import com.kdg.hexa_delivery.domain.advertise.entity.Advertise;
-import com.kdg.hexa_delivery.domain.base.enums.AdvertiseStatus;
+import com.kdg.hexa_delivery.domain.advertise.enums.AdvertiseStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

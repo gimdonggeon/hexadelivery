@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.coupon.dto;
 
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.coupon.entity.Coupon;
 import com.kdg.hexa_delivery.domain.coupon.entity.enums.CouponType;
 import lombok.Getter;

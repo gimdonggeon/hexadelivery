@@ -1,4 +1,4 @@
-package com.kdg.hexa_delivery.domain.base.enums;
+package com.kdg.hexa_delivery.domain.advertise.enums;
 
  /*
   * 광고 상태
@@ -8,5 +8,5 @@ package com.kdg.hexa_delivery.domain.base.enums;
 
 
 public enum AdvertiseStatus {
-    ACCEPTED, DECLINED, REQUESTED;
+    ACCEPTED, DECLINED, REQUESTED
 }

@@ -1,17 +1,16 @@
 package com.kdg.hexa_delivery.domain.user.service;
 
-import com.kdg.hexa_delivery.domain.base.enums.Role;
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.user.enums.Role;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.user.dto.SignupResponseDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
 import com.kdg.hexa_delivery.global.config.PasswordEncoder;
+import com.kdg.hexa_delivery.global.exception.BadValueException;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.core.RepositoryCreationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -49,9 +48,9 @@ public class UserService {
 
         if (userByEmail.isPresent()) {
             if (userByEmail.get().getStatus() == Status.NORMAL) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하는 이메일입니다.");
+                throw new BadValueException(ExceptionType.EXIST_USER);
             } else if (userByEmail.get().getStatus() == Status.DELETED) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "탈퇴한 이용자입니다.");
+                throw new BadValueException(ExceptionType.DELETED_USER);
             }
         }
 
@@ -80,7 +79,7 @@ public class UserService {
 
         //비밀번호 비교
         if (!passwordEncoder.matches(password, loginUser.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호를 확인하세요.");
+            throw new BadValueException(ExceptionType.BAD_PASSWORD);
         }
 
         return loginUser;
@@ -103,7 +102,7 @@ public class UserService {
             //회원 상태 저장 명시
             userRepository.save(user);
         } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 맞지 않습니다.");
+            throw new BadValueException(ExceptionType.BAD_PASSWORD);
         }
     }
 

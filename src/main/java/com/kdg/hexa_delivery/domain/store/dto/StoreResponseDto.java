@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.store.dto;
 
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import lombok.Getter;

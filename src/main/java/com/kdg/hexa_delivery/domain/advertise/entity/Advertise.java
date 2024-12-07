@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.advertise.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
-import com.kdg.hexa_delivery.domain.base.enums.AdvertiseStatus;
+import com.kdg.hexa_delivery.domain.advertise.enums.AdvertiseStatus;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;

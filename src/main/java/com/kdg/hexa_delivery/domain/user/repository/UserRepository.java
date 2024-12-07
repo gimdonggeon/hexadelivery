@@ -1,6 +1,8 @@
 package com.kdg.hexa_delivery.domain.user.repository;
 
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,10 +19,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     //예외처리가 포함된 로그인 아이디로 유저 찾기
     default User findByEmailOrElseThrow(String email){
-        return findByEmail(email).orElseThrow(()-> new RuntimeException("회원이 존재하지 않습니다."));
-    };
+        return findByEmail(email).orElseThrow(()-> new NotFoundException(ExceptionType.USER_NOT_FOUND));
+    }
 
     default User findByIdOrElseThrow(Long userId){
-        return findById(userId).orElseThrow(()-> new RuntimeException("회원이 존재하지 않습니다."));
+        return findById(userId).orElseThrow(()-> new NotFoundException(ExceptionType.USER_NOT_FOUND));
     }
 }
