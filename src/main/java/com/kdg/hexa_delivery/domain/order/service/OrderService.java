@@ -217,7 +217,7 @@ public class OrderService {
     }
     // 일간 조회 입력날짜 +1일
     public LocalDateTime validDateV2(LocalDateTime startDateTime){
-        return startDateTime.plusDays(1).plusHours(23).plusMinutes(59).plusSeconds(59);
+        return startDateTime.plusDays(1);
     }
 
     //월간 조회 입력 날짜 검증
