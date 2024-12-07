@@ -4,7 +4,7 @@ import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseDeclinedResponseDto;
 import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseRequestDto;
 import com.kdg.hexa_delivery.domain.advertise.dto.AdvertiseResponseDto;
 import com.kdg.hexa_delivery.domain.advertise.service.AdvertiseService;
-import com.kdg.hexa_delivery.domain.base.validation.Validation;
+import com.kdg.hexa_delivery.global.validation.Validation;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.global.constant.Const;
 import jakarta.servlet.http.HttpServletRequest;

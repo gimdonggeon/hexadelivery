@@ -1,8 +1,8 @@
 package com.kdg.hexa_delivery.domain.shoppingbasket.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.image.enums.ImageOwner;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.image.service.ImageService;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.menu.repository.MenuRepository;
@@ -11,9 +11,13 @@ import com.kdg.hexa_delivery.domain.shoppingbasket.entity.ShoppingBasket;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -184,11 +188,11 @@ public class ShoppingBasketService {
         ShoppingBasket shoppingBasket = getCookieValue(cookies);
 
         if(shoppingBasket == null){
-            throw new RuntimeException("장바구니가 비어있습니다!");
+            throw new ResponseStatusException(HttpStatus.OK, "장바구니가 비어있습니다!");
         }
 
         if(!shoppingBasket.getUserId().equals(loginUser.getId())){
-            throw new RuntimeException("다른 유저의 장바구니에 접근하고 있습니다.");
+            throw new WrongAccessException(ExceptionType.ACCESS_OTHER_CART);
         }
     }
 

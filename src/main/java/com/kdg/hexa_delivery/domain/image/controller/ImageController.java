@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.image.controller;
 
-import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
+import com.kdg.hexa_delivery.domain.image.enums.ImageOwner;
 import com.kdg.hexa_delivery.domain.image.dto.ImageRequestDto;
 import com.kdg.hexa_delivery.domain.image.dto.ImageResponseDto;
 import com.kdg.hexa_delivery.domain.image.entity.Image;

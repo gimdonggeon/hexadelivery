@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.image.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
-import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
+import com.kdg.hexa_delivery.domain.image.enums.ImageOwner;
 import jakarta.persistence.*;
 import lombok.Getter;
 

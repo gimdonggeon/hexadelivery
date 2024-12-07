@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.store.service;
 
-import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.image.enums.ImageOwner;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.image.service.ImageService;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
@@ -9,6 +9,8 @@ import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.dto.StoreRequestDto;
 import com.kdg.hexa_delivery.domain.store.dto.StoreResponseDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +37,7 @@ public class StoreService {
 
         // 가게 생성가능 확인
         if(isValidStoreCount(user.getId())){
-            throw new RuntimeException("영업중인 가게가 3개 이상입니다. 더 이상 생성 할 수 없습니다.");
+            throw new WrongAccessException(ExceptionType.STORE_OVER_THREE);
         }
 
         Store store = new Store(user, storeRequestDto.getStoreName(),
@@ -91,12 +93,11 @@ public class StoreService {
         Store store = storeRepository.findByIdOrElseThrow(storeId);
 
         if(store.getStatus() != Status.NORMAL){
-            throw new RuntimeException("가게가 폐업하였습니다.");
+            throw new WrongAccessException(ExceptionType.DELETED_STORE);
         }
 
         // 이미지 s3 서버에 업로드 후 url 받아오기
         List<Image> imageUrls = imageService.takeImages(storeImages, store.getStoreId(), ImageOwner.STORE);
-
 
         store.updateStore(storeName, category,phone,address,storeDetail,openingHours,closingHours,minimumOrderValue);
 

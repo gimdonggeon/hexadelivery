@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.order.service;
 
-import com.kdg.hexa_delivery.domain.base.enums.OrderStatus;
+import com.kdg.hexa_delivery.domain.order.enums.OrderStatus;
 import com.kdg.hexa_delivery.domain.coupon.service.CouponService;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.menu.repository.MenuRepository;
@@ -11,11 +11,13 @@ import com.kdg.hexa_delivery.domain.point.service.PointService;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.exception.BadValueException;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.NotFoundException;
+import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +25,6 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,8 +55,7 @@ public class OrderService {
     public OrderResponseDto createOrder(Long storeId, User user, OrderRequestDto orderRequestDto) {
 
         // 가게 정보 조회
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 가게가 없습니다."));
+        Store store = storeRepository.findByIdOrElseThrow(storeId);
 
         // 헤당 가게의 메뉴 가져오기
         Menu menu = menuRepository.findByIdOrElseThrow(orderRequestDto.getMenuId());
@@ -109,12 +109,12 @@ public class OrderService {
 
         LocalTime now = LocalTime.now();
         if (now.isBefore(openingHours) || now.isAfter(closingHours)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가게 영업시간이 아닙니다.");
+            throw new WrongAccessException(ExceptionType.NOT_OPEN_STORE);
         }
 
         // 최소금액 체크
         if (totalPrice < store.getMinimumOrderValue()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "최소 주문 금액보다 높아야 합니다.");
+            throw new BadValueException(ExceptionType.NOT_AMOUNT_MIN);
         }
     }
 
@@ -122,11 +122,10 @@ public class OrderService {
     // 주문 상태 업데이트
     @Transactional
     public OrderResponseDto updateOrderStatus(Long orderId, OrderStatus newStatus) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
+        Order order = orderRepository.findByIdOrElseThrow(orderId);
 
         if (!order.getOrderStatus().canTransitionTo(newStatus)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "상태 변경은 각 단계를 순차적으로만 진행할 수 있습니다.");
+            throw new WrongAccessException(ExceptionType.CHANGE_STATUS_SEQUENTIAL);
         }
         order.updateStatus(newStatus);
         orderRepository.save(order);
@@ -142,8 +141,8 @@ public class OrderService {
 
     // 주문 상세 조회
     public OrderResponseDto getOrderDetails(Long orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
+        Order order = orderRepository.findByIdOrElseThrow(orderId);
+
         // 주문한 사용자의 해당가게 주문횟수 조회
         Long orderCount = orderRepository.countOrderByUser_IdAndOrderStatus(order.getUser().getId(),order.getStore().getStoreId());
 
@@ -153,15 +152,17 @@ public class OrderService {
         return OrderResponseDto.toDto(order);
     }
 
+
     public Order findOrderById(Long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
+        return orderRepository.findByIdOrElseThrow(orderId);
     }
+
+
     // 사용자 주문 상세조회 (거절조회)
     public Map<String, Object> getCustomerOrderDetails(User user, Long orderId) {
         Order order = orderRepository.getCustomerOrderDetails(user.getId(),orderId);
         if(order == null) {
-            throw new RuntimeException("주문을 찾을 수 없습니다.");
+            throw new NotFoundException(ExceptionType.ORDER_NOT_FOUND);
         }
         Map<String, Object> result = new HashMap<>();
 
@@ -181,7 +182,7 @@ public class OrderService {
     public OrderDeclinedResponseDto declineOrder(Long orderId,OrderDeclinedRequestDto orderDeclinedRequestDto) {
         Order order = orderRepository.findByIdOrElseThrow(orderId);
         if(order.getOrderStatus() != OrderStatus.ORDERED) {
-            throw new RuntimeException("수락한 주문은 거절하실 수 없습니다.");
+            throw new WrongAccessException(ExceptionType.NOT_REJECT_ORDER);
         }
         //주문 상태 거절 및 이유 작성
         order.declineOrder(orderDeclinedRequestDto.getDeclinedReason());
@@ -251,10 +252,10 @@ public class OrderService {
     public LocalDateTime validDate(String dateString){
         if(dateString == null) {
             LocalDate date = LocalDate.now();
-            return date.atTime(00,00,00);
+            return date.atTime(0,0, 0);
         }
         LocalDate date = LocalDate.parse(dateString);
-        return date.atTime(00,00,00);
+        return date.atTime(0,0,0);
     }
     // 일간 조회 입력날짜 +1일
     public LocalDateTime validDateV2(LocalDateTime startDateTime){
@@ -265,10 +266,10 @@ public class OrderService {
     public LocalDateTime validMonth(String startDateString){
         if(startDateString == null) {
             LocalDate startDate = LocalDate.now();
-            return startDate.atTime(00,00,00);
+            return startDate.atTime(0,0,0);
         }
         LocalDate startDate = LocalDate.parse(startDateString);
-        return startDate.atTime(00,00,00);
+        return startDate.atTime(0,0,0);
     }
 
     // 비교날짜가 null 일 경우 시작날짜 + 1개월

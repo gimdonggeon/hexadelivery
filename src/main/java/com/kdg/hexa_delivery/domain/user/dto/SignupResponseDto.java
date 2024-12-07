@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.user.dto;
 
-import com.kdg.hexa_delivery.domain.base.enums.Role;
+import com.kdg.hexa_delivery.domain.user.enums.Role;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.advertise.dto;
 
 import com.kdg.hexa_delivery.domain.advertise.entity.Advertise;
-import com.kdg.hexa_delivery.domain.base.enums.AdvertiseStatus;
+import com.kdg.hexa_delivery.domain.advertise.enums.AdvertiseStatus;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

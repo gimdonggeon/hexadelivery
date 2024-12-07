@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.review.service;
 
-import com.kdg.hexa_delivery.domain.base.enums.OrderStatus;
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.domain.order.enums.OrderStatus;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
 import com.kdg.hexa_delivery.domain.order.repository.OrderRepository;
 import com.kdg.hexa_delivery.domain.review.dto.ReviewResponseDto;
@@ -11,18 +11,19 @@ import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
-import jakarta.servlet.http.HttpSession;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.NotFoundException;
+import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 import static com.kdg.hexa_delivery.domain.review.dto.ReviewResponseDto.toDto;
-import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @Service
 @Getter
 public class ReviewService {
@@ -56,11 +57,11 @@ public class ReviewService {
 
         //주문이 배달완료상태가 아닐 시 예외처리
         if (order.getOrderStatus() != OrderStatus.DELIVERED) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "배달이 완료되지 않은 주문건입니다.");
+            throw new WrongAccessException(ExceptionType.NOT_YET_DELIVERED);
         }
 
         if (order.getReview() != null) {
-            throw new RuntimeException("리뷰가 이미 작성된 주문건입니다.");
+            throw new WrongAccessException(ExceptionType.ALREADY_REVIEW);
         }
 
         //가게 정보
@@ -89,7 +90,7 @@ public class ReviewService {
 
         // 가게 유무 확인
         if (!storeRepository.existsById(storeId)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 가게가 존재하지 않습니다.");
+            throw new NotFoundException(ExceptionType.STORE_NOT_FOUND);
         }
 
         // 리뷰 찾기
@@ -97,7 +98,7 @@ public class ReviewService {
 
         // 리뷰 유무 확인
         if (reviews.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "리뷰가 없습니다.");
+            throw new NotFoundException(ExceptionType.REVIEW_NOT_FOUND);
         }
 
         return reviews.stream().map(ReviewResponseDto::toDto).toList();
@@ -116,7 +117,7 @@ public class ReviewService {
 
         // 가게 유무 확인
         if (!storeRepository.existsById(storeId)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "해당하는 가게가 존재하지 않습니다.");
+            throw new NotFoundException(ExceptionType.STORE_NOT_FOUND);
         }
 
         // 리뷰 찾기
@@ -124,7 +125,7 @@ public class ReviewService {
 
         // 리뷰 유무 확인
         if (reviews.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "리뷰가 없습니다.");
+            throw new NotFoundException(ExceptionType.REVIEW_NOT_FOUND);
         }
 
         return reviews.stream().map(ReviewResponseDto::toDto).toList();
@@ -141,6 +142,11 @@ public class ReviewService {
     public List<ReviewResponseDto> getMyReviews(User user) {
 
         List<Review> reviews = reviewRepository.findAllByUserId(user.getId());
+
+        // 리뷰 유무 확인
+        if (reviews.isEmpty()) {
+            throw new NotFoundException(ExceptionType.REVIEW_NOT_FOUND);
+        }
 
         return reviews.stream().map(ReviewResponseDto::toDto).toList();
     }

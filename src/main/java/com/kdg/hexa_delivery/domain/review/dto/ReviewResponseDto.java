@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.review.dto;
 
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.review.entity.Review;
 import lombok.Getter;
 

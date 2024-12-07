@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.point.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;

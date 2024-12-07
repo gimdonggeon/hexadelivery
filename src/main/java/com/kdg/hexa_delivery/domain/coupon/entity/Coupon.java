@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.coupon.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.coupon.entity.enums.CouponType;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import jakarta.persistence.*;

@@ -3,6 +3,8 @@ package com.kdg.hexa_delivery.domain.order.repository;
 import com.kdg.hexa_delivery.domain.order.dto.*;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,10 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUser(User user);
 
     default Order findByIdOrElseThrow(Long orderId) {
-        return findById(orderId).orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
+        return findById(orderId).orElseThrow(() -> new NotFoundException(ExceptionType.ORDER_NOT_FOUND));
     }
-
-    ;
 
     // 일간 주문 수  :: 카테고리가 널값이거나 가게아이디가 널값인경우 둘다 널값인경우에도  동작
     @Query("SELECT new com.kdg.hexa_delivery.domain.order.dto.OrdersAmountResponseDto (COUNT(o)) FROM Order o " +

@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.coupon.service;
 
-import com.kdg.hexa_delivery.domain.base.enums.Status;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.coupon.dto.CouponRequestDto;
 import com.kdg.hexa_delivery.domain.coupon.dto.CouponResponseDto;
 import com.kdg.hexa_delivery.domain.coupon.entity.Coupon;
@@ -11,6 +11,9 @@ import com.kdg.hexa_delivery.domain.coupon.repository.UserCouponRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.NotFoundException;
+import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,7 +86,7 @@ public class CouponService {
         List<Coupon> coupons = couponRepository.findAllByStoreId(storeId);
 
         if(coupons == null){
-            throw new RuntimeException("coupon doesn't exist");
+            throw new NotFoundException(ExceptionType.COUPON_NOT_FOUND);
         }
 
         // 만료된 쿠폰 제거
@@ -103,7 +106,7 @@ public class CouponService {
         List<Coupon> coupons = userCouponRepository.findAllByUserId(userId);
 
         if(coupons == null){
-            throw new RuntimeException("coupon doesn't exist");
+            throw new NotFoundException(ExceptionType.COUPON_NOT_FOUND);
         }
 
         // 만료된 쿠폰 제거
@@ -131,7 +134,7 @@ public class CouponService {
         LocalDateTime now = LocalDateTime.now();
         if(now.isAfter(coupon.getExpirationTime())){  // 12-07    12-05
             coupon.updateStatus2Delete();
-            throw new RuntimeException("만료된 쿠폰입니다.");
+            throw new WrongAccessException(ExceptionType.EXPIRATION);
         }
 
         if(coupon.getToDayQuantity() > 0 && coupon.getTotalQuantity() > 0) {
@@ -140,7 +143,7 @@ public class CouponService {
         }
 
         if(coupon.getToDayQuantity() <= 0 || coupon.getTotalQuantity() <= 0) {
-            throw new RuntimeException("할당된 수량이 다 떨어졌습니다.");
+            throw new NotFoundException(ExceptionType.NOT_AMOUNT);
         }
 
         // 유저 쿠폰 생성

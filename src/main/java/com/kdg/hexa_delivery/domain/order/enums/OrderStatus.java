@@ -1,4 +1,4 @@
-package com.kdg.hexa_delivery.domain.base.enums;
+package com.kdg.hexa_delivery.domain.order.enums;
 
 public enum OrderStatus {
     ORDERED, ACCEPTED, COOKING, COOKED, DELIVERY, DELIVERED , DECLINED;

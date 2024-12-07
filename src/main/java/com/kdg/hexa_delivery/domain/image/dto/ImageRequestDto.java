@@ -1,6 +1,6 @@
 package com.kdg.hexa_delivery.domain.image.dto;
 
-import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
+import com.kdg.hexa_delivery.domain.image.enums.ImageOwner;
 import lombok.Getter;
 
 @Getter
