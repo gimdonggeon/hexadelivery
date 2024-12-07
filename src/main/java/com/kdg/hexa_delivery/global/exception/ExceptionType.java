@@ -34,6 +34,7 @@ public enum ExceptionType {
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 주문 정보를 찾을 수 없습니다."),
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 메뉴 정보를 찾을 수 없습니다."),
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 이미지 정보를 찾을 수 없습니다."),
+    POINT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 이미지 정보를 찾을 수 없습니다."),
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 쿠폰 정보를 찾을 수 없습니다."),
     ADVERTISE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 광고 정보를 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 리뷰을 찾을 수 없습니다."),

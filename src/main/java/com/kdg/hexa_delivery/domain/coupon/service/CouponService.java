@@ -1,11 +1,11 @@
 package com.kdg.hexa_delivery.domain.coupon.service;
 
-import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.domain.coupon.dto.CouponRequestDto;
 import com.kdg.hexa_delivery.domain.coupon.dto.CouponResponseDto;
 import com.kdg.hexa_delivery.domain.coupon.entity.Coupon;
 import com.kdg.hexa_delivery.domain.coupon.entity.UserCoupon;
 import com.kdg.hexa_delivery.domain.coupon.entity.enums.CouponType;
+import com.kdg.hexa_delivery.domain.coupon.entity.enums.UserCouponStatus;
 import com.kdg.hexa_delivery.domain.coupon.repository.CouponRepository;
 import com.kdg.hexa_delivery.domain.coupon.repository.UserCouponRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
@@ -13,14 +13,17 @@ import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.global.exception.ExceptionType;
 import com.kdg.hexa_delivery.global.exception.NotFoundException;
-import com.kdg.hexa_delivery.global.exception.WrongAccessException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @Service
 public class CouponService {
 
@@ -38,6 +41,29 @@ public class CouponService {
         this.userCouponRepository = userCouponRepository;
     }
 
+    @Order(1)
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void clearCoupons() {
+        log.info("clear coupons");
+        List<Coupon> coupons = couponRepository.findAllByNORMAL();
+
+        // coupon.getExpirationTime().isAfter(now)
+        //만료기한 지난거 상태 변경
+        LocalDate now = LocalDate.now();
+        for (Coupon coupon : coupons) {
+            if(now.isAfter(coupon.getExpirationTime())){
+                coupon.updateStatus2Delete();
+            }
+        }
+
+        // 하루 제한 발급량 초기화
+        for (Coupon coupon : coupons) {
+            coupon.resetToDayQuantity();
+        }
+        couponRepository.saveAll(coupons);
+    }
+
     /**
      *  쿠폰 생성 메서드
      *
@@ -49,7 +75,7 @@ public class CouponService {
         Store store = storeRepository.findByIdOrElseThrow(couponRequestDto.getStoreId());
 
         Coupon coupon = new Coupon(couponRequestDto.getCouponType(),
-                LocalDateTime.now().plusDays(couponRequestDto.getPeriodDayQuantity()),
+                LocalDate.now().plusDays(couponRequestDto.getPeriodDayQuantity()),
                 couponRequestDto.getAmount(),
                 couponRequestDto.getMaxDiscountAmount(),
                 couponRequestDto.getTotalQuantity(),
@@ -83,18 +109,15 @@ public class CouponService {
      * @return 쿠폰 정보 전달
      */
     public List<CouponResponseDto> getMyStoreCoupon(Long storeId) {
-        List<Coupon> coupons = couponRepository.findAllByStoreId(storeId);
+        //List<Coupon> coupons = couponRepository.findAllByStoreId(storeId);
+
+        List<Coupon> coupons = couponRepository.findAllByStoreIdAndDate(storeId, LocalDate.now());
 
         if(coupons == null){
             throw new NotFoundException(ExceptionType.COUPON_NOT_FOUND);
         }
 
-        // 만료된 쿠폰 제거
-        changeStatus(coupons);
-
-        return coupons.stream()
-                .filter(coupon -> coupon.getStatus().equals(Status.NORMAL))
-                .map(CouponResponseDto::toDto).toList();
+        return coupons.stream().map(CouponResponseDto::toDto).toList();
     }
 
     /**
@@ -103,18 +126,13 @@ public class CouponService {
      * @param userId  쿠폰 ID
      */
     public List<CouponResponseDto> getMyCoupon(Long userId) {
-        List<Coupon> coupons = userCouponRepository.findAllByUserId(userId);
+        List<Coupon> coupons = userCouponRepository.findAllByUserId(userId, LocalDate.now());
 
         if(coupons == null){
             throw new NotFoundException(ExceptionType.COUPON_NOT_FOUND);
         }
 
-        // 만료된 쿠폰 제거
-        changeStatus(coupons);
-
-        return coupons.stream()
-                .filter(coupon -> coupon.getStatus().equals(Status.NORMAL))
-                .map(CouponResponseDto::toDto).toList();
+        return coupons.stream().map(CouponResponseDto::toDto).toList();
     }
 
 
@@ -128,21 +146,20 @@ public class CouponService {
      */
     @Transactional
     public CouponResponseDto issueCoupon(User loginUser, Long couponId) {
-        Coupon coupon = couponRepository.findByIdOrElseThrow(couponId);
+        Coupon coupon = couponRepository.findAllByCouponIdAndNORMAL(couponId);
 
-        // 만료된 쿠폰인지 확인
-        LocalDateTime now = LocalDateTime.now();
-        if(now.isAfter(coupon.getExpirationTime())){  // 12-07    12-05
-            coupon.updateStatus2Delete();
-            throw new WrongAccessException(ExceptionType.EXPIRATION);
+        if (coupon == null){
+            throw new NotFoundException(ExceptionType.COUPON_NOT_FOUND);
         }
 
-        if(coupon.getToDayQuantity() > 0 && coupon.getTotalQuantity() > 0) {
+        // 쿠폰 개수 감소
+        if(coupon.getTodayQuantity() > 0 && coupon.getTotalQuantity() > 0) {
             coupon.decrementToDayQuantity();
             coupon.decrementTotalQuantity();
         }
 
-        if(coupon.getToDayQuantity() <= 0 || coupon.getTotalQuantity() <= 0) {
+        // 둘 중 하나라도 다 떨어지면 예외처리
+        if(coupon.getTodayQuantity() <= 0 || coupon.getTotalQuantity() <= 0) {
             throw new NotFoundException(ExceptionType.NOT_AMOUNT);
         }
 
@@ -168,20 +185,25 @@ public class CouponService {
      * @return 할인 금액
      */
     public int useCoupon(Long couponId, Long userId, int totalPrice) {
-        Coupon coupon = couponRepository.findByIdAndUserId(couponId);
+        Coupon coupon = couponRepository.findByIdAndCouponId(couponId);
 
-        // 만료된 쿠폰인지 확인
-        LocalDateTime now = LocalDateTime.now();
-        if(now.isAfter(coupon.getExpirationTime())){  // 12-07    12-05
-            coupon.updateStatus2Delete();
+        if(coupon == null){
             return 0;
         }
 
         // 쿠폰이 없거나, 자신이 가진 쿠폰이 아닐경우
         UserCoupon userCoupon = coupon.getUserCouponList().stream()
-                .filter(uc -> uc.getUser().getId().equals(userId)).findAny().orElse(null);
+                .filter(uc -> uc.getUser().getId().equals(userId)
+                        && uc.getStatus().equals(UserCouponStatus.UNUSED))
+                .findAny()
+                .orElse(null);
 
         if(userCoupon == null){
+            return 0;
+        }
+
+        // 이미 사용한 쿠폰은 사용 불가
+        if(userCoupon.getStatus().equals(UserCouponStatus.USED)){
             return 0;
         }
 
@@ -217,15 +239,4 @@ public class CouponService {
         couponRepository.save(coupon);
     }
 
-
-    // 만료된 쿠폰 제거 메서드
-    private void changeStatus(List<Coupon> coupons){
-        // 쿠폰 만료기간 상태 변경
-        LocalDateTime now = LocalDateTime.now();
-        for (Coupon coupon : coupons) {
-            if(now.isAfter(coupon.getExpirationTime())){
-                coupon.updateStatus2Delete();
-            }
-        }
-    }
 }

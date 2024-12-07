@@ -6,15 +6,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 public interface PointRepository extends JpaRepository<Point, Long> {
 
-    @Query("SELECT SUM(p.pointPresentAmount) FROM Point p WHERE p.user.id = :userId AND p.expirationTime > :time AND p.status = 'NORMAL'")
-    Integer findByUserIdToPointAmount(@Param("userId") Long userId, @Param("time")LocalDateTime time);
+    @Query("SELECT SUM(p.pointPresentAmount) FROM Point p WHERE p.user.id = :userId AND p.expirationTime >= :time AND p.status = 'NORMAL'")
+    Integer findByUserIdToPointAmount(@Param("userId") Long userId, @Param("time") LocalDate time);
 
-    @Query("SELECT p FROM Point p WHERE p.user.id = :userId AND p.status = 'NORMAL'")
-    List<Point> findAllByUserId(@Param("userId") Long userId);
+    @Query("SELECT p FROM Point p WHERE p.user.id = :userId AND p.expirationTime >= :time AND p.status = 'NORMAL' ORDER BY p.pointId")
+    List<Point> findAllByUserId(@Param("userId") Long userId, @Param("time") LocalDate time);
+
+    @Query("SELECT p FROM Point p WHERE p.status = 'NORMAL'")
+    List<Point> findAlByNORMAL();
 }
