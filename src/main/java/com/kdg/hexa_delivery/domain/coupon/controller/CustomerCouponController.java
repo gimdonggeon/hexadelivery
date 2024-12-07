@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/customers/coupons")
 public class CustomerCouponController {
@@ -39,6 +41,22 @@ public class CustomerCouponController {
     }
 
     /**
+     * 한 가게 쿠폰 정보 가져오기 API
+     *
+     * @param storeId 가게 ID
+     *
+     * @return 쿠폰 정보 전달
+     */
+    @GetMapping("/stores")
+    public ResponseEntity<List<CouponResponseDto>> getStoreCoupon(@RequestParam Long storeId) {
+        // 쿠폰 발급하기
+        List<CouponResponseDto> couponResponseDtoList = couponService.getMyStoreCoupon(storeId);
+
+        return ResponseEntity.ok().body(couponResponseDtoList);
+
+    }
+
+    /**
      * 쿠폰 발급 API
      *
      * @param couponId 쿠폰 ID
@@ -47,9 +65,9 @@ public class CustomerCouponController {
      *
      * @return 쿠폰 정보 전달
      */
-    @PostMapping("/issue")
-    public ResponseEntity<CouponResponseDto> issueCoupon(@RequestParam Long couponId,
-                                                       HttpServletRequest httpServletRequest) {
+    @PostMapping("/{couponId}")
+    public ResponseEntity<CouponResponseDto> issueCoupon(@PathVariable Long couponId,
+                                                         HttpServletRequest httpServletRequest) {
         HttpSession session = httpServletRequest.getSession(false);
         User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
 

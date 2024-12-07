@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/owners/coupons")
 public class OwnerCouponController {
@@ -33,6 +35,22 @@ public class OwnerCouponController {
         CouponResponseDto couponResponseDto = couponService.createCoupon(couponRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(couponResponseDto);
+    }
+
+    /**
+     * 한 가게 쿠폰 정보 가져오기 API
+     *
+     * @param storeId 가게 ID
+     *
+     * @return 쿠폰 정보 전달
+     */
+    @GetMapping("/stores")
+    public ResponseEntity<List<CouponResponseDto>> getStoreCoupon(@RequestParam Long storeId) {
+        // 쿠폰 발급하기
+        List<CouponResponseDto> couponResponseDtoList = couponService.getMyStoreCoupon(storeId);
+
+        return ResponseEntity.ok().body(couponResponseDtoList);
+
     }
 
 
