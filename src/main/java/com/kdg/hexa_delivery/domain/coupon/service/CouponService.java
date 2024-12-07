@@ -1,5 +1,6 @@
 package com.kdg.hexa_delivery.domain.coupon.service;
 
+import com.kdg.hexa_delivery.domain.base.enums.Status;
 import com.kdg.hexa_delivery.domain.coupon.dto.CouponRequestDto;
 import com.kdg.hexa_delivery.domain.coupon.dto.CouponResponseDto;
 import com.kdg.hexa_delivery.domain.coupon.entity.Coupon;
@@ -85,7 +86,12 @@ public class CouponService {
             throw new RuntimeException("coupon doesn't exist");
         }
 
-        return coupons.stream().map(CouponResponseDto::toDto).toList();
+        // 만료된 쿠폰 제거
+        changeStatus(coupons);
+
+        return coupons.stream()
+                .filter(coupon -> coupon.getStatus().equals(Status.NORMAL))
+                .map(CouponResponseDto::toDto).toList();
     }
 
     /**
@@ -100,7 +106,12 @@ public class CouponService {
             throw new RuntimeException("coupon doesn't exist");
         }
 
-        return coupons.stream().map(CouponResponseDto::toDto).toList();
+        // 만료된 쿠폰 제거
+        changeStatus(coupons);
+
+        return coupons.stream()
+                .filter(coupon -> coupon.getStatus().equals(Status.NORMAL))
+                .map(CouponResponseDto::toDto).toList();
     }
 
 
@@ -115,6 +126,13 @@ public class CouponService {
     @Transactional
     public CouponResponseDto issueCoupon(User loginUser, Long couponId) {
         Coupon coupon = couponRepository.findByIdOrElseThrow(couponId);
+
+        // 만료된 쿠폰인지 확인
+        LocalDateTime now = LocalDateTime.now();
+        if(now.isAfter(coupon.getExpirationTime())){  // 12-07    12-05
+            coupon.updateStatus2Delete();
+            throw new RuntimeException("만료된 쿠폰입니다.");
+        }
 
         if(coupon.getToDayQuantity() > 0 && coupon.getTotalQuantity() > 0) {
             coupon.decrementToDayQuantity();
@@ -147,11 +165,19 @@ public class CouponService {
      * @return 할인 금액
      */
     public int useCoupon(Long couponId, Long userId, int totalPrice) {
-        Coupon coupon = couponRepository.findByIdAndUserIdAndDate(couponId, LocalDateTime.now());
+        Coupon coupon = couponRepository.findByIdAndUserId(couponId);
 
+        // 만료된 쿠폰인지 확인
+        LocalDateTime now = LocalDateTime.now();
+        if(now.isAfter(coupon.getExpirationTime())){  // 12-07    12-05
+            coupon.updateStatus2Delete();
+            return 0;
+        }
+
+        // 쿠폰이 없거나, 자신이 가진 쿠폰이 아닐경우
         UserCoupon userCoupon = coupon.getUserCouponList().stream()
                 .filter(uc -> uc.getUser().getId().equals(userId)).findAny().orElse(null);
-        // 쿠폰이 없거나, 자신이 가진 쿠폰이 아닐경우
+
         if(userCoupon == null){
             return 0;
         }
@@ -186,5 +212,17 @@ public class CouponService {
         coupon.updateStatus2Delete();
 
         couponRepository.save(coupon);
+    }
+
+
+    // 만료된 쿠폰 제거 메서드
+    private void changeStatus(List<Coupon> coupons){
+        // 쿠폰 만료기간 상태 변경
+        LocalDateTime now = LocalDateTime.now();
+        for (Coupon coupon : coupons) {
+            if(now.isAfter(coupon.getExpirationTime())){
+                coupon.updateStatus2Delete();
+            }
+        }
     }
 }
