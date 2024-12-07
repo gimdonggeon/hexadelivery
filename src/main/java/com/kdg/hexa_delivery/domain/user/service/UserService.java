@@ -79,7 +79,7 @@ public class UserService {
 
         //비밀번호 비교
         if (!passwordEncoder.matches(password, loginUser.getPassword())) {
-            throw new BadValueException(ExceptionType.BAD_PASSWORD);
+            throw new BadValueException(ExceptionType.PASSWORD_NOT_CORRECT);
         }
 
         return loginUser;
