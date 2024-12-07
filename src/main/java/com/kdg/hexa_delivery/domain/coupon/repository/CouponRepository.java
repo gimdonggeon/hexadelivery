@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -18,6 +17,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     @Query("SELECT c FROM Coupon c WHERE c.store.storeId = :storeId ")
     List<Coupon> findAllByStoreId(@Param("storeId") Long storeId);
 
-    @Query("SELECT c FROM Coupon c WHERE c.couponId = :couponId AND c.expirationTime > :time")
-    Coupon findByIdAndUserIdAndDate(@Param("couponId") Long couponId, @Param("time") LocalDateTime time);
+    @Query("SELECT c FROM Coupon c WHERE c.couponId = :couponId")
+    Coupon findByIdAndUserId(@Param("couponId") Long couponId);
 }

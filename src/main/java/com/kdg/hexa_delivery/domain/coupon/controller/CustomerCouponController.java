@@ -47,7 +47,7 @@ public class CustomerCouponController {
      *
      * @return 쿠폰 정보 전달
      */
-    @GetMapping
+    @GetMapping("/me")
     public ResponseEntity<List<CouponResponseDto>> getMyCoupon(@RequestParam Long userId) {
         // 쿠폰 발급하기
         List<CouponResponseDto> couponResponseDtoList = couponService.getMyCoupon(userId);
