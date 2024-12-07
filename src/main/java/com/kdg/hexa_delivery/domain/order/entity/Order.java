@@ -48,6 +48,10 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime statusChangedAt;
 
+    private String declinedReason;
+
+    private Long orderCount;
+
     public Order() {
     }
 
@@ -67,4 +71,16 @@ public class Order extends BaseEntity {
     public boolean isTotalPriceAboveMinimum() {
         return this.totalPrice >= this.store.getMinimumOrderValue();
     }
+
+    // 사업자 주문 거절
+    public void declineOrder(String declinedReason) {
+        this.orderStatus = OrderStatus.DECLINED;
+        this.declinedReason = declinedReason;
+    }
+
+    // 사용자 주문횟수
+    public void countOrder(Long orderCount) {
+        this.orderCount = orderCount;
+    }
+
 }

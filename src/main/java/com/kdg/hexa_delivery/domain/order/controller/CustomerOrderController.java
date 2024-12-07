@@ -1,6 +1,7 @@
 package com.kdg.hexa_delivery.domain.order.controller;
 
 
+import com.kdg.hexa_delivery.domain.order.dto.OrderDeclinedResponseDto;
 import com.kdg.hexa_delivery.domain.order.dto.OrderRequestDto;
 import com.kdg.hexa_delivery.domain.order.dto.OrderResponseDto;
 import com.kdg.hexa_delivery.domain.order.service.OrderService;
@@ -12,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -50,4 +53,17 @@ public class CustomerOrderController {
 
         return ResponseEntity.status(HttpStatus.OK).body(orders);
     }
+
+    //고객 주문상세 조회
+    @GetMapping("/{orderId}")
+    public ResponseEntity<Map<String, Object>> getDeclinedOrder(@PathVariable Long orderId, HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getSession(false).getAttribute(Const.LOGIN_USER);
+        Map<String,Object> result = orderService.getCustomerOrderDetails(loginUser,orderId);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+
+
 }

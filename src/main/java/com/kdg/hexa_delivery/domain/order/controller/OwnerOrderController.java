@@ -1,6 +1,8 @@
 package com.kdg.hexa_delivery.domain.order.controller;
 
 import com.kdg.hexa_delivery.domain.base.validation.Validation;
+import com.kdg.hexa_delivery.domain.order.dto.OrderDeclinedRequestDto;
+import com.kdg.hexa_delivery.domain.order.dto.OrderDeclinedResponseDto;
 import com.kdg.hexa_delivery.domain.order.dto.OrderResponseDto;
 import com.kdg.hexa_delivery.domain.order.dto.OrderStatusRequestDto;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
@@ -53,5 +55,11 @@ public class OwnerOrderController {
     public ResponseEntity<OrderResponseDto> getOrderDetails(@PathVariable Long orderId) {
         OrderResponseDto orderResponseDto = orderService.getOrderDetails(orderId);
         return ResponseEntity.status(HttpStatus.OK).body(orderResponseDto);
+    }
+
+    // 주문 거절
+    @PutMapping("/{orderId}/decline")
+    public ResponseEntity<OrderDeclinedResponseDto> declineOrder(@PathVariable Long orderId, @RequestBody OrderDeclinedRequestDto orderDeclinedRequestDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.declineOrder(orderId, orderDeclinedRequestDto));
     }
 }
