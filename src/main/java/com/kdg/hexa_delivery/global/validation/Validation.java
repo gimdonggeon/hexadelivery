@@ -1,6 +1,8 @@
 package com.kdg.hexa_delivery.global.validation;
 
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 
 public class Validation {
 
@@ -33,7 +35,7 @@ public class Validation {
     public static void validMyStoreAccess(Long storeId,User loginUser){
         // 사장님의 본인 가게가 아니면 예외 발생
         if(loginUser.getStoreList().stream().filter(store -> store.getStoreId().equals(storeId)).findAny().isEmpty()){
-            throw new RuntimeException("본인의 가게가 아닙니다.");
+            throw new WrongAccessException(ExceptionType.ACCESS_OTHER_STORE);
         }
     }
 }
