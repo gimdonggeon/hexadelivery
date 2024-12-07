@@ -8,14 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByUser(User user);
-
-    Optional<Order> findById(Long orderId);
 
    default Order findByIdOrElseThrow(Long orderId){
         return findById(orderId).orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));

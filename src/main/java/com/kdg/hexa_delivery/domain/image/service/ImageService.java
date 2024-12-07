@@ -3,6 +3,7 @@ package com.kdg.hexa_delivery.domain.image.service;
 import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.image.repository.ImageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -26,6 +28,7 @@ public class ImageService {
     private final S3Client s3Client;
     private final ImageRepository imageRepository;
 
+    @Autowired
     public ImageService(S3Client s3Client, ImageRepository imageRepository) {
         this.s3Client = s3Client;
         this.imageRepository = imageRepository;
@@ -147,7 +150,9 @@ public class ImageService {
 
         try {
             for (MultipartFile menuImage : images) {
-                imageUrls.add(uploadImage(menuImage, ownerId, owner));
+                if(!Objects.requireNonNull(menuImage.getOriginalFilename()).isBlank()) {
+                    imageUrls.add(uploadImage(menuImage, ownerId, owner));
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException("이미지 업로드 중 오류 발생", e);

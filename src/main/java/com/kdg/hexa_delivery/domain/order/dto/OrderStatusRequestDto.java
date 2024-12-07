@@ -5,12 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class OrderStatusDto {
+public class OrderStatusRequestDto {
 
     @NotNull(message = "주문 상태는 필수입니다.")
     private OrderStatus orderStatus;
 
-    public OrderStatusDto() {
+    public OrderStatusRequestDto() {
     }
 
     public OrderStatus toOrderStatus() {

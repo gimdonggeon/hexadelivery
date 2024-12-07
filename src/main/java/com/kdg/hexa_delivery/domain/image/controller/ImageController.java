@@ -5,7 +5,7 @@ import com.kdg.hexa_delivery.domain.image.dto.ImageRequestDto;
 import com.kdg.hexa_delivery.domain.image.dto.ImageResponseDto;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.image.service.ImageService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,11 +14,23 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/images")
-@RequiredArgsConstructor
 public class ImageController {
 
     private final ImageService imageService;
 
+    @Autowired
+    public ImageController(ImageService imageService) {
+        this.imageService = imageService;
+    }
+
+    /**
+     * 이미지 업로드 API
+     *
+     * @param imageFile 이미지 파일
+     * @param imageRequestDto 이미지 주인 정보
+     *
+     * @return 이미지 url 전달
+     */
     @PostMapping
     public ResponseEntity<String> uploadImage(@RequestParam("imageFile") MultipartFile imageFile,
                                               @ModelAttribute ImageRequestDto imageRequestDto) {
@@ -30,6 +42,14 @@ public class ImageController {
         }
     }
 
+    /**
+     * 이미지 가져오기 API
+     *
+     * @param ownerId 주인의 ID
+     * @param owner 주인의 클래스 enum
+     *
+     * @return 이미지 url 들 전달
+     */
     @GetMapping
     public ResponseEntity<ImageResponseDto> getImages(@RequestParam Long ownerId, @RequestParam ImageOwner owner) {
         try {
@@ -44,6 +64,15 @@ public class ImageController {
     }
 
 
+    /**
+     * 이미지 수정 API
+     *
+     * @param imageFile 이미지 파일
+     * @param imageName 이미지 이름
+     * @param imageRequestDto 이미지 주인 정보
+     *
+     * @return 이미지 url 전달
+     */
     @PutMapping
     public ResponseEntity<String> modifyImage(@RequestParam("imageFile") MultipartFile imageFile,
                                               @RequestParam String imageName,
@@ -56,6 +85,13 @@ public class ImageController {
         }
     }
 
+    /**
+     * 이미지 논리 삭제 API
+     *
+     * @param imageUrl 이미지 url
+     *
+     * @return 이미지 삭제 메세지 전달
+     */
     @DeleteMapping
     public ResponseEntity<String> deleteImage(@RequestParam String imageUrl) {
         // 이미지 삭제

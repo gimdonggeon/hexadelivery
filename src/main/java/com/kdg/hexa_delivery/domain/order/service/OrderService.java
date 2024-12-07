@@ -1,11 +1,13 @@
 package com.kdg.hexa_delivery.domain.order.service;
 
 import com.kdg.hexa_delivery.domain.base.enums.OrderStatus;
+import com.kdg.hexa_delivery.domain.coupon.service.CouponService;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.menu.repository.MenuRepository;
 import com.kdg.hexa_delivery.domain.order.dto.*;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
 import com.kdg.hexa_delivery.domain.order.repository.OrderRepository;
+import com.kdg.hexa_delivery.domain.point.service.PointService;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
@@ -25,12 +27,21 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
+    private final PointService pointService;
+    private final CouponService couponService;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, StoreRepository storeRepository, MenuRepository menuRepository) {
+    public OrderService(OrderRepository orderRepository,
+                        StoreRepository storeRepository,
+                        MenuRepository menuRepository,
+                        PointService pointService,
+                        CouponService couponService) {
+
         this.orderRepository = orderRepository;
         this.storeRepository = storeRepository;
         this.menuRepository = menuRepository;
+        this.pointService = pointService;
+        this.couponService = couponService;
     }
 
     //고객 주문 생성
@@ -41,14 +52,31 @@ public class OrderService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 가게가 없습니다."));
 
+        // 헤당 가게의 메뉴 가져오기
         Menu menu = menuRepository.findByIdOrElseThrow(orderRequestDto.getMenuId());
 
+        // 개수 가져오기
         int quantity = orderRequestDto.getQuantity();
 
-        this.validateOrderTimeAndMinimumAmount(store, menu, quantity, user);
+        // 전체 금액 계산
+        int totalPrice = menu.getPrice() * quantity;
+
+        // 주문 시간과 최소 금액 체크
+        this.validateOrderTimeAndMinimumAmount(store, totalPrice);
+
+        // 쿠폰 사용 적용
+        if(orderRequestDto.getCouponId() != null) {
+            totalPrice -= couponService.useCoupon(orderRequestDto.getCouponId(), user.getId(), totalPrice);
+        }
+
+        // 포인트 사용 적용
+        if(orderRequestDto.getPointDiscount() != null) {
+            // 전체금액에서 사용한 포인트만큼 빼기
+            totalPrice -= pointService.usePoint(orderRequestDto.getPointDiscount());
+        }
 
         // 주문 생성
-        Order order = new Order(user, store, menu, quantity);
+        Order order = new Order(user, store, menu, totalPrice, quantity);
 
         //주문 저장
         orderRepository.save(order);
@@ -65,7 +93,7 @@ public class OrderService {
     }
 
     // 주문 시간과 최소 금액 체크
-    public void validateOrderTimeAndMinimumAmount(Store store, Menu menu, int quantity, User user) {
+    public void validateOrderTimeAndMinimumAmount(Store store, int totalPrice) {
 
         // 가게의 오픈시간과 클로즈 시간 체크
         String openingHoursString = store.getOpeningHours();
@@ -80,7 +108,6 @@ public class OrderService {
         }
 
         // 최소금액 체크
-        int totalPrice = menu.getPrice() * quantity;
         if (totalPrice < store.getMinimumOrderValue()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "최소 주문 금액보다 높아야 합니다.");
         }
@@ -99,6 +126,11 @@ public class OrderService {
         order.updateStatus(newStatus);
         orderRepository.save(order);
 
+        // 배달 완료시 포인트 적립
+        if(order.getOrderStatus().equals(OrderStatus.DELIVERED)){
+            pointService.addPoint(order);
+        }
+
         return OrderResponseDto.toDto(order);
     }
 
@@ -114,6 +146,7 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
     }
+
 
     /*
     *
