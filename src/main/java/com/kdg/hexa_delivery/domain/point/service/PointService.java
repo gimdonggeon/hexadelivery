@@ -29,7 +29,7 @@ public class PointService {
         Integer pointAmount = (int) (order.getTotalPrice()*0.03);
 
         // 포인트 생성
-        Point point = new Point(order, order.getUser(),pointAmount);
+        Point point = new Point(order, order.getUser(), pointAmount);
 
         // 포인트 저장
         pointRepository.save(point);
@@ -52,12 +52,19 @@ public class PointService {
         // 포인트 사용
         // 사용하려는 포인트보다 적은 포인트가 있으면 있는 포인트만 사용
         for(Point point : pointList) {
-            if(pointDiscount > point.getPointAmount()){
+            if(pointDiscount > point.getPointPresentAmount()){
+                // 현재 포인트 제거
+                point.discountPointAmount(point.getPointPresentAmount());
                 point.updateStatus2Delete();
-                usedPoint += point.getPointAmount();
+                // 총 사용 포인트에 저장
+                usedPoint += point.getPointPresentAmount();
+                // 사용하려는 포인트에서 차감
+                pointDiscount -= point.getPointPresentAmount();
             }
-            else if(pointDiscount < point.getPointAmount()){
+            else if(pointDiscount < point.getPointPresentAmount()){
+                // 현재 포인트 제거
                 point.discountPointAmount(pointDiscount);
+                // 총 사용 포인트에 저장
                 usedPoint += pointDiscount;
                 break;
             }
