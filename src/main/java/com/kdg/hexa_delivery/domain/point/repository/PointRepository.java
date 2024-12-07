@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface PointRepository extends JpaRepository<Point, Long> {
 
-    @Query("SELECT SUM(p.pointAmount) FROM Point p WHERE p.user.id = :userId AND p.expirationTime > :time AND p.status = 'NORMAL'")
+    @Query("SELECT SUM(p.pointPresentAmount) FROM Point p WHERE p.user.id = :userId AND p.expirationTime > :time AND p.status = 'NORMAL'")
     Integer findByUserIdToPointAmount(@Param("userId") Long userId, @Param("time")LocalDateTime time);
 
     @Query("SELECT p FROM Point p WHERE p.expirationTime > :time AND p.status = 'NORMAL'")

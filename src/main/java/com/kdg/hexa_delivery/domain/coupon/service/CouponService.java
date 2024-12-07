@@ -6,6 +6,7 @@ import com.kdg.hexa_delivery.domain.coupon.entity.Coupon;
 import com.kdg.hexa_delivery.domain.coupon.entity.UserCoupon;
 import com.kdg.hexa_delivery.domain.coupon.entity.enums.CouponType;
 import com.kdg.hexa_delivery.domain.coupon.repository.CouponRepository;
+import com.kdg.hexa_delivery.domain.coupon.repository.UserCouponRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
@@ -21,11 +22,16 @@ public class CouponService {
 
     private final CouponRepository couponRepository;
     private final StoreRepository storeRepository;
+    private final UserCouponRepository userCouponRepository;
 
     @Autowired
-    public CouponService(CouponRepository couponRepository, StoreRepository storeRepository) {
+    public CouponService(CouponRepository couponRepository,
+                         StoreRepository storeRepository,
+                         UserCouponRepository userCouponRepository) {
+
         this.couponRepository = couponRepository;
         this.storeRepository = storeRepository;
+        this.userCouponRepository = userCouponRepository;
     }
 
     /**
@@ -74,6 +80,21 @@ public class CouponService {
      */
     public List<CouponResponseDto> getMyStoreCoupon(Long storeId) {
         List<Coupon> coupons = couponRepository.findAllByStoreId(storeId);
+
+        if(coupons == null){
+            throw new RuntimeException("coupon doesn't exist");
+        }
+
+        return coupons.stream().map(CouponResponseDto::toDto).toList();
+    }
+
+    /**
+     * 나의 쿠폰 가져오기 메서드
+     *
+     * @param userId  쿠폰 ID
+     */
+    public List<CouponResponseDto> getMyCoupon(Long userId) {
+        List<Coupon> coupons = userCouponRepository.findAllByUserId(userId);
 
         if(coupons == null){
             throw new RuntimeException("coupon doesn't exist");
@@ -166,5 +187,4 @@ public class CouponService {
 
         couponRepository.save(coupon);
     }
-
 }

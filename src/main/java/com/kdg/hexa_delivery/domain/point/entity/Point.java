@@ -19,7 +19,10 @@ public class Point extends BaseEntity {
     private Long pointId;
 
     @Column(nullable = false)
-    private Integer pointAmount;
+    private Integer pointTotalAmount;
+
+    @Column(nullable = false)
+    private Integer pointPresentAmount;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -37,10 +40,11 @@ public class Point extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    public Point(Order order, User user, Integer pointAmount) {
+    public Point(Order order, User user, Integer pointTotalAmount) {
         this.order = order;
         updateUser(user);
-        this.pointAmount = pointAmount;
+        this.pointTotalAmount = pointTotalAmount;
+        this.pointPresentAmount = pointTotalAmount;
         this.expirationTime = LocalDateTime.now().plusMonths(1);
         this.status = Status.NORMAL;
     }
@@ -50,7 +54,7 @@ public class Point extends BaseEntity {
     }
 
     public void discountPointAmount(Integer pointDiscount) {
-        this.pointAmount -= pointDiscount;
+        this.pointPresentAmount -= pointDiscount;
     }
 
     public void updateUser(User user) {

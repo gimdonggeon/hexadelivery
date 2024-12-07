@@ -3,6 +3,7 @@ package com.kdg.hexa_delivery.domain.image.service;
 import com.kdg.hexa_delivery.domain.base.enums.ImageOwner;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.image.repository.ImageRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class ImageService {
 
@@ -70,13 +72,8 @@ public class ImageService {
      * @param owner   이미지 주인의 클래스 타입 enum
      */
     public List<Image> findImages(Long ownerId, ImageOwner owner) {
-        List<Image> images = imageRepository.findByOwnerIdAndOwner(ownerId, owner);
 
-        if (images.isEmpty()) {
-            throw new RuntimeException("이미지가 없습니다.");
-        }
-
-        return images;
+        return imageRepository.findByOwnerIdAndOwner(ownerId, owner);
     }
 
     /**
