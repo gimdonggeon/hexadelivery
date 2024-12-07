@@ -144,6 +144,12 @@ public class OrderService {
     public OrderResponseDto getOrderDetails(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
+        // 주문한 사용자의 해당가게 주문횟수 조회
+        Long orderCount = orderRepository.countOrderByUser_IdAndOrderStatus(order.getUser().getId(),order.getStore().getStoreId());
+
+        // 주문횟수 입력
+        order.countOrder(orderCount);
+
         return OrderResponseDto.toDto(order);
     }
 

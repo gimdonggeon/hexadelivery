@@ -21,6 +21,7 @@ public class OrderResponseDto {
     private final Integer storeMinimumOrderValue;
     private final LocalDateTime orderedAt;
     private final LocalDateTime statusChangedAt;
+    private final Long countOrder;
 
     public static OrderResponseDto toDto(Order order) {
         return new OrderResponseDto(
@@ -35,7 +36,8 @@ public class OrderResponseDto {
                 order.getStore().getClosingHours(),
                 order.getStore().getMinimumOrderValue(),
                 order.getCreatedAt(),
-                order.getStatusChangedAt()
+                order.getStatusChangedAt(),
+                order.getOrderCount()
         );
     }
 
@@ -44,7 +46,8 @@ public class OrderResponseDto {
                             String menuName, Integer totalPrice,Integer quantity,
                             OrderStatus orderStatus,String storeOpeningHours,
                             String storeClosingHours, Integer storeMinimumOrderValue,
-                            LocalDateTime orderedAt, LocalDateTime statusChangedAt) {
+                            LocalDateTime orderedAt, LocalDateTime statusChangedAt,
+                            Long countOrder) {
         this.id = id;
         this.storeId = storeId;
         this.menuId = menuId;
@@ -57,5 +60,6 @@ public class OrderResponseDto {
         this.storeMinimumOrderValue = storeMinimumOrderValue;
         this.orderedAt = orderedAt;
         this.statusChangedAt = statusChangedAt;
+        this.countOrder = countOrder;
     }
 }
