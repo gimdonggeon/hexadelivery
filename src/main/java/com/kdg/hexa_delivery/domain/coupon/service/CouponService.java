@@ -6,21 +6,26 @@ import com.kdg.hexa_delivery.domain.coupon.entity.Coupon;
 import com.kdg.hexa_delivery.domain.coupon.entity.UserCoupon;
 import com.kdg.hexa_delivery.domain.coupon.entity.enums.CouponType;
 import com.kdg.hexa_delivery.domain.coupon.repository.CouponRepository;
+import com.kdg.hexa_delivery.domain.store.entity.Store;
+import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CouponService {
 
     private final CouponRepository couponRepository;
+    private final StoreRepository storeRepository;
 
     @Autowired
-    public CouponService(CouponRepository couponRepository) {
+    public CouponService(CouponRepository couponRepository, StoreRepository storeRepository) {
         this.couponRepository = couponRepository;
+        this.storeRepository = storeRepository;
     }
 
     /**
@@ -31,12 +36,15 @@ public class CouponService {
      * @return CouponResponseDto 쿠폰 정보 전달
      */
     public CouponResponseDto createCoupon(CouponRequestDto couponRequestDto) {
+        Store store = storeRepository.findByIdOrElseThrow(couponRequestDto.getStoreId());
+
         Coupon coupon = new Coupon(couponRequestDto.getCouponType(),
-                LocalDateTime.now().plusDays(4),
+                LocalDateTime.now().plusDays(couponRequestDto.getPeriodDayQuantity()),
                 couponRequestDto.getAmount(),
                 couponRequestDto.getMaxDiscountAmount(),
                 couponRequestDto.getTotalQuantity(),
-                couponRequestDto.getToDayQuantity()
+                couponRequestDto.getToDayQuantity(),
+                store
         );
 
         couponRepository.save(coupon);
@@ -56,6 +64,24 @@ public class CouponService {
 
         return CouponResponseDto.toDto(coupon);
     }
+
+    /**
+     *  내 가게에서 생성한 쿠폰 정보 가져오는 메서드
+     *
+     * @param storeId 가게 ID
+     *
+     * @return 쿠폰 정보 전달
+     */
+    public List<CouponResponseDto> getMyStoreCoupon(Long storeId) {
+        List<Coupon> coupons = couponRepository.findAllByStoreId(storeId);
+
+        if(coupons == null){
+            throw new RuntimeException("coupon doesn't exist");
+        }
+
+        return coupons.stream().map(CouponResponseDto::toDto).toList();
+    }
+
 
     /**
      * 쿠폰 발급하는 메서드
