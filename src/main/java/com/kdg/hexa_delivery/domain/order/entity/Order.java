@@ -9,6 +9,8 @@ import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @Table(name = "\"order\"")
@@ -43,6 +45,9 @@ public class Order extends BaseEntity {
     @OneToOne(mappedBy = "order")
     private Review review;
 
+    @Column(nullable = false)
+    private LocalDateTime statusChangedAt;
+
     public Order() {
     }
 
@@ -53,6 +58,7 @@ public class Order extends BaseEntity {
         this.totalPrice = totalPrice;
         this.quantity = quantity;
         this.orderStatus = OrderStatus.ORDERED;
+        this.statusChangedAt = LocalDateTime.now();
     }
 
     public void updateStatus(OrderStatus newStatus) {
