@@ -1,14 +1,18 @@
 package com.kdg.hexa_delivery.domain.store.service;
 
-import com.kdg.hexa_delivery.domain.image.enums.ImageOwner;
-import com.kdg.hexa_delivery.global.enums.Status;
+import com.kdg.hexa_delivery.domain.advertise.enums.AdvertiseStatus;
+import com.kdg.hexa_delivery.domain.advertise.enums.Category;
+import com.kdg.hexa_delivery.domain.advertise.enums.SearchConditions;
+import com.kdg.hexa_delivery.domain.advertise.repository.AdvertiseRepository;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
+import com.kdg.hexa_delivery.domain.image.enums.ImageOwner;
 import com.kdg.hexa_delivery.domain.image.service.ImageService;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.dto.StoreRequestDto;
 import com.kdg.hexa_delivery.domain.store.dto.StoreResponseDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.global.exception.ExceptionType;
 import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +20,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StoreService {
 
     private final StoreRepository storeRepository;
     private final ImageService imageService;
+    private final AdvertiseRepository advertiseRepository;
 
     @Autowired
-    public StoreService(StoreRepository storeRepository, ImageService imageService) {
+    public StoreService(StoreRepository storeRepository, ImageService imageService,
+                        AdvertiseRepository advertiseRepository) {
         this.storeRepository = storeRepository;
+        this.advertiseRepository = advertiseRepository;
         this.imageService = imageService;
+
     }
 
     /*
@@ -65,12 +75,28 @@ public class StoreService {
     }
 
     /*
-     * 가게 전체조회 메서드
+     * 가게 전체조회 메서드 :: 사용자 리뷰개수 , 별점 , 최근개업일자 , 광고
      */
-    public List<StoreResponseDto> getStores() {
-        return storeRepository.findAllByStatusNORMAL().stream().map(
-                store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))
-        ).toList();
+    public Map<String,List<StoreResponseDto>> getStores(Category category, SearchConditions searchConditions) {
+        Map<String,List<StoreResponseDto>> searchedStores = new LinkedHashMap<>();
+        // 광고가 실린 카테고리가 ?? 인 모든 가게 아이디들
+        List<Long> storeIds = advertiseRepository.findStoreIdByStoreCategoryAndStatus_Accepted(category, AdvertiseStatus.ACCEPTED);
+        // storeIds로 가게들 정보를 반환
+        List<StoreResponseDto> adStores = storeRepository.findAllByStoreIdIn(storeIds).stream().map(
+                store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
+        // Map 에 결과 삽입
+        searchedStores.put("** 광고 **", adStores);
+
+        // 검색기준에따른 가게 정보
+        List<StoreResponseDto> scStores = switch (searchConditions) {
+            case RECENTLY -> storeRepository.findAllOrderByCreatedAt().stream().map(store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
+            case SCOPE -> storeRepository.findAllOrderByRating().stream().map(store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
+            case REVIEW -> storeRepository.findAllOrderByReviews().stream().map(store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
+        };
+        // Map 에 결과 삽입
+        searchedStores.put("** "+ searchConditions.name()+" **", scStores);
+
+        return searchedStores;
     }
 
     /*
@@ -86,7 +112,7 @@ public class StoreService {
      */
     @Transactional
     public StoreResponseDto updateStore(Long storeId, String storeName,
-                                        String category, String phone,
+                                        Category category, String phone,
                                         String address, String storeDetail,
                                         String openingHours, String closingHours,
                                         Integer minimumOrderValue, List<MultipartFile> storeImages) {
@@ -98,6 +124,7 @@ public class StoreService {
 
         // 이미지 s3 서버에 업로드 후 url 받아오기
         List<Image> imageUrls = imageService.takeImages(storeImages, store.getStoreId(), ImageOwner.STORE);
+
 
         store.updateStore(storeName, category,phone,address,storeDetail,openingHours,closingHours,minimumOrderValue);
 
