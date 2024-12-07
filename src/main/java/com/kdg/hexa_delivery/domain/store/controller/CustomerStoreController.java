@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,8 +27,8 @@ public class CustomerStoreController {
      *   가게 전체 조회 //필터적용
      */
     @GetMapping("/{category}/{searchConditions}")
-    public ResponseEntity<Map<String,Object>> getStoresFilter(@PathVariable Category category,
-                                                        @PathVariable SearchConditions searchConditions) {
+    public ResponseEntity<Map<String, List<StoreResponseDto>>> getStoresFilter(@PathVariable Category category,
+                                                                               @PathVariable SearchConditions searchConditions) {
         return ResponseEntity.status(HttpStatus.OK).body(storeService.getStores(category,searchConditions));
     }
 

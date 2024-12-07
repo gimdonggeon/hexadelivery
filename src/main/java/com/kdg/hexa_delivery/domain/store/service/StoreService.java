@@ -77,8 +77,8 @@ public class StoreService {
     /*
      * 가게 전체조회 메서드 :: 사용자 리뷰개수 , 별점 , 최근개업일자 , 광고
      */
-    public Map<String,Object> getStores(Category category, SearchConditions searchConditions) {
-        Map<String,Object> searchedStores = new LinkedHashMap<>();
+    public Map<String,List<StoreResponseDto>> getStores(Category category, SearchConditions searchConditions) {
+        Map<String,List<StoreResponseDto>> searchedStores = new LinkedHashMap<>();
         // 광고가 실린 카테고리가 ?? 인 모든 가게 아이디들
         List<Long> storeIds = advertiseRepository.findStoreIdByStoreCategoryAndStatus_Accepted(category, AdvertiseStatus.ACCEPTED);
         // storeIds로 가게들 정보를 반환
