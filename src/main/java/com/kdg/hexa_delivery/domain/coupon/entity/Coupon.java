@@ -3,6 +3,7 @@ package com.kdg.hexa_delivery.domain.coupon.entity;
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
 import com.kdg.hexa_delivery.domain.base.enums.Status;
 import com.kdg.hexa_delivery.domain.coupon.entity.enums.CouponType;
+import com.kdg.hexa_delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -40,6 +41,10 @@ public class Coupon extends BaseEntity {
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<UserCoupon> userCouponList = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -50,7 +55,8 @@ public class Coupon extends BaseEntity {
                   Integer amount,
                   Integer maxDiscountAmount,
                   Integer totalQuantity,
-                  Integer toDayQuantity) {
+                  Integer toDayQuantity,
+                  Store store) {
 
         this.couponType = couponType;
         this.expirationTime = expirationTime;
@@ -59,11 +65,17 @@ public class Coupon extends BaseEntity {
         this.totalQuantity = totalQuantity;
         this.toDayQuantity = toDayQuantity;
         status = Status.NORMAL;
+        updateStore(store);
 
     }
 
     public Coupon() {
 
+    }
+
+    public void updateStore(Store store) {
+        this.store = store;
+        store.getCouponList().add(this);
     }
 
     public void updateUserCoupon(UserCoupon userCoupon) {
