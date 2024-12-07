@@ -39,11 +39,6 @@ public class UserService {
      */
     public SignupResponseDto saveUser(Role role, String email, String password, String name, String phone) {
 
-        //중복 아이디인지 확인
-//        if (userRepository.existsByEmail(email)) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하는 이메일입니다.");
-//        }
-
         Optional<User> userByEmail = userRepository.findByEmail(email);
 
         if (userByEmail.isPresent()) {
