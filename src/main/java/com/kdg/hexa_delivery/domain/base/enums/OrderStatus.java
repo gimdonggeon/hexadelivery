@@ -1,7 +1,7 @@
 package com.kdg.hexa_delivery.domain.base.enums;
 
 public enum OrderStatus {
-    ORDERED, ACCEPTED, COOKING, COOKED, DELIVERY, DELIVERED;
+    ORDERED, ACCEPTED, COOKING, COOKED, DELIVERY, DELIVERED , DECLINED;
 
     public boolean canTransitionTo(OrderStatus newStatus) {
         switch (this) {

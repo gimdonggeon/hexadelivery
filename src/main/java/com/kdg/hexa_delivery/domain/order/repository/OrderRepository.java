@@ -45,5 +45,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "AND (:storeId IS NULL OR o.store.storeId = :storeId) ")
     OrderAmountPricesResponseDto getMonthOrderPrices(LocalDateTime startDate, LocalDateTime endDate,
                                                      String category, Long storeId);
+    @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.id = :orderId")
+    Order getCustomerOrderDetails(Long userId, Long orderId);
 }
 

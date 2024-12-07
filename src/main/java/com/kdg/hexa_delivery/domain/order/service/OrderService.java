@@ -20,7 +20,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -148,7 +151,39 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
     }
+    // 사용자 주문 상세조회 (거절조회)
+    public Map<String, Object> getCustomerOrderDetails(User user, Long orderId) {
+        Order order = orderRepository.getCustomerOrderDetails(user.getId(),orderId);
+        if(order == null) {
+            throw new RuntimeException("주문을 찾을 수 없습니다.");
+        }
+        Map<String, Object> result = new HashMap<>();
 
+        if(order.getOrderStatus().equals(OrderStatus.DECLINED)){
+           OrderDeclinedResponseDto orderDeclinedResponseDto  = OrderDeclinedResponseDto.toDto(order);
+           result.put("주문상세 - 거절", orderDeclinedResponseDto);
+           return result;
+        }
+        OrderResponseDto orderResponseDto = OrderResponseDto.toDto(order);
+        result.put("주문상세", orderResponseDto);
+        return  result;
+
+    }
+
+    // 주문 거절 기능
+    @Transactional
+    public OrderDeclinedResponseDto declineOrder(Long orderId,OrderDeclinedRequestDto orderDeclinedRequestDto) {
+        Order order = orderRepository.findByIdOrElseThrow(orderId);
+        if(order.getOrderStatus() != OrderStatus.ORDERED) {
+            throw new RuntimeException("수락한 주문은 거절하실 수 없습니다.");
+        }
+        //주문 상태 거절 및 이유 작성
+        order.declineOrder(orderDeclinedRequestDto.getDeclinedReason());
+        //저장
+        Order savedOrder = orderRepository.save(order);
+
+        return OrderDeclinedResponseDto.toDto(savedOrder);
+    }
 
     /*
      *

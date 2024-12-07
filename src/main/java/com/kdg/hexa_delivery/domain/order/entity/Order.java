@@ -48,6 +48,8 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime statusChangedAt;
 
+    private String declinedReason;
+
     public Order() {
     }
 
@@ -66,5 +68,11 @@ public class Order extends BaseEntity {
     }
     public boolean isTotalPriceAboveMinimum() {
         return this.totalPrice >= this.store.getMinimumOrderValue();
+    }
+
+    public void declineOrder(String declinedReason) {
+        this.orderStatus = OrderStatus.DECLINED;
+        this.declinedReason = declinedReason;
+
     }
 }
