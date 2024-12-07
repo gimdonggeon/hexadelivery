@@ -16,12 +16,17 @@ public class CouponRequestDto {
 
     private final Integer toDayQuantity;
 
+    private final Integer periodDayQuantity;
 
-    public CouponRequestDto(CouponType couponType, Integer amount, Integer maxDiscountAmount, Integer totalQuantity, Integer toDayQuantity) {
+    private final Long StoreId;
+
+    public CouponRequestDto(CouponType couponType, Integer amount, Integer maxDiscountAmount, Integer totalQuantity, Integer toDayQuantity, Integer periodDayQuantity, Long storeId) {
         this.couponType = couponType;
         this.amount = amount;
         this.maxDiscountAmount = maxDiscountAmount;
         this.totalQuantity = totalQuantity;
         this.toDayQuantity = toDayQuantity;
+        this.periodDayQuantity = periodDayQuantity;
+        StoreId = storeId;
     }
 }
