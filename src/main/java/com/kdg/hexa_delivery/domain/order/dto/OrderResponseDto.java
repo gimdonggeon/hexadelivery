@@ -4,6 +4,8 @@ import com.kdg.hexa_delivery.domain.base.enums.OrderStatus;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class OrderResponseDto {
 
@@ -17,6 +19,8 @@ public class OrderResponseDto {
     private final String storeOpeningHours;
     private final String storeClosingHours;
     private final Integer storeMinimumOrderValue;
+    private final LocalDateTime orderedAt;
+    private final LocalDateTime statusChangedAt;
 
     public static OrderResponseDto toDto(Order order) {
         return new OrderResponseDto(
@@ -29,7 +33,9 @@ public class OrderResponseDto {
                 order.getOrderStatus(),
                 order.getStore().getOpeningHours(),
                 order.getStore().getClosingHours(),
-                order.getStore().getMinimumOrderValue()
+                order.getStore().getMinimumOrderValue(),
+                order.getCreatedAt(),
+                order.getStatusChangedAt()
         );
     }
 
@@ -37,7 +43,8 @@ public class OrderResponseDto {
     public OrderResponseDto(Long id, Long storeId, Long menuId,
                             String menuName, Integer totalPrice,Integer quantity,
                             OrderStatus orderStatus,String storeOpeningHours,
-                            String storeClosingHours, Integer storeMinimumOrderValue) {
+                            String storeClosingHours, Integer storeMinimumOrderValue,
+                            LocalDateTime orderedAt, LocalDateTime statusChangedAt) {
         this.id = id;
         this.storeId = storeId;
         this.menuId = menuId;
@@ -48,5 +55,7 @@ public class OrderResponseDto {
         this.storeOpeningHours = storeOpeningHours;
         this.storeClosingHours = storeClosingHours;
         this.storeMinimumOrderValue = storeMinimumOrderValue;
+        this.orderedAt = orderedAt;
+        this.statusChangedAt = statusChangedAt;
     }
 }

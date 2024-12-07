@@ -122,7 +122,7 @@ public class OrderService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."));
 
         if (!order.getOrderStatus().canTransitionTo(newStatus)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이전 단계로 돌아갈 수 없습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "상태 변경은 각 단계를 순차적으로만 진행할 수 있습니다.");
         }
         order.updateStatus(newStatus);
         orderRepository.save(order);
