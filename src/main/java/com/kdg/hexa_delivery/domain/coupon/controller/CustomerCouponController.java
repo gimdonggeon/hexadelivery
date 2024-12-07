@@ -41,6 +41,23 @@ public class CustomerCouponController {
     }
 
     /**
+     * 내가 가지고 있는 쿠폰 정보 가져오기 API
+     *
+     * @param userId 쿠폰 ID
+     *
+     * @return 쿠폰 정보 전달
+     */
+    @GetMapping
+    public ResponseEntity<List<CouponResponseDto>> getMyCoupon(@RequestParam Long userId) {
+        // 쿠폰 발급하기
+        List<CouponResponseDto> couponResponseDtoList = couponService.getMyCoupon(userId);
+
+        return ResponseEntity.ok().body(couponResponseDtoList);
+
+    }
+
+
+    /**
      * 한 가게 쿠폰 정보 가져오기 API
      *
      * @param storeId 가게 ID
