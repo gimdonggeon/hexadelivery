@@ -14,6 +14,8 @@ public class CouponResponseDto {
 
     private final CouponType couponType;
 
+    private final Integer amount;
+
     private final LocalDateTime expirationTime;
 
     private final Integer maxDiscountAmount;
@@ -24,9 +26,10 @@ public class CouponResponseDto {
 
     private final Status status;
 
-    public CouponResponseDto(Long couponId, CouponType couponType, LocalDateTime expirationTime, Integer maxDiscountAmount, Integer totalQuantity, Integer toDayQuantity, Status status) {
+    public CouponResponseDto(Long couponId, CouponType couponType, Integer amount, LocalDateTime expirationTime, Integer maxDiscountAmount, Integer totalQuantity, Integer toDayQuantity, Status status) {
         this.couponId = couponId;
         this.couponType = couponType;
+        this.amount = amount;
         this.expirationTime = expirationTime;
         this.maxDiscountAmount = maxDiscountAmount;
         this.totalQuantity = totalQuantity;
@@ -39,11 +42,11 @@ public class CouponResponseDto {
         return new CouponResponseDto(
                 coupon.getCouponId(),
                 coupon.getCouponType(),
+                coupon.getAmount(),
                 coupon.getExpirationTime(),
                 coupon.getMaxDiscountAmount(),
                 coupon.getTotalQuantity(),
                 coupon.getToDayQuantity(),
-                coupon.getStatus()
-        );
+                coupon.getStatus());
     }
 }

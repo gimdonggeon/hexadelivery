@@ -47,10 +47,8 @@ public class StoreService {
 
         Store savedStore = storeRepository.save(store);
 
-
         // 이미지 s3 서버에 업로드 후 url 받아오기
         List<Image> imageUrls = imageService.takeImages(storeImages, savedStore.getStoreId(), ImageOwner.STORE);
-
 
         return StoreResponseDto.toDto(savedStore, imageUrls);
     }
