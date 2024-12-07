@@ -20,27 +20,27 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // 일간 주문 수  :: 카테고리가 널값이거나 가게아이디가 널값인경우 둘다 널값인경우에도  동작
     @Query("SELECT new com.kdg.hexa_delivery.domain.order.dto.OrdersAmountResponseDto (COUNT(o)) FROM Order o " +
-            "WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.orderStatus = 'ORDERED'" +
+            "WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.orderStatus = 'DELIVERED'" +
             " AND (:category IS NULL OR o.store.category = :category) AND (:storeId IS NULL OR o.store.storeId = :storeId) ")
     OrdersAmountResponseDto getDayOrders(LocalDateTime startDate,LocalDateTime endDate, String category, Long storeId);
 
     // 일간 주문 금액  :: 카테고리가 널값이거나 가게아이디가 널값인경우 둘다 널값인경우에도  동작
     @Query("SELECT new com.kdg.hexa_delivery.domain.order.dto.OrderAmountPricesResponseDto (SUM(o.totalPrice)) FROM Order o" +
-            " WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.orderStatus = 'ORDERED' " +
+            " WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.orderStatus = 'DELIVERED' " +
             "AND (:category IS NULL OR o.store.category = :category)" +
             "AND (:storeId IS NULL OR o.store.storeId = :storeId) ")
     OrderAmountPricesResponseDto getDayOrderPrices(LocalDateTime startDate, LocalDateTime endDate, String category, Long storeId);
 
     // 월간 주문 수 :: 카테고리가 널값이거나 가게아이디가 널값인경우 둘다 널값인경우에도  동작
     @Query("SELECT new com.kdg.hexa_delivery.domain.order.dto.OrdersAmountResponseDto (COUNT(o)) FROM Order o" +
-            " WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.orderStatus = 'ORDERED' " +
+            " WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.orderStatus = 'DELIVERED' " +
             "AND (:category IS NULL OR o.store.category = :category)" +
             "AND (:storeId IS NULL OR o.store.storeId = :storeId) ")
     OrdersAmountResponseDto getMonthOrders(LocalDateTime startDate, LocalDateTime endDate,
                                            String category, Long storeId);
     // 월간 주문 금액 :: 카테고리가 널값이거나 가게아이디가 널값인경우 둘다 널값인경우에도  동작
     @Query("SELECT new com.kdg.hexa_delivery.domain.order.dto.OrderAmountPricesResponseDto (SUM(o.totalPrice)) FROM Order o" +
-            " WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.orderStatus = 'ORDERED' " +
+            " WHERE o.createdAt BETWEEN :startDate AND :endDate AND o.orderStatus = 'DELIVERED' " +
             "AND (:category IS NULL OR o.store.category = :category)" +
             "AND (:storeId IS NULL OR o.store.storeId = :storeId) ")
     OrderAmountPricesResponseDto getMonthOrderPrices(LocalDateTime startDate, LocalDateTime endDate,
