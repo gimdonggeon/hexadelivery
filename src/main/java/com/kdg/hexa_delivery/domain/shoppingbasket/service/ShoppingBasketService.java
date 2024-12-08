@@ -114,7 +114,7 @@ public class ShoppingBasketService {
             if(shoppingBasket.getMenuList().containsKey(menu.getId())){
                 menuList.put(menu.getName(), shoppingBasket.getMenuList().get(menu.getId()));
 
-                if(imageService.findImages(menu.getId(), ImageOwner.MENU).get(0) != null){
+                if(!imageService.findImages(menu.getId(), ImageOwner.MENU).isEmpty()){
                     // 대표 이미지 url 저장
                     imageUrls.add(imageService.findImages(menu.getId(), ImageOwner.MENU).get(0).getImageUrl());
                 }
