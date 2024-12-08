@@ -27,6 +27,7 @@ public enum ExceptionType {
     ALREADY_LOGIN(HttpStatus.UNAUTHORIZED, "이미 로그인한 사용자입니다."),
     ALREADY_REVIEW(HttpStatus.BAD_REQUEST, "이미 작성한 주문 건입니다."),
     ALREADY_REQUEST_ADVERTISE(HttpStatus.BAD_REQUEST, "이미 처리한 광고 요청입니다."),
+    ALREADY_REQUESTED(HttpStatus.BAD_REQUEST,"이미 광고 요청된 가게입니다."),
     ACCESS_OTHER_CART(HttpStatus.UNAUTHORIZED, "다른 유저의 장바구니에 접근하고 있습니다."),
     ACCESS_OTHER_STORE(HttpStatus.UNAUTHORIZED, "다른 가게에 접근하고 있습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,  "해당 유저의 정보를 찾을 수 없습니다."),
