@@ -101,7 +101,7 @@ public class StoreService {
      */
     public Map<String,List<StoreResponseDto>> getStoresFilter(Category category, SearchConditions searchConditions) {
         Map<String,List<StoreResponseDto>> searchedStores = new LinkedHashMap<>();
-        // storeIds로 가게들 정보를 반환
+        // 광고신청이 수락된 가게들 + 카테고리
         List<StoreResponseDto> adStores = advertiseRepository.findStoreByStoreCategoryAndStatus_Accepted(category, AdvertiseStatus.ACCEPTED).stream().map(
                 store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
         // Map 에 결과 삽입
