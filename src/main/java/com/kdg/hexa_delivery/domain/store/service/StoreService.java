@@ -109,9 +109,9 @@ public class StoreService {
 
         // 검색기준에따른 가게 정보
         List<StoreResponseDto> scStores = switch (searchConditions) {
-            case RECENTLY -> storeRepository.findAllOrderByCreatedAt().stream().map(store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
-            case SCOPE -> storeRepository.findAllOrderByRating().stream().map(store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
-            case REVIEW -> storeRepository.findAllOrderByReviews().stream().map(store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
+            case RECENTLY -> storeRepository.findAllOrderByCreatedAt(category).stream().map(store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
+            case SCOPE -> storeRepository.findAllOrderByRating(category).stream().map(store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
+            case REVIEW -> storeRepository.findAllOrderByReviews(category).stream().map(store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
         };
         // Map 에 결과 삽입
         searchedStores.put("** "+ searchConditions.name()+" **", scStores);

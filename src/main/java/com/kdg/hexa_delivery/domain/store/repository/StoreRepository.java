@@ -1,5 +1,6 @@
 package com.kdg.hexa_delivery.domain.store.repository;
 
+import com.kdg.hexa_delivery.domain.advertise.enums.Category;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.global.exception.ExceptionType;
 import com.kdg.hexa_delivery.global.exception.NotFoundException;
@@ -31,14 +32,14 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findAllByStoreIdIn(List<Long> storeIds);
 
     // 검색 기준에 따른 가게정보 호출 :: 생성일자
-    @Query("SELECT s FROM Store s ORDER BY s.createdAt DESC ")
-    List<Store> findAllOrderByCreatedAt();
+    @Query("SELECT s FROM Store s WHERE s.category =:category AND s.status = 'NORMAL' ORDER BY s.createdAt DESC ")
+    List<Store> findAllOrderByCreatedAt(Category category);
 
     // 검색 기준에 따른 가게정보 호출 :: 리뷰개수
-    @Query("SELECT s FROM Store s LEFT JOIN s.reviewList r GROUP BY s ORDER BY COUNT(r) DESC ")
-    List<Store> findAllOrderByReviews();
+    @Query("SELECT s FROM Store s LEFT JOIN s.reviewList r WHERE s.category =:category AND s.status = 'NORMAL' GROUP BY s ORDER BY COUNT(r) DESC ")
+    List<Store> findAllOrderByReviews(Category category);
 
     // 검색 기준에 따른 가게정보 호출 :: 평균별점
-    @Query("SELECT s FROM Store s LEFT JOIN s.reviewList r GROUP BY s ORDER BY AVG(r.rating) DESC ")
-    List<Store> findAllOrderByRating();
+    @Query("SELECT s FROM Store s LEFT JOIN s.reviewList r WHERE s.category =:category AND s.status = 'NORMAL' GROUP BY s ORDER BY AVG(r.rating) DESC ")
+    List<Store> findAllOrderByRating(Category category);
 }
