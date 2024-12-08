@@ -126,11 +126,13 @@ public class CouponService {
      * @param userId  쿠폰 ID
      */
     public List<CouponResponseDto> getMyCoupon(Long userId) {
-        List<Coupon> coupons = userCouponRepository.findAllByUserId(userId, LocalDate.now());
+        List<UserCoupon> userCoupons = userCouponRepository.findAllByUserId(userId, LocalDate.now());
 
-        if(coupons == null){
+        if(userCoupons == null){
             throw new NotFoundException(ExceptionType.COUPON_NOT_FOUND);
         }
+
+        List<Coupon> coupons = userCoupons.stream().map(UserCoupon::getCoupon).toList();
 
         return coupons.stream().map(CouponResponseDto::toDto).toList();
     }
