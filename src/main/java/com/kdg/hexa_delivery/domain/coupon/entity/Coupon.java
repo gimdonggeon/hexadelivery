@@ -7,7 +7,7 @@ import com.kdg.hexa_delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,14 +29,16 @@ public class Coupon extends BaseEntity {
 
     // 현재로부터 일주일 뒤
     @Column(nullable = false)
-    private LocalDateTime expirationTime;
+    private LocalDate expirationTime;
 
     private Integer maxDiscountAmount;
 
     @Column(nullable = false)
     private Integer totalQuantity;
 
-    private Integer toDayQuantity;
+    private Integer todayQuantity;
+
+    private Integer todayFixQuantity;
 
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<UserCoupon> userCouponList = new ArrayList<>();
@@ -51,11 +53,11 @@ public class Coupon extends BaseEntity {
 
     public Coupon(
                   CouponType couponType,
-                  LocalDateTime expirationTime,
+                  LocalDate expirationTime,
                   Integer amount,
                   Integer maxDiscountAmount,
                   Integer totalQuantity,
-                  Integer toDayQuantity,
+                  Integer todayQuantity,
                   Store store) {
 
         this.couponType = couponType;
@@ -63,7 +65,8 @@ public class Coupon extends BaseEntity {
         this.amount = amount;
         this.maxDiscountAmount = maxDiscountAmount;
         this.totalQuantity = totalQuantity;
-        this.toDayQuantity = toDayQuantity;
+        this.todayQuantity = todayQuantity;
+        this.todayFixQuantity = todayQuantity;
         status = Status.NORMAL;
         updateStore(store);
 
@@ -82,8 +85,12 @@ public class Coupon extends BaseEntity {
         this.userCouponList.add(userCoupon);
     }
 
+    public void resetToDayQuantity(){
+        this.todayQuantity = todayFixQuantity;
+    }
+
     public void decrementToDayQuantity(){
-        this.toDayQuantity--;
+        this.todayQuantity--;
     }
 
 
