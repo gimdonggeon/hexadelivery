@@ -125,7 +125,7 @@ public class PointService {
      * @return 유저의 전체 포인트 목록
      */
     public List<PointResponseDto> getMyPointList(Long userId) {
-        List<Point> points = pointRepository.findAllByUserId(userId, LocalDate.now());
+        List<Point> points = pointRepository.findAllByUserIdOrderByPointIdDESC(userId);
 
         if(points == null || points.isEmpty()) {
             throw new NotFoundException(ExceptionType.POINT_NOT_FOUND);
