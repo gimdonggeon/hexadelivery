@@ -38,11 +38,6 @@ public class OwnerOrderController {
 
         Validation.validMyStoreAccess(order.getStore().getStoreId(), loginUser);
 
-        // 상태 전환 가능 여부 체크
-        if (!orderStatusRequestDto.canTransitionTo(order.getOrderStatus())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "상태변경은 이전으로 돌아갈 수 없습니다.");
-        }
-
 
         //주문 상태 업데이트
         OrderResponseDto orderResponseDto = orderService.updateOrderStatus(orderId, orderStatusRequestDto.toOrderStatus());

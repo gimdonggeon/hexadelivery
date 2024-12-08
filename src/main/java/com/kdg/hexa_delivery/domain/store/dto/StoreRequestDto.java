@@ -1,5 +1,8 @@
 package com.kdg.hexa_delivery.domain.store.dto;
 
+import com.kdg.hexa_delivery.domain.advertise.enums.Category;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
@@ -8,8 +11,8 @@ public class StoreRequestDto {
     @NotBlank
     private final String storeName;
 
-    @NotBlank
-    private final String category;
+    @Enumerated(EnumType.STRING)
+    private final Category category;
 
     @NotBlank
     private final String phone;
@@ -29,7 +32,7 @@ public class StoreRequestDto {
     private final Integer minimumOrderValue;
 
     public StoreRequestDto(String storeName,
-                           String category, String phone,
+                           Category category, String phone,
                            String address, String storeDetail,
                            String openingHours, String closingHours,
                            Integer minimumOrderValue) {

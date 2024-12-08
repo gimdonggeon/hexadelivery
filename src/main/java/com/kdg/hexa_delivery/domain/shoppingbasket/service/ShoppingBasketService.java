@@ -113,8 +113,11 @@ public class ShoppingBasketService {
         for(Menu menu : menus){
             if(shoppingBasket.getMenuList().containsKey(menu.getId())){
                 menuList.put(menu.getName(), shoppingBasket.getMenuList().get(menu.getId()));
-                // 대표 이미지 url 저장
-                imageUrls.add(imageService.findImages(menu.getId(), ImageOwner.MENU).get(0).getImageUrl());
+
+                if(!imageService.findImages(menu.getId(), ImageOwner.MENU).isEmpty()){
+                    // 대표 이미지 url 저장
+                    imageUrls.add(imageService.findImages(menu.getId(), ImageOwner.MENU).get(0).getImageUrl());
+                }
                 totalPrice += menu.getPrice();
             }
         }
@@ -175,7 +178,7 @@ public class ShoppingBasketService {
 
         // 쿠키 옵션 설정
         newCookie.setMaxAge(60*60*24);  // 24시간
-        newCookie.setPath("/");
+        newCookie.setPath("/api");
         newCookie.setSecure(true);
         newCookie.setHttpOnly(true);
 

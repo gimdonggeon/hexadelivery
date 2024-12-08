@@ -7,7 +7,7 @@ import com.kdg.hexa_delivery.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Entity
@@ -34,7 +34,7 @@ public class Point extends BaseEntity {
 
     // 현재로부터 한달 뒤
     @Column(nullable = false)
-    private LocalDateTime expirationTime;
+    private LocalDate expirationTime;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -45,7 +45,7 @@ public class Point extends BaseEntity {
         updateUser(user);
         this.pointTotalAmount = pointTotalAmount;
         this.pointPresentAmount = pointTotalAmount;
-        this.expirationTime = LocalDateTime.now().plusMonths(1);
+        this.expirationTime = LocalDate.now().plusMonths(1);
         this.status = Status.NORMAL;
     }
 

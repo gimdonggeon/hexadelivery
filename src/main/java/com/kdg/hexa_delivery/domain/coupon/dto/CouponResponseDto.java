@@ -5,7 +5,7 @@ import com.kdg.hexa_delivery.domain.coupon.entity.Coupon;
 import com.kdg.hexa_delivery.domain.coupon.entity.enums.CouponType;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 public class CouponResponseDto {
@@ -16,7 +16,7 @@ public class CouponResponseDto {
 
     private final Integer amount;
 
-    private final LocalDateTime expirationTime;
+    private final LocalDate expirationTime;
 
     private final Integer maxDiscountAmount;
 
@@ -26,7 +26,7 @@ public class CouponResponseDto {
 
     private final Status status;
 
-    public CouponResponseDto(Long couponId, CouponType couponType, Integer amount, LocalDateTime expirationTime, Integer maxDiscountAmount, Integer totalQuantity, Integer toDayQuantity, Status status) {
+    public CouponResponseDto(Long couponId, CouponType couponType, Integer amount, LocalDate expirationTime, Integer maxDiscountAmount, Integer totalQuantity, Integer toDayQuantity, Status status) {
         this.couponId = couponId;
         this.couponType = couponType;
         this.amount = amount;
@@ -46,7 +46,7 @@ public class CouponResponseDto {
                 coupon.getExpirationTime(),
                 coupon.getMaxDiscountAmount(),
                 coupon.getTotalQuantity(),
-                coupon.getToDayQuantity(),
+                coupon.getTodayQuantity(),
                 coupon.getStatus());
     }
 }

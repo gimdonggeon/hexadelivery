@@ -1,5 +1,6 @@
 package com.kdg.hexa_delivery.domain.store.dto;
 
+import com.kdg.hexa_delivery.domain.advertise.enums.Category;
 import lombok.Getter;
 
 @Getter
@@ -7,7 +8,7 @@ public class UpdateStoreRequestDto {
 
     private final String storeName;
 
-    private final String category;
+    private final Category category;
 
     private final String phone;
 
@@ -21,7 +22,7 @@ public class UpdateStoreRequestDto {
 
     private final Integer minimumOrderValue;
 
-    public UpdateStoreRequestDto(String storeName, String category, String phone, String address, String storeDetail, String openingHours, String closingHours, Integer minimumOrderValue) {
+    public UpdateStoreRequestDto(String storeName, Category category, String phone, String address, String storeDetail, String openingHours, String closingHours, Integer minimumOrderValue) {
         this.storeName = storeName;
         this.category = category;
         this.phone = phone;
