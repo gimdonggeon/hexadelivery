@@ -54,4 +54,36 @@ public class KakaoLoginService {
 
         return userInfo;
     }
+
+    public void kakaoLogout(String accessToken) {
+        String reqUrl = "https://kapi.kakao.com/v1/user/logout";
+
+        try{
+            URL url = new URL(reqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+            int responseCode = conn.getResponseCode();
+            log.info("[KakaoApi.kakaoLogout] responseCode : {}",  responseCode);
+
+            BufferedReader br;
+            if (responseCode >= 200 && responseCode <= 300) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
+            String line = "";
+            StringBuilder responseSb = new StringBuilder();
+            while((line = br.readLine()) != null){
+                responseSb.append(line);
+            }
+            String result = responseSb.toString();
+            log.info("kakao logout - responseBody = {}", result);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
