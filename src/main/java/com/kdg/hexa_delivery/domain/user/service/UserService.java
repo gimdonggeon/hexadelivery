@@ -115,4 +115,7 @@ public class UserService {
         return userByEmail.isPresent();
     }
 
+    public void save(User user) {
+        userRepository.save(user);
+    }
 }

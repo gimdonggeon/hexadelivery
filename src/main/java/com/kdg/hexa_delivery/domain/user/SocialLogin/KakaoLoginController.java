@@ -1,35 +1,47 @@
 package com.kdg.hexa_delivery.domain.user.SocialLogin;
 
+import com.kdg.hexa_delivery.domain.user.dto.SignupResponseDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
 import com.kdg.hexa_delivery.domain.user.service.UserService;
-import com.kdg.hexa_delivery.global.constant.Const;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
+import static com.kdg.hexa_delivery.domain.user.enums.Role.OWNER;
+
 @RestController
-@RequestMapping("/api/users/login")
+@RequestMapping("/api/users/kakao")
+@EnableCaching
+@Slf4j
 public class KakaoLoginController {
 
     private final KakaoLoginService kakaoLoginService;
     private final KakaoApi kakaoApi;
     private final UserService userService;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public KakaoLoginController(KakaoLoginService kakaoLoginService, KakaoApi kakaoApi, UserService userService) {
+    public KakaoLoginController(KakaoLoginService kakaoLoginService, KakaoApi kakaoApi, UserService userService, CacheManager cacheManager, UserRepository userRepository) {
         this.kakaoLoginService = kakaoLoginService;
         this.kakaoApi = kakaoApi;
         this.userService = userService;
+        this.cacheManager = cacheManager;
     }
 
     /**
@@ -40,7 +52,7 @@ public class KakaoLoginController {
      * @param model
      * @return
      */
-    @GetMapping("/kakao")
+    @GetMapping("/login")
     public String kakaoLogin1(Model model) {
 
         model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
@@ -55,15 +67,12 @@ public class KakaoLoginController {
      * @param code 카카오톡 로그인페이지에서 사용자가 로그인을 마치면 프론트가 code에 인가 코드를 담아서 보내준다.
      * @return
      */
-    @GetMapping("/kakaoRedirect")
+    @GetMapping("/loginRedirect")
     public ResponseEntity<String> kakaoLogin(@RequestParam(required = false) String code, HttpServletRequest servletRequest) throws IOException, ParseException {
-
-        //(테스트용) 잔류 세션 제거
-        servletRequest.getSession().invalidate();
 
         try {
             //접근토큰 발급
-            String accessToken = kakaoApi.getAccessToken(code);
+            String accessToken = kakaoLoginService.getAccessToken(code);
 
             //발급받은 토큰으로 사용자 정보 조회
             HashMap<String, Object> userInfo = kakaoLoginService.getUserInfo(accessToken);
@@ -76,25 +85,30 @@ public class KakaoLoginController {
                 userService.saveKakaoUser(user);
             }
 
-            //현재의 세션 유무 확인
-            if (servletRequest.getSession(false) != null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            }
+            kakaoLoginService.cacheKakaoUserIdWithEmail((String)userInfo.get("email"), accessToken);
 
-            return ResponseEntity.status(HttpStatus.OK).body("로그인되었습니다.");
+            return ResponseEntity.status(HttpStatus.OK).body("access_token : " + accessToken);
         } catch (IOException ioException) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당하는 정보를 찾을 수 없습니다.");
         }
     }
 
-    @PostMapping("/kakao/{userId}")
-    public ResponseEntity<KakaoUserResponseDto> setRole(@PathVariable Long userId, @Valid @RequestBody SetUserRoleDto setUserRoleDto) {
+    @Transactional
+    @GetMapping("/settingRoles")
+    public ResponseEntity<KakaoUserResponseDto> setRole(@RequestHeader String Authorization, @Valid @RequestBody SetUserRoleDto setUserRoleDto) {
+        Cache kakaoUserId = cacheManager.getCache("KakaoUserId");
+        Long userId = kakaoUserId.get(Authorization.substring(7), Long.class);
+
         User userById = userService.findUserById(userId);
         userById.updateRole(setUserRoleDto.getRole());
+
+        userService.save(userById);
+
         KakaoUserResponseDto kakaoUserResponseDto = new KakaoUserResponseDto(userId,userById.getEmail(),userById.getNickname(),userById.getRole());
         return ResponseEntity.status(HttpStatus.OK).body(kakaoUserResponseDto);
     }
 
+    @CacheEvict(value = "KakaoUserId", key = "#accessToken")
     @PostMapping("/kakao/logout")
     public ResponseEntity<String> kakaoLogout(@RequestHeader String Authorization){
         kakaoLoginService.kakaoLogout(Authorization.substring(7));

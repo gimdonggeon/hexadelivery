@@ -1,7 +1,9 @@
 package com.kdg.hexa_delivery.domain.user.SocialLogin;
 
 import com.kdg.hexa_delivery.domain.user.enums.Role;
+import lombok.Getter;
 
+@Getter
 public class KakaoUserResponseDto {
 
     private final Long id;

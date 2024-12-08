@@ -10,6 +10,7 @@ import com.kdg.hexa_delivery.domain.review.entity.Review;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
 import java.util.List;
