@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/shopping-baskets")
+@RequestMapping("/api/customers/shopping-baskets")
 public class ShoppingBasketController {
 
     private final ShoppingBasketService shoppingBasketService;
