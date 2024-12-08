@@ -80,7 +80,7 @@ public class StoreService {
     public Map<String,List<StoreResponseDto>> getStores(){
         Map<String,List<StoreResponseDto>> allStores = new LinkedHashMap<>();
         // 광고신청이 수락된 가게들
-        List<StoreResponseDto> adStores = advertiseRepository.findStoreByAdvertiseStatus(AdvertiseStatus.ACCEPTED).stream().map(
+        List<StoreResponseDto> adStores = advertiseRepository.findStoreByAdvertiseStatusACCEPTED(AdvertiseStatus.ACCEPTED).stream().map(
                 store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();;
         // Map 에 결과 삽입
         allStores.put("** 광고 **", adStores);
@@ -102,7 +102,7 @@ public class StoreService {
     public Map<String,List<StoreResponseDto>> getStoresFilter(Category category, SearchConditions searchConditions) {
         Map<String,List<StoreResponseDto>> searchedStores = new LinkedHashMap<>();
         // 광고신청이 수락된 가게들 + 카테고리
-        List<StoreResponseDto> adStores = advertiseRepository.findStoreByStoreCategoryAndStatus_Accepted(category, AdvertiseStatus.ACCEPTED).stream().map(
+        List<StoreResponseDto> adStores = advertiseRepository.findStoreByStoreCategoryAndStatusACCEPTED(category, AdvertiseStatus.ACCEPTED).stream().map(
                 store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
         // Map 에 결과 삽입
         searchedStores.put("** 광고 **", adStores);
@@ -169,7 +169,7 @@ public class StoreService {
      * 영업중인 가게가 3개 이상일경우
      */
     public boolean isValidStoreCount(Long userId) {
-        int count = storeRepository.findAllByUser_UserIdAndStatusNORMAL(userId);
+        int count = storeRepository.findAllByUserIdAndStatusNORMAL(userId);
 
         return count >= 3;
     }

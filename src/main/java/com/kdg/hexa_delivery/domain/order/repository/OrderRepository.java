@@ -51,10 +51,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                                                      String category, Long storeId);
 
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.id = :orderId")
-    Order getCustomerOrderDetails(Long userId, Long orderId);
+    Order findByUserIdAndOrderId(Long userId, Long orderId);
 
     // 사용자 주문횟수 조회
     @Query("SELECT COUNT(o) FROM Order o WHERE o.store.storeId = :storeId AND o.user.id = :userId AND o.orderStatus = 'DELIVERED'")
-    Long countOrderByUser_IdAndOrderStatus(Long userId,Long storeId);
+    Long countOrderByStoreIdAndUserId(Long userId,Long storeId);
 }
 
