@@ -24,12 +24,20 @@ public class CustomerStoreController {
     }
 
     /*
+     *   가게 전체 조회
+     */
+    @GetMapping
+    public ResponseEntity<Map<String, List<StoreResponseDto>>> getStores() {
+        return ResponseEntity.status(HttpStatus.OK).body(storeService.getStores());
+    }
+
+    /*
      *   가게 전체 조회 //필터적용
      */
     @GetMapping("/{category}/{searchConditions}")
     public ResponseEntity<Map<String, List<StoreResponseDto>>> getStoresFilter(@PathVariable Category category,
                                                                                @PathVariable SearchConditions searchConditions) {
-        return ResponseEntity.status(HttpStatus.OK).body(storeService.getStores(category,searchConditions));
+        return ResponseEntity.status(HttpStatus.OK).body(storeService.getStoresFilter(category,searchConditions));
     }
 
     /*
