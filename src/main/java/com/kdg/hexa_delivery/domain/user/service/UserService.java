@@ -61,6 +61,14 @@ public class UserService {
         return SignupResponseDto.toDto(savedUser);
     }
 
+    public void saveKakaoUser(User user){
+        userRepository.save(user);
+    };
+
+    public User findUserById(Long userId){
+        return userRepository.findByIdOrElseThrow(userId);
+    }
+
     /**
      * 로그인을 위해 아이디와 비밀번호를 확인 메서드
      *
@@ -99,6 +107,12 @@ public class UserService {
         } else {
             throw new BadValueException(ExceptionType.BAD_PASSWORD);
         }
+    }
+
+    public boolean doesExistsByEmail(String email) {
+        Optional<User> userByEmail = userRepository.findByEmail(email);
+
+        return userByEmail.isPresent();
     }
 
 }
