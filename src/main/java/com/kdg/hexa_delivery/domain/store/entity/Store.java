@@ -1,12 +1,13 @@
 package com.kdg.hexa_delivery.domain.store.entity;
 
 import com.kdg.hexa_delivery.domain.base.entity.BaseEntity;
-import com.kdg.hexa_delivery.global.enums.Status;
+import com.kdg.hexa_delivery.domain.advertise.enums.Category;
 import com.kdg.hexa_delivery.domain.coupon.entity.Coupon;
 import com.kdg.hexa_delivery.domain.menu.entity.Menu;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
 import com.kdg.hexa_delivery.domain.review.entity.Review;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.enums.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -30,7 +31,8 @@ public class Store extends BaseEntity {
     private String storeName;
 
     @Column(nullable=false)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     @Column(nullable=false)
     private String phone;
@@ -65,7 +67,7 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store", orphanRemoval = true)
     private List<Coupon> CouponList = new ArrayList<>();
 
-    public Store(User user, String storeName, String category, String phone, String address,
+    public Store(User user, String storeName, Category category, String phone, String address,
                  String storeDetail, String openingHours, String closingHours,
                  Integer minimumOrderValue, Status status) {
 
@@ -96,14 +98,14 @@ public class Store extends BaseEntity {
     }
 
 
-    public void updateStore(String storeName, String category,
+    public void updateStore(String storeName, Category category,
                             String phone, String address,
                             String storeDetail, String openingHours,
                             String closingHours, Integer minimumOrderValue) {
         if(storeName != null && !storeName.isEmpty()) {
             this.storeName = storeName;
         }
-        if(category != null && !category.isEmpty()) {
+        if(category != null) {
             this.category = category;
         }if(phone != null && !phone.isEmpty()) {
             this.phone = phone;

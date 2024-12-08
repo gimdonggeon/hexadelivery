@@ -1,8 +1,9 @@
 package com.kdg.hexa_delivery.domain.store.dto;
 
-import com.kdg.hexa_delivery.global.enums.Status;
+import com.kdg.hexa_delivery.domain.advertise.enums.Category;
 import com.kdg.hexa_delivery.domain.image.entity.Image;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
+import com.kdg.hexa_delivery.global.enums.Status;
 import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class StoreResponseDto {
 
     private final String storeName;
 
-    private final String category;
+    private final Category category;
 
     private final String phone;
 
@@ -40,7 +41,7 @@ public class StoreResponseDto {
     private final LocalDateTime modifiedAt;
 
     public StoreResponseDto(Long storeId, Long userId,
-                            String storeName, String category,
+                            String storeName, Category category,
                             String phone, String address,
                             String storeDetail, Status status,
                             String openingHour, String closingHour,

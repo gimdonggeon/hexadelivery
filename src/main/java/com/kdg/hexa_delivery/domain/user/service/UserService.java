@@ -102,7 +102,7 @@ public class UserService {
             //회원 상태 저장 명시
             userRepository.save(user);
         } else {
-            throw new BadValueException(ExceptionType.BAD_PASSWORD);
+            throw new BadValueException(ExceptionType.PASSWORD_NOT_CORRECT);
         }
     }
 
