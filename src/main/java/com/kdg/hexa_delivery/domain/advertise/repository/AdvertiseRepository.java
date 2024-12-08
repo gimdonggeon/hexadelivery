@@ -15,24 +15,23 @@ import java.util.List;
 public interface AdvertiseRepository extends JpaRepository<Advertise, Long> {
 
     // 광고신청한 내 가게들 조회
-    @Query("SELECT a FROM Advertise a WHERE a.user.id = :userId")
-    List<Advertise> findAllByUser_Id(Long userId);
+    List<Advertise> findAllByUserId(Long userId);
 
     Advertise findByAdvertiseId(Long advertiseId);
 
-    Advertise findByStore_StoreId(Long storeId);
+    Advertise findByStoreStoreId(Long storeId);
 
     // 가게아이디로 광고신청 거절당한 가게 신청 조회
     @Query("SELECT a FROM Advertise a WHERE a.store.storeId = :storeId AND a.advertiseStatus = :status ")
-    Advertise findByStore_StoreIdAndAdvertiseStatus_DECLINED(Long storeId, AdvertiseStatus status);
+    Advertise findByStoreStoreIdAndAdvertiseStatusDECLINED(Long storeId, AdvertiseStatus status);
 
 
     // 광고 수락된 가게들 받아오기 :: 카테고리 포함
     @Query("SELECT a.store FROM Advertise a WHERE a.store.category = :category AND a.advertiseStatus = :status")
-    List<Store> findStoreByStoreCategoryAndStatus_Accepted(@Param("category") Category category, AdvertiseStatus status);
+    List<Store> findStoreByStoreCategoryAndStatusACCEPTED(@Param("category") Category category, AdvertiseStatus status);
 
     // 광고 수락된 가게들 받아오기
     @Query("SELECT a.store FROM Advertise a WHERE a.advertiseStatus = :status")
-    List<Store> findStoreByAdvertiseStatus(AdvertiseStatus status);
+    List<Store> findStoreByAdvertiseStatusACCEPTED(AdvertiseStatus status);
 
 }

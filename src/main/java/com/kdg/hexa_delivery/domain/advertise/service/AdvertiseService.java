@@ -37,7 +37,7 @@ public class AdvertiseService {
         Store store = storeRepository.findByIdOrElseThrow(storeId);
 
         // 이미 광고가 신청된 가게일 경우
-        if (advertiseRepository.findByStore_StoreId(storeId) != null) {
+        if (advertiseRepository.findByStoreStoreId(storeId) != null) {
             throw new WrongAccessException(ExceptionType.ALREADY_REQUESTED);
         }
 
@@ -54,7 +54,7 @@ public class AdvertiseService {
     // 광고 신청한 내 가게들 조회
     public List<AdvertiseResponseDto> getMyAdvertises(Long userId) {
         // 내 아이디로 광고신청한 가게들 전부 가져오기
-        List<Advertise> advertises = advertiseRepository.findAllByUser_Id(userId);
+        List<Advertise> advertises = advertiseRepository.findAllByUserId(userId);
 
         if(advertises.isEmpty()){
             throw new NotFoundException(ExceptionType.ADVERTISE_NOT_FOUND);
@@ -66,7 +66,7 @@ public class AdvertiseService {
     // 광고 거절당한 내 가게 조회
     public AdvertiseDeclinedResponseDto getDeclinedMyAdvertise(Long storeId) {
 
-        Advertise advertise = advertiseRepository.findByStore_StoreIdAndAdvertiseStatus_DECLINED(storeId,AdvertiseStatus.DECLINED);
+        Advertise advertise = advertiseRepository.findByStoreStoreIdAndAdvertiseStatusDECLINED(storeId,AdvertiseStatus.DECLINED);
 
         if(advertise==null){
             throw new NotFoundException(ExceptionType.ADVERTISE_NOT_FOUND);
