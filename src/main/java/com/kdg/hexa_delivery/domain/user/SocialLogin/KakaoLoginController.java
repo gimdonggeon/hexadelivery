@@ -108,8 +108,7 @@ public class KakaoLoginController {
         return ResponseEntity.status(HttpStatus.OK).body(kakaoUserResponseDto);
     }
 
-    @CacheEvict(value = "KakaoUserId", key = "#accessToken")
-    @PostMapping("/kakao/logout")
+    @PostMapping("/logout")
     public ResponseEntity<String> kakaoLogout(@RequestHeader String Authorization){
         kakaoLoginService.kakaoLogout(Authorization.substring(7));
 

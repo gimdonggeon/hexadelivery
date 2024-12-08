@@ -9,6 +9,7 @@ import com.kdg.hexa_delivery.domain.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -134,6 +135,7 @@ public class KakaoLoginService {
         return user.getId();
     }
 
+    @CacheEvict(value = "KakaoUserId", key = "#accessToken")
     public void kakaoLogout(String accessToken) {
         String reqUrl = "https://kapi.kakao.com/v1/user/logout";
 
