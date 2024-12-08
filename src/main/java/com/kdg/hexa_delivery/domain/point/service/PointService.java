@@ -5,8 +5,6 @@ import com.kdg.hexa_delivery.domain.point.dto.PointResponseDto;
 import com.kdg.hexa_delivery.domain.point.dto.TotalPointResponseDto;
 import com.kdg.hexa_delivery.domain.point.entity.Point;
 import com.kdg.hexa_delivery.domain.point.repository.PointRepository;
-import com.kdg.hexa_delivery.global.exception.ExceptionType;
-import com.kdg.hexa_delivery.global.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -126,10 +124,6 @@ public class PointService {
      */
     public List<PointResponseDto> getMyPointList(Long userId) {
         List<Point> points = pointRepository.findAllByUserIdOrderByPointIdDESC(userId);
-
-        if(points == null || points.isEmpty()) {
-            throw new NotFoundException(ExceptionType.POINT_NOT_FOUND);
-        }
 
         return points.stream().map(PointResponseDto::toDto).toList();
     }
