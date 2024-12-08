@@ -198,13 +198,13 @@ MySQL : Version 8+
 
 ### 팀 노션 API 명세서 예시
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c72a132f-e714-409e-bdef-417935f6bc90/817fa7b9-2847-4dec-8888-5896b9348a0e/image.png)
+![img_1.png](img_1.png)
 
 ### API Request & Response URL : https://documenter.getpostman.com/view/39379207/2sAYBd6SrL
 
 ### API Request & Response 예시
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c72a132f-e714-409e-bdef-417935f6bc90/d7f4d52a-3754-4a8c-8866-fdbcc393a180/image.png)
+![img_2.png](img_2.png)
 
 ---
 
@@ -212,7 +212,7 @@ MySQL : Version 8+
 
 ### ERD 구성
 
-![hexadelivery.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c72a132f-e714-409e-bdef-417935f6bc90/c74aafb8-9931-4b48-9b7f-6996c3a99e23/hexadelivery.png)
+![img.png](img.png)
 
 ---
 
