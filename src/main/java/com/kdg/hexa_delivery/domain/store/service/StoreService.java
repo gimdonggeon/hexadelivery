@@ -75,11 +75,35 @@ public class StoreService {
     }
 
     /*
+     *  가게 전체조회 메서드
+     */
+    public Map<String,List<StoreResponseDto>> getStores(){
+        Map<String,List<StoreResponseDto>> allStores = new LinkedHashMap<>();
+        // 광고신청이 수락된 가게 아이디들
+        List<Long> storeIds = advertiseRepository.findStoreIdByStatus_Accepted(AdvertiseStatus.ACCEPTED);
+        // storeIds로 가게들 정보를 반환
+        List<StoreResponseDto> adStores = storeRepository.findAllByStoreIdIn(storeIds).stream().map(
+                store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
+        // Map 에 결과 삽입
+        allStores.put("** 광고 **", adStores);
+
+        // 모든 가게정보
+        List<StoreResponseDto> stores = storeRepository.findAll().stream().map(
+                store -> StoreResponseDto.toDto(store, imageService.findImages(store.getStoreId(), ImageOwner.STORE))).toList();
+        // Map 에 결과 삽입
+        allStores.put("** 모든가게 **", stores);
+
+        return allStores;
+    }
+
+
+
+    /*
      * 가게 전체조회 메서드 :: 사용자 리뷰개수 , 별점 , 최근개업일자 , 광고
      */
-    public Map<String,List<StoreResponseDto>> getStores(Category category, SearchConditions searchConditions) {
+    public Map<String,List<StoreResponseDto>> getStoresFilter(Category category, SearchConditions searchConditions) {
         Map<String,List<StoreResponseDto>> searchedStores = new LinkedHashMap<>();
-        // 광고가 실린 카테고리가 ?? 인 모든 가게 아이디들
+        // 광고신청이 수락된 카테고리가 ?? 인 모든 가게 아이디들
         List<Long> storeIds = advertiseRepository.findStoreIdByStoreCategoryAndStatus_Accepted(category, AdvertiseStatus.ACCEPTED);
         // storeIds로 가게들 정보를 반환
         List<StoreResponseDto> adStores = storeRepository.findAllByStoreIdIn(storeIds).stream().map(

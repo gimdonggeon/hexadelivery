@@ -24,6 +24,11 @@ public interface AdvertiseRepository extends JpaRepository<Advertise, Long> {
     Advertise findByStore_StoreIdAndAdvertiseStatus_DECLINED(Long storeId, AdvertiseStatus status);
 
     // 광고 수락된 가게의 사용자 아이디 받아오기
+    @Query("SELECT a.store.storeId FROM Advertise a WHERE a.advertiseStatus = :status")
+    List<Long> findStoreIdByStatus_Accepted(AdvertiseStatus status);
+
+
+    // 광고 수락된 가게의 사용자 아이디 받아오기 :: 카테고리 포함
     @Query("SELECT a.store.storeId FROM Advertise a WHERE a.store.category = :category AND a.advertiseStatus = :status")
     List<Long> findStoreIdByStoreCategoryAndStatus_Accepted(@Param("category") Category category, AdvertiseStatus status);
 
