@@ -36,6 +36,11 @@ public class AdvertiseService {
         // 가게 정보 가져오기
         Store store = storeRepository.findByIdOrElseThrow(storeId);
 
+        // 이미 광고가 신청된 가게일 경우
+        if (advertiseRepository.findByStore_StoreId(storeId) != null) {
+            throw new WrongAccessException(ExceptionType.ALREADY_REQUESTED);
+        }
+
         Advertise advertise = new Advertise(user, store,
                 advertiseRequestDto.getBidPrice(), AdvertiseStatus.REQUESTED);
 
