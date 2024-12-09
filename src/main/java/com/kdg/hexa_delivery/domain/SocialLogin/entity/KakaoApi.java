@@ -1,4 +1,4 @@
-package com.kdg.hexa_delivery.domain.SocialLogin;
+package com.kdg.hexa_delivery.domain.SocialLogin.entity;
 
 //import com.google.gson.JsonElement;
 import lombok.Getter;

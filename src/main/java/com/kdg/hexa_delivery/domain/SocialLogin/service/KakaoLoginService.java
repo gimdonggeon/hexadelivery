@@ -1,8 +1,9 @@
-package com.kdg.hexa_delivery.domain.SocialLogin;
+package com.kdg.hexa_delivery.domain.SocialLogin.service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.kdg.hexa_delivery.domain.SocialLogin.entity.KakaoApi;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
 import com.kdg.hexa_delivery.global.exception.ExceptionType;
@@ -16,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 

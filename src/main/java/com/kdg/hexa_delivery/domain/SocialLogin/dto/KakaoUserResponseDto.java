@@ -1,4 +1,4 @@
-package com.kdg.hexa_delivery.domain.SocialLogin;
+package com.kdg.hexa_delivery.domain.SocialLogin.dto;
 
 import com.kdg.hexa_delivery.domain.user.enums.Role;
 import lombok.Getter;

@@ -1,5 +1,9 @@
-package com.kdg.hexa_delivery.domain.SocialLogin;
+package com.kdg.hexa_delivery.domain.SocialLogin.controller;
 
+import com.kdg.hexa_delivery.domain.SocialLogin.service.KakaoLoginService;
+import com.kdg.hexa_delivery.domain.SocialLogin.dto.KakaoUserResponseDto;
+import com.kdg.hexa_delivery.domain.SocialLogin.dto.SetUserRoleDto;
+import com.kdg.hexa_delivery.domain.SocialLogin.entity.KakaoApi;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
 import com.kdg.hexa_delivery.domain.user.service.UserService;
