@@ -27,7 +27,7 @@ public class OwnerReviewController {
      *
      * @return 리뷰 리스트 전달
      */
-    @GetMapping("/{storeId}/reviews")
+    @GetMapping("stores/{storeId}/reviews")
     public ResponseEntity<List<ReviewResponseDto>> getAllReviews(@PathVariable Long storeId,
                                                                  @RequestParam(required = false, defaultValue = "1") int minRate,
                                                                  @RequestParam(required = false, defaultValue = "5") int maxRate) {
