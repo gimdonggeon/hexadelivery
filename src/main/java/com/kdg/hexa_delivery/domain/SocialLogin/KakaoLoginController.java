@@ -3,8 +3,11 @@ package com.kdg.hexa_delivery.domain.SocialLogin;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
 import com.kdg.hexa_delivery.domain.user.service.UserService;
+import com.kdg.hexa_delivery.global.constant.Const;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
 import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +68,12 @@ public class KakaoLoginController {
      */
     @GetMapping("/loginRedirect")
     public ResponseEntity<String> kakaoLogin(@RequestParam(required = false) String code, HttpServletRequest servletRequest) throws IOException, ParseException {
+
+        //로그인 중이라면 예외처리
+        HttpSession session = servletRequest.getSession(false);
+        if (session != null && session.getAttribute(Const.LOGIN_USER) != null) {
+            throw new WrongAccessException(ExceptionType.ALREADY_LOGIN);
+        }
 
         try {
             //접근토큰 발급

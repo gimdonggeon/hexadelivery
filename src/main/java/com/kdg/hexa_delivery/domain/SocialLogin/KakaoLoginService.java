@@ -154,7 +154,7 @@ public class KakaoLoginService {
         if (responseCode >= 200 && responseCode <= 300) {
             br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         } else {
-            throw new WrongAccessException(ExceptionType.NO_EXIST_TOKEN);
+            throw new WrongAccessException(ExceptionType.WRONG_TOKEN);
         }
 
         String line = "";
