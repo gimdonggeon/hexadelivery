@@ -99,8 +99,6 @@ public class UserController {
         //현재 세션 조회
         HttpSession session = servletRequest.getSession(false);
 
-
-
         //세션 삭제
         if (session != null) {
             session.invalidate();

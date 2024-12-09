@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/customers/orders")
+@RequestMapping("/api/customers")
 public class CustomerReviewController {
 
     private final ReviewService reviewService;
@@ -34,7 +34,7 @@ public class CustomerReviewController {
      * @param httpServletRequest 현재 세션 정보
      * @return ResponseEntity<ReviewResponseDto> 저장된 리뷰 정보 전달
      */
-    @PostMapping("/{orderId}/reviews")
+    @PostMapping("orders/{orderId}/reviews")
     public ResponseEntity<ReviewResponseDto> createReview(@PathVariable Long orderId,
                                                           @Valid @RequestBody ReviewRequestDto requestDto,
                                                           HttpServletRequest httpServletRequest) {
@@ -59,7 +59,7 @@ public class CustomerReviewController {
      *
      * @return 세션이용자가 작성한 리뷰를 제외한 가게의 전체 리뷰 리스트
      */
-    @GetMapping("/{storeId}/reviews")
+    @GetMapping("store/{storeId}/reviews")
     public ResponseEntity<List<ReviewResponseDto>> getAllReviews(@PathVariable Long storeId,
                                                                  @RequestParam(required = false, defaultValue = "1") int minRate,
                                                                  @RequestParam(required = false, defaultValue = "5") int maxRate,
@@ -81,7 +81,7 @@ public class CustomerReviewController {
      *
      * @return 세션이용자가 작성한 모든 리뷰 전체 조회
      */
-    @GetMapping("/reviews/me")
+    @GetMapping("/reviews")
     public ResponseEntity<List<ReviewResponseDto>> getMyReviews(HttpServletRequest httpServletRequest) {
 
         //세션 이용자의 정보
