@@ -1,11 +1,12 @@
-package com.kdg.hexa_delivery.domain.user.SocialLogin;
+package com.kdg.hexa_delivery.domain.SocialLogin;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
-import com.kdg.hexa_delivery.domain.user.service.UserService;
+import com.kdg.hexa_delivery.global.exception.ExceptionType;
+import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -136,35 +139,31 @@ public class KakaoLoginService {
     }
 
     @CacheEvict(value = "KakaoUserId", key = "#accessToken")
-    public void kakaoLogout(String accessToken) {
+    public void kakaoLogout(String accessToken) throws WrongAccessException, IOException {
         String reqUrl = "https://kapi.kakao.com/v1/user/logout";
 
-        try{
-            URL url = new URL(reqUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+        URL url = new URL(reqUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 
-            int responseCode = conn.getResponseCode();
-            log.info("[KakaoApi.kakaoLogout] responseCode : {}",  responseCode);
+        int responseCode = conn.getResponseCode();
+        log.info("[KakaoApi.kakaoLogout] responseCode : {}", responseCode);
 
-            BufferedReader br;
-            if (responseCode >= 200 && responseCode <= 300) {
-                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            } else {
-                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-            }
-
-            String line = "";
-            StringBuilder responseSb = new StringBuilder();
-            while((line = br.readLine()) != null){
-                responseSb.append(line);
-            }
-            String result = responseSb.toString();
-            log.info("kakao logout - responseBody = {}", result);
-
-        }catch (Exception e){
-            e.printStackTrace();
+        BufferedReader br;
+        if (responseCode >= 200 && responseCode <= 300) {
+            br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        } else {
+            throw new WrongAccessException(ExceptionType.NO_EXIST_TOKEN);
         }
+
+        String line = "";
+        StringBuilder responseSb = new StringBuilder();
+        while ((line = br.readLine()) != null) {
+            responseSb.append(line);
+        }
+        String result = responseSb.toString();
+        log.info("kakao logout - responseBody = {}", result);
+
     }
 }

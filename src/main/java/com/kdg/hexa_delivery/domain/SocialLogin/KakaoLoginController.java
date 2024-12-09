@@ -1,9 +1,9 @@
-package com.kdg.hexa_delivery.domain.user.SocialLogin;
+package com.kdg.hexa_delivery.domain.SocialLogin;
 
-import com.kdg.hexa_delivery.domain.user.dto.SignupResponseDto;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.domain.user.repository.UserRepository;
 import com.kdg.hexa_delivery.domain.user.service.UserService;
+import com.kdg.hexa_delivery.global.exception.WrongAccessException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -12,7 +12,6 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
-
-import static com.kdg.hexa_delivery.domain.user.enums.Role.OWNER;
 
 @RestController
 @RequestMapping("/api/users/kakao")
@@ -109,7 +105,7 @@ public class KakaoLoginController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> kakaoLogout(@RequestHeader String Authorization){
+    public ResponseEntity<String> kakaoLogout(@RequestHeader String Authorization) throws WrongAccessException, IOException {
         kakaoLoginService.kakaoLogout(Authorization.substring(7));
 
         return ResponseEntity.status(HttpStatus.OK).body("로그아웃되었습니다.");

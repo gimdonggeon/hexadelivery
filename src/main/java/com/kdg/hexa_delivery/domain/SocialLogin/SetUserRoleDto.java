@@ -1,4 +1,4 @@
-package com.kdg.hexa_delivery.domain.user.SocialLogin;
+package com.kdg.hexa_delivery.domain.SocialLogin;
 
 import com.kdg.hexa_delivery.domain.user.enums.Role;
 import jakarta.validation.constraints.NotNull;

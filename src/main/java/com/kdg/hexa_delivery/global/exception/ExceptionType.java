@@ -18,6 +18,7 @@ public enum ExceptionType {
     NOT_AMOUNT_MIN(HttpStatus.BAD_REQUEST, "최소 주문 금액보다 높아야 합니다."),
     NOT_OPEN_STORE(HttpStatus.BAD_REQUEST, "가게 영업시간이 아닙니다."),
     CHANGE_STATUS_SEQUENTIAL(HttpStatus.BAD_REQUEST, "상태 변경은 각 단계를 순차적으로만 진행할 수 있습니다."),
+    NO_EXIST_TOKEN(HttpStatus.BAD_REQUEST, "존재하지 않는 access token 입니다."),
     BAD_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호는 영문자, 숫자, 특수문자를 포함하며 8자 이상이어야 합니다."),
     NOT_LOGIN(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
     CUT_OF_SESSION(HttpStatus.UNAUTHORIZED, "세션이 끊어졌습니다."),
