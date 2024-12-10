@@ -2,6 +2,7 @@ package com.kdg.hexa_delivery.domain.order.repository;
 
 import com.kdg.hexa_delivery.domain.order.dto.*;
 import com.kdg.hexa_delivery.domain.order.entity.Order;
+import com.kdg.hexa_delivery.domain.order.enums.OrderStatus;
 import com.kdg.hexa_delivery.domain.user.entity.User;
 import com.kdg.hexa_delivery.global.exception.ExceptionType;
 import com.kdg.hexa_delivery.global.exception.NotFoundException;
@@ -50,11 +51,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     OrderAmountPricesResponseDto getMonthOrderPrices(LocalDateTime startDate, LocalDateTime endDate,
                                                      String category, Long storeId);
 
-    @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.id = :orderId")
-    Order findByUserIdAndOrderId(Long userId, Long orderId);
+    // @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.id = :orderId")
+    Order findByUserIdAndId(Long userId, Long orderId);
 
     // 사용자 주문횟수 조회
-    @Query("SELECT COUNT(o) FROM Order o WHERE o.store.storeId = :storeId AND o.user.id = :userId AND o.orderStatus = 'DELIVERED'")
-    Long countOrderByStoreIdAndUserId(Long userId,Long storeId);
+    // @Query("SELECT COUNT(o) FROM Order o WHERE o.store.storeId = :storeId AND o.user.id = :userId AND o.orderStatus = 'DELIVERED'")
+    Long countByStoreStoreIdAndUserIdAndOrderStatus(Long storeId, Long userId,  OrderStatus orderStatus);
 }
 

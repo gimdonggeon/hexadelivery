@@ -20,6 +20,8 @@ public class MenuResponseDto {
 
     private final Integer price;
 
+    private final String description;
+
     private final List<String> imageUrls;
 
     private final LocalDateTime createdAt;
@@ -29,7 +31,7 @@ public class MenuResponseDto {
     private final Status status;
 
     public MenuResponseDto(Long storeId, Long menuId,
-                           String menuName, Integer price, List<String> imageUrls,
+                           String menuName, Integer price, String description, List<String> imageUrls,
                            LocalDateTime createdAt, LocalDateTime modifiedAt,
                            Status status) {
 
@@ -37,6 +39,7 @@ public class MenuResponseDto {
         this.menuId = menuId;
         this.menuName = menuName;
         this.price = price;
+        this.description = description;
         this.imageUrls = imageUrls;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
@@ -64,10 +67,10 @@ public class MenuResponseDto {
                 menu.getId(),
                 menu.getName(),
                 menu.getPrice(),
+                menu.getDescription(),
                 imageUrls,
                 menu.getCreatedAt(),
-                menu.getModifiedAt(),
-                menu.getStatus());
+                menu.getModifiedAt(), menu.getStatus());
 
     }
 }

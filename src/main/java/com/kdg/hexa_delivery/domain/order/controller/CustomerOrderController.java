@@ -1,7 +1,6 @@
 package com.kdg.hexa_delivery.domain.order.controller;
 
 
-import com.kdg.hexa_delivery.domain.order.dto.OrderDeclinedResponseDto;
 import com.kdg.hexa_delivery.domain.order.dto.OrderRequestDto;
 import com.kdg.hexa_delivery.domain.order.dto.OrderResponseDto;
 import com.kdg.hexa_delivery.domain.order.service.OrderService;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,15 +28,14 @@ public class CustomerOrderController {
     }
 
     // 고객 주문 생성 API
-    @PostMapping("/{storeId}")
-    public ResponseEntity<OrderResponseDto> createOrder(@PathVariable Long storeId,
-                                                        @RequestBody OrderRequestDto orderRequestDto,
+    @PostMapping
+    public ResponseEntity<OrderResponseDto> createOrder(@RequestBody OrderRequestDto orderRequestDto,
                                                         HttpServletRequest httpServletRequest) {
 
         User loginUser = (User) httpServletRequest.getSession(false).getAttribute(Const.LOGIN_USER);
 
         // 주문 생성
-        OrderResponseDto orderResponseDto = orderService.createOrder(storeId, loginUser, orderRequestDto);
+        OrderResponseDto orderResponseDto = orderService.createOrder(orderRequestDto.getStoreId(), loginUser, orderRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderResponseDto);
     }

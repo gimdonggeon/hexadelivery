@@ -66,7 +66,7 @@ public class AdvertiseService {
     // 광고 거절당한 내 가게 조회
     public AdvertiseDeclinedResponseDto getDeclinedMyAdvertise(Long storeId) {
 
-        Advertise advertise = advertiseRepository.findByStoreStoreIdAndAdvertiseStatusDECLINED(storeId,AdvertiseStatus.DECLINED);
+        Advertise advertise = advertiseRepository.findByStoreStoreIdAndAdvertiseStatus(storeId,AdvertiseStatus.DECLINED);
 
         if(advertise==null){
             throw new NotFoundException(ExceptionType.ADVERTISE_NOT_FOUND);

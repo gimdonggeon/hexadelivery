@@ -11,6 +11,7 @@ import com.kdg.hexa_delivery.domain.coupon.repository.UserCouponRepository;
 import com.kdg.hexa_delivery.domain.store.entity.Store;
 import com.kdg.hexa_delivery.domain.store.repository.StoreRepository;
 import com.kdg.hexa_delivery.domain.user.entity.User;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.global.exception.ExceptionType;
 import com.kdg.hexa_delivery.global.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +47,7 @@ public class CouponService {
     @Transactional
     public void clearCoupons() {
         log.info("clear coupons");
-        List<Coupon> coupons = couponRepository.findAllByNORMAL();
+        List<Coupon> coupons = couponRepository.findAllByStatus(Status.NORMAL);
 
         // coupon.getExpirationTime().isAfter(now)
         //만료기한 지난거 상태 변경
@@ -111,7 +112,7 @@ public class CouponService {
     public List<CouponResponseDto> getMyStoreCoupon(Long storeId) {
         //List<Coupon> coupons = couponRepository.findAllByStoreId(storeId);
 
-        List<Coupon> coupons = couponRepository.findAllByStoreIdAndDate(storeId, LocalDate.now());
+        List<Coupon> coupons = couponRepository.findAllByStoreStoreIdAndStatusAndExpirationTimeIsGreaterThan(storeId, Status.NORMAL, LocalDate.now());
 
         if(coupons == null){
             throw new NotFoundException(ExceptionType.COUPON_NOT_FOUND);
@@ -126,7 +127,7 @@ public class CouponService {
      * @param userId  쿠폰 ID
      */
     public List<CouponResponseDto> getMyCoupon(Long userId) {
-        List<UserCoupon> userCoupons = userCouponRepository.findAllByUserId(userId, LocalDate.now());
+        List<UserCoupon> userCoupons = userCouponRepository.findAllByUserId(userId, LocalDate.now(), Status.NORMAL);
 
         if(userCoupons == null){
             throw new NotFoundException(ExceptionType.COUPON_NOT_FOUND);
@@ -148,7 +149,7 @@ public class CouponService {
      */
     @Transactional
     public CouponResponseDto issueCoupon(User loginUser, Long couponId) {
-        Coupon coupon = couponRepository.findAllByCouponIdAndNORMAL(couponId);
+        Coupon coupon = couponRepository.findByCouponIdAndStatus(couponId, Status.NORMAL);
 
         if (coupon == null){
             throw new NotFoundException(ExceptionType.COUPON_NOT_FOUND);
@@ -187,7 +188,7 @@ public class CouponService {
      * @return 할인 금액
      */
     public int useCoupon(Long couponId, Long userId, int totalPrice) {
-        Coupon coupon = couponRepository.findByIdAndCouponId(couponId);
+        Coupon coupon = couponRepository.findByCouponIdAndStatus(couponId, Status.NORMAL);
 
         if(coupon == null){
             return 0;

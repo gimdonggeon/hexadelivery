@@ -141,7 +141,7 @@ public class ReviewService {
      */
     public List<ReviewResponseDto> getMyReviews(User user) {
 
-        List<Review> reviews = reviewRepository.findAllByUserId(user.getId());
+        List<Review> reviews = reviewRepository.findAllByUserIdAndStatusOrderByCreatedAtDesc(user.getId(), Status.NORMAL);
 
         // 리뷰 유무 확인
         if (reviews.isEmpty()) {

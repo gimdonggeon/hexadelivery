@@ -72,8 +72,10 @@ public class MenuService {
      * @return List<MenuResponseDto>  가게에 있는 메뉴 전체 리스트 전달
      */
     public List<MenuResponseDto> getMenus(Long storeId) {
+        // 가게 정보 가져오기
+        Store store = storeRepository.findByIdOrElseThrow(storeId);
         // 해당 가게에 있는 메뉴 모두 가져오기
-        List<Menu> menus =  menuRepository.findAllByStoreIdAndStatus(storeId, Status.NORMAL);
+        List<Menu> menus =  menuRepository.findAllByStoreAndStatus(store, Status.NORMAL);
 
         if(menus.isEmpty()){
             throw new NotFoundException(ExceptionType.STORE_MENU_NOT_FOUND);

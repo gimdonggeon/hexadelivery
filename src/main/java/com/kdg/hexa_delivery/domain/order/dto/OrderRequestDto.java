@@ -7,6 +7,8 @@ import lombok.Getter;
 @Getter
 public class OrderRequestDto {
 
+    private final Long storeId;
+
     @NotNull(message = "메뉴 이름은 필수입니다.")
     private final Long menuId;
 
@@ -18,7 +20,8 @@ public class OrderRequestDto {
 
     private final Long couponId;
 
-    public OrderRequestDto(Long menuId, Integer quantity, Integer pointDiscount, Long couponId) {
+    public OrderRequestDto(Long storeId, Long menuId, Integer quantity, Integer pointDiscount, Long couponId) {
+        this.storeId = storeId;
         this.menuId = menuId;
         this.quantity = quantity;
         this.pointDiscount = pointDiscount;
