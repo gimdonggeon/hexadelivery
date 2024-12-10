@@ -1,6 +1,7 @@
 package com.kdg.hexa_delivery.domain.point.repository;
 
 import com.kdg.hexa_delivery.domain.point.entity.Point;
+import com.kdg.hexa_delivery.global.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +22,6 @@ public interface PointRepository extends JpaRepository<Point, Long> {
     @Query("SELECT p FROM Point p WHERE p.user.id = :userId ORDER BY p.pointId")
     List<Point> findAllByUserIdOrderByPointIdDESC(@Param("userId") Long userId);
 
-    @Query("SELECT p FROM Point p WHERE p.status = 'NORMAL'")
-    List<Point> findAlByNORMAL();
+    // @Query("SELECT p FROM Point p WHERE p.status = 'NORMAL'")
+    List<Point> findAlByStatus(Status status);
 }

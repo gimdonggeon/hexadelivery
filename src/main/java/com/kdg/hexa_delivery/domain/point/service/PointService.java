@@ -5,6 +5,7 @@ import com.kdg.hexa_delivery.domain.point.dto.PointResponseDto;
 import com.kdg.hexa_delivery.domain.point.dto.TotalPointResponseDto;
 import com.kdg.hexa_delivery.domain.point.entity.Point;
 import com.kdg.hexa_delivery.domain.point.repository.PointRepository;
+import com.kdg.hexa_delivery.global.enums.Status;
 import com.kdg.hexa_delivery.global.exception.ExceptionType;
 import com.kdg.hexa_delivery.global.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class PointService {
     @Transactional
     public void clearPoints() {
         log.info("Clear points");
-        List<Point> points = pointRepository.findAlByNORMAL();
+        List<Point> points = pointRepository.findAlByStatus(Status.NORMAL);
 
         // 포인트 만료기간 상태 변경
         LocalDate now = LocalDate.now();
