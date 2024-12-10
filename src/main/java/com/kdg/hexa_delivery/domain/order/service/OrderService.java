@@ -144,7 +144,7 @@ public class OrderService {
         Order order = orderRepository.findByIdOrElseThrow(orderId);
 
         // 주문한 사용자의 해당가게 주문횟수 조회
-        Long orderCount = orderRepository.countOrderByStoreIdAndUserId(order.getUser().getId(),order.getStore().getStoreId());
+        Long orderCount = orderRepository.countByStoreStoreIdAndUserIdAndOrderStatus(order.getUser().getId(),order.getStore().getStoreId(), OrderStatus.DELIVERED);
 
         // 주문횟수 입력
         order.countOrder(orderCount);
@@ -160,7 +160,7 @@ public class OrderService {
 
     // 사용자 주문 상세조회 (거절조회)
     public Map<String, Object> getCustomerOrderDetails(User user, Long orderId) {
-        Order order = orderRepository.findByUserIdAndOrderId(user.getId(),orderId);
+        Order order = orderRepository.findByUserIdAndId(user.getId(),orderId);
         if(order == null) {
             throw new NotFoundException(ExceptionType.ORDER_NOT_FOUND);
         }

@@ -70,8 +70,10 @@ public class ShoppingBasketService {
             confirmedMenuList.put(menuId, confirmedMenuList.get(menuId) + quantity);
         }
         else{
+            Store store = storeRepository.findByIdOrElseThrow(storeId);
+
             // 실제 가게의 메뉴 정보 리스트 가져오기
-            List<Menu> menus = menuRepository.findAllByStoreIdAndStatus(storeId, Status.NORMAL);
+            List<Menu> menus = menuRepository.findAllByStoreAndStatus(store, Status.NORMAL);
 
             // 실제 메뉴에 있는 음식인지 확인
             for (Menu menu : menus) {
@@ -102,12 +104,12 @@ public class ShoppingBasketService {
         // 가게 정보 가져오기
         Store store = storeRepository.findByIdOrElseThrow(shoppingBasket.getStoreId());
         // 메뉴 정보 가져오기
-        List<Menu> menus = menuRepository.findAllByStoreIdAndStatus(store.getStoreId(), Status.NORMAL);
+        List<Menu> menus = menuRepository.findAllByStoreAndStatus(store, Status.NORMAL);
 
         // 보여줄 메뉴 맵
         Map<String, Integer> menuList = new HashMap<>();
         List<String> imageUrls = new ArrayList<>();
-        Integer totalPrice = 0;
+        int totalPrice = 0;
 
         // 실제 메뉴에 있는 음식인지 확인
         for(Menu menu : menus){
@@ -118,7 +120,7 @@ public class ShoppingBasketService {
                     // 대표 이미지 url 저장
                     imageUrls.add(imageService.findImages(menu.getId(), ImageOwner.MENU).get(0).getImageUrl());
                 }
-                totalPrice += menu.getPrice();
+                totalPrice += menu.getPrice()*menuList.get(menu.getName());
             }
         }
 
